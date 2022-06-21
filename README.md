@@ -1,5 +1,4 @@
 # digital-sdk
-[![Downloads](https://img.shields.io/github/downloads/W1lliam1337/digital-sdk/total?color=%237C57AB&style=plastic)
 
 # language 
 - c++ 20
