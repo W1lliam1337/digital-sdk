@@ -47,4 +47,4 @@ enum e_enum;
 - paint traverse
 #
 
-![App menu](https://i.https://imgur.com/a/GYDfAei)
+![App menu](https://i.imgur.com/nHQW7MP.png)
