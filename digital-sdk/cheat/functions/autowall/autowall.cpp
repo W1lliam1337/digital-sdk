@@ -273,7 +273,7 @@ bool c_autowall::simulate_fire_bullet(fire_bullet_data_t& data) const
 	float max_range = data.m_weapon_info->m_range;
 
 	data.m_penetrate_count = 4;
-	data.m_current_damage = 50;
+	data.m_current_damage = data.m_weapon_info->m_damage;
 
 	c_trace_filter filter;
 	filter.pSkip = g_sdk.m_local();
