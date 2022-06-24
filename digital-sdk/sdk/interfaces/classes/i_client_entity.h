@@ -18,7 +18,7 @@ enum e_solid_type {
 class i_client_unknown;
 class c_game_trace;
 class c_base_handle;
-struct Ray_t;
+struct ray_t;
 
 class i_collideable {
 public:
@@ -26,8 +26,8 @@ public:
 	virtual vec3_t& obb_mins() const = 0;
 	virtual vec3_t& obb_maxs() const = 0;
 	virtual void               world_space_trigger_bounds(vec3_t* mins, vec3_t* maxs) const = 0;
-	virtual bool               test_collision(const Ray_t& ray, unsigned int mask, c_game_trace& trace) = 0;
-	virtual bool               test_hitboxes(const Ray_t& ray, unsigned int mask, c_game_trace& trace) = 0;
+	virtual bool               test_collision(const ray_t& ray, unsigned int mask, c_game_trace& trace) = 0;
+	virtual bool               test_hitboxes(const ray_t& ray, unsigned int mask, c_game_trace& trace) = 0;
 	virtual int                get_collision_model_index() = 0;
 	virtual const model_t* get_collision_model() = 0;
 	virtual const vec3_t& get_collision_origin() const = 0;

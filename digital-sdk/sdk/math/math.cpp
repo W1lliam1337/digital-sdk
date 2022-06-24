@@ -52,6 +52,34 @@ vec3_t cross_product(const vec3_t& a, const vec3_t& b)
 	return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
 }
 
+void c_math::vector_angles(const vec3_t& forward, qangle_t& view)
+{
+	float pitch, yaw;
+
+	if (forward.x == 0.f && forward.y == 0.f)
+	{
+		pitch = (forward.z > 0.f) ? 270.f : 90.f;
+		yaw = 0.f;
+	}
+	else
+	{
+		pitch = std::atan2f(-forward.z, forward.length_2d()) * 180.f / M_PI;
+
+		if (pitch < 0.f)
+			pitch += 360.f;
+
+		yaw = std::atan2f(forward.y, forward.x) * 180.f / M_PI;
+
+		if (yaw < 0.f)
+			yaw += 360.f;
+	}
+
+	view.x = pitch;
+	view.y = yaw;
+	view.z = 0.f;
+}
+
+
 void c_math::vector_angles(const vec3_t& forward, const vec3_t& up, qangle_t& angles)
 {
 	vec3_t left = cross_product(up, forward);

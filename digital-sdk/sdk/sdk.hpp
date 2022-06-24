@@ -24,6 +24,7 @@
 #include "utils/recv table/recv.h"
 #include "utils/crc32/checksum_crc.h"
 #include "utils/bfread/bf_read.h"
+#include "utils/studio/studio.h"
 #include "math/math.h"
 #include "math/qangle.h"
 #include "math/vec3_t.h"
@@ -52,6 +53,12 @@
 #include "interfaces/classes/i_debug_overlay.h"
 #include "interfaces/classes/i_panel.h"
 #include "interfaces/classes/i_model_info.h"
+#include "interfaces/classes/i_cvar.h"
+#include "interfaces/classes/i_convar.h"
+#include "interfaces/classes/i_prop_physics.h"
+#include "interfaces/classes/i_engine_trace.h"
+#include "interfaces/classes/i_multiplayer_physics.h"
+#include "interfaces/classes/i_breakable_with_prop_data.h"
 #include "entity/enums.h"
 #include "entity/classes.h"
 #include "entity/entity.h"
@@ -75,15 +82,16 @@ class c_sdk
 public:
 	struct m_local_data_t
 	{
-		vec3_t m_shoot_pos{};
 		int m_screen_width{};
 		int m_screen_height{};
+
+		vec3_t m_shoot_pos{};
 		vec3_t m_screen_size{};
 	} m_local_data{};
 
 	struct m_rage_data_t
 	{
-		
+		c_base_player* m_player{};
 	}m_rage_data{};
 
 	struct m_legit_data_t
@@ -99,7 +107,7 @@ public:
 
 	struct fonts_t
 	{
-		vgui::h_font m_esp{};
+		ImFont* m_esp{};
 		std::string m_last_font_name;
 	}m_fonts{};
 
@@ -120,6 +128,9 @@ public:
 		i_debug_overlay* m_debug_overlay{};
 		i_panel* m_panel{};
 		i_model_info* m_model_info{};
+		i_cvar* m_cvar{};
+		i_physics_surface_props* m_physics_surface_props{};
+		c_engine_trace* m_trace{};
 	}m_interfaces{};
 
 	struct m_module_list_t

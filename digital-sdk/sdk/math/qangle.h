@@ -187,6 +187,7 @@ struct qangle_t
 		}
 
 		this->z = 0.0f;
+		return *this;
 	}
 
 	[[nodiscard]] float normalize() const

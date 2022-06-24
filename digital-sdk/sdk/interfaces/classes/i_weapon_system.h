@@ -1,10 +1,12 @@
 #pragma once
-#include "../../entity/classes.h"
+
+class c_weapon_info;
 
 class i_weapon_system
 {
-	virtual void unused0() = 0;
-	virtual void unused1() = 0;
 public:
-	virtual c_weapon_info* get_wpn_data(unsigned ItemDefinitionIndex) = 0;
+	c_weapon_info* get_weapon_data(short item_definition_index)
+	{
+		return call_vfunc<c_weapon_info*(__thiscall*)(void*, short)>(this, 8)(this, item_definition_index);
+	}
 };

@@ -1,10 +1,7 @@
 #pragma once
 
 #include <cstring>
-
 #include "i_client_entity.h"
-
-#pragma region MASKS
 
 #define   DISPSURF_FLAG_SURFACE           (1<<0)
 #define   DISPSURF_FLAG_WALKABLE          (1<<1)
@@ -103,32 +100,29 @@
 #define   MASK_SPLITAREAPORTAL          (CONTENTS_WATER|CONTENTS_SLIME)
 #define   MASK_CURRENT                  (CONTENTS_CURRENT_0|CONTENTS_CURRENT_90|CONTENTS_CURRENT_180|CONTENTS_CURRENT_270|CONTENTS_CURRENT_UP|CONTENTS_CURRENT_DOWN)
 #define   MASK_DEADSOLID                (CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_GRATE)
-#pragma endregion
 
 class vec3_t;
-class IHandleEntity;
-struct Ray_t;
-class c_game_trace;
-using trace_t = c_game_trace;
-class ICollideable;
-class ITraceListData;
-class CPhysCollide;
+class i_handle_entity;
+struct ray_t;
+class i_collideable;
+class i_trace_list_data;
+class c_phys_collide;
 struct cplane_t;
 struct virtualmeshlist_t;
 
-enum class TraceType
+enum class trace_type
 {
-	TRACE_EVERYTHING = 0,
-	TRACE_WORLD_ONLY,
-	TRACE_ENTITIES_ONLY,
-	TRACE_EVERYTHING_FILTER_PROPS,
+	trace_everything = 0,
+	trace_world_only,
+	trace_entities_only,
+	trace_everything_filter_props,
 };
 
-class ITraceFilter
+class i_trace_filter
 {
 public:
-	virtual bool ShouldHitEntity(IHandleEntity* pEntity, int contentsMask) = 0;
-	virtual TraceType GetTraceType() const = 0;
+	virtual bool should_hit_entity(i_handle_entity* pEntity, int contentsMask) = 0;
+	virtual trace_type get_trace_type() const = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -136,10 +130,10 @@ public:
 //-----------------------------------------------------------------------------
 
 // This is the one most normal traces will inherit from
-class CTraceFilter : public ITraceFilter
+class c_trace_filter : public i_trace_filter
 {
 public:
-	bool ShouldHitEntity(IHandleEntity* pEntityHandle, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
 	{
 		const auto eCC = reinterpret_cast<i_client_entity*>(pEntityHandle)->get_client_class();
 		if (eCC && ccIgnore != nullptr && strcmp(ccIgnore, "") != 0) //-V526
@@ -153,9 +147,9 @@ public:
 		return !(pEntityHandle == pSkip);
 	}
 
-	TraceType GetTraceType() const override
+	[[nodiscard]] trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_EVERYTHING;
+		return trace_type::trace_everything;
 	}
 
 	void SetIgnoreClass(char* Class)
@@ -167,38 +161,38 @@ public:
 	const char* ccIgnore{ "" };
 };
 
-class CTraceFilterSkipEntity : public ITraceFilter
+class c_trace_filter_skip_entity : public i_trace_filter
 {
 public:
-	CTraceFilterSkipEntity(IHandleEntity* pEntityHandle)
+	c_trace_filter_skip_entity(i_handle_entity* pEntityHandle)
 	{
 		pSkip = pEntityHandle;
 	}
 
-	bool ShouldHitEntity(IHandleEntity* pEntityHandle, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
 	{
 		return !(pEntityHandle == pSkip);
 	}
 
-	TraceType GetTraceType() const override
+	trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_EVERYTHING;
+		return trace_type::trace_everything;
 	}
 
 	void* pSkip;
 };
 
-class CTraceFilterEntitiesOnly : public ITraceFilter
+class c_trace_filter_entities_only : public i_trace_filter
 {
 public:
-	bool ShouldHitEntity(IHandleEntity* pEntityHandle, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
 	{
 		return true;
 	}
 
-	TraceType GetTraceType() const override
+	trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_ENTITIES_ONLY;
+		return trace_type::trace_entities_only;
 	}
 };
 
@@ -206,102 +200,96 @@ public:
 //-----------------------------------------------------------------------------
 // Classes need not inherit from these
 //-----------------------------------------------------------------------------
-class CTraceFilterWorldOnly : public ITraceFilter
+class c_trace_filter_world_only : public i_trace_filter
 {
 public:
-	bool ShouldHitEntity(IHandleEntity* /*pServerEntity*/, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
 	{
 		return false;
 	}
 
-	TraceType GetTraceType() const override
+	[[nodiscard]] trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_WORLD_ONLY;
+		return trace_type::trace_world_only;
 	}
 };
 
-class CTraceFilterWorldAndPropsOnly : public ITraceFilter
+class c_trace_filter_world_and_props_only : public i_trace_filter
 {
 public:
-	bool ShouldHitEntity(IHandleEntity* /*pServerEntity*/, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
 	{
 		return false;
 	}
 
-	TraceType GetTraceType() const override
+	trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_EVERYTHING;
+		return trace_type::trace_everything;
 	}
 };
 
-class CTraceFilterPlayersOnlySkipOne : public ITraceFilter
+class c_trace_filter_players_only_skip_one : public i_trace_filter
 {
 public:
-	CTraceFilterPlayersOnlySkipOne(i_client_entity* ent)
+	c_trace_filter_players_only_skip_one(i_client_entity* ent)
 	{
 		pEnt = ent;
 	}
 	
-	bool ShouldHitEntity(IHandleEntity* pEntityHandle, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
 	{
 		return static_cast<void*>(pEntityHandle) != static_cast<void*>(pEnt) && reinterpret_cast<i_client_entity*>(
 			pEntityHandle)->get_client_class()->m_class_id == 40;
 	}
 
-	TraceType GetTraceType() const override
+	trace_type get_trace_type() const override
 	{
-		return TraceType::TRACE_ENTITIES_ONLY;
+		return trace_type::trace_entities_only;
 	}
 
 private:
 	i_client_entity* pEnt;
 };
 
-class CTraceFilterHitAll : public CTraceFilter
+class c_trace_filter_hit_all : public c_trace_filter
 {
 public:
-	bool ShouldHitEntity(IHandleEntity* /*pServerEntity*/, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
 	{
 		return true;
 	}
 };
 
 
-enum class DebugTraceCounterBehavior_t
-{
-	kTRACE_COUNTER_SET = 0,
-	kTRACE_COUNTER_INC,
-};
-
 //-----------------------------------------------------------------------------
 // Enumeration interface for EnumerateLinkEntities
 //-----------------------------------------------------------------------------
-class IEntityEnumerator
+class i_entity_enumerator
 {
 public:
 	// This gets called with each handle
-	virtual bool EnumEntity(IHandleEntity* pHandleEntity) = 0;
+	virtual bool enum_entity(i_handle_entity* pHandleEntity) = 0;
 };
 
 
-struct BrushSideInfo_t
+struct brush_side_info_t
 {
 	Vector4D plane; // The plane of the brush side
 	unsigned short bevel; // Bevel plane?
 	unsigned short thin; // Thin?
 };
 
-class CPhysCollide;
+class c_phys_collide;
 
 struct vcollide_t
 {
-	unsigned short solidCount : 15;
-	unsigned short isPacked : 1;
-	unsigned short descSize;
+	unsigned short solid_count : 15;
+	unsigned short is_packed : 1;
+	unsigned short desc_size;
 	// VPhysicsSolids
-	CPhysCollide** solids;
-	char* pKeyValues;
-	void* pUserData;
+	c_phys_collide** solids;
+	char* p_key_values;
+	void* p_user_data;
 };
 
 struct cmodel_t
@@ -320,31 +308,31 @@ struct csurface_t
 	// BUGBUG: These are declared per surface, not per material, but this database is per-material now
 };
 
-class __declspec(align(16)) VectorAligned : public vec3_t
+class __declspec(align(16)) vector_aligned : public vec3_t
 {
 public:
-	VectorAligned(void)
+	vector_aligned(void)
 	{
 	};
 
-	VectorAligned(float X, float Y, float Z)
+	vector_aligned(float X, float Y, float Z)
 	{
 		init(X, Y, Z);
 	}
 
 public:
-	explicit VectorAligned(const vec3_t& vOther)
+	explicit vector_aligned(const vec3_t& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
 	}
 
-	VectorAligned& operator=(const vec3_t& vOther)
+	vector_aligned& operator=(const vec3_t& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
 		return *this;
 	}
 
-	VectorAligned& operator=(const VectorAligned& vOther)
+	vector_aligned& operator=(const vector_aligned& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
 		return *this;
@@ -356,62 +344,62 @@ public:
 //-----------------------------------------------------------------------------
 // A ray...
 //-----------------------------------------------------------------------------
-struct Ray_t
+struct ray_t
 {
-	VectorAligned m_Start; // starting point, centered within the extents
-	VectorAligned m_Delta; // direction + length of the ray
-	VectorAligned m_StartOffset; // Add this to m_Start to Get the actual ray start
-	VectorAligned m_Extents; // Describes an axis aligned box extruded along a ray
-	const matrix_t* m_pWorldAxisTransform;
-	bool m_IsRay; // are the extents zero?
-	bool m_IsSwept; // is delta != 0?
+	vector_aligned m_start; // starting point, centered within the extents
+	vector_aligned m_delta; // direction + length of the ray
+	vector_aligned m_start_offset; // Add this to m_Start to Get the actual ray start
+	vector_aligned m_extents; // Describes an axis aligned box extruded along a ray
+	const matrix_t* m_world_axis_transform;
+	bool m_is_ray; // are the extents zero?
+	bool m_is_swept; // is delta != 0?
 
-	Ray_t() : m_pWorldAxisTransform(nullptr)
+	ray_t() : m_world_axis_transform(nullptr)
 	{
 	}
 
 	void init(const vec3_t& start, const vec3_t& end)
 	{
-		m_Delta = end - start;
+		m_delta = end - start;
 
-		m_IsSwept = (m_Delta.length_sqr() != 0);
+		m_is_swept = (m_delta.length_sqr() != 0);
 
-		m_Extents.init();
+		m_extents.init();
 
-		m_pWorldAxisTransform = nullptr;
-		m_IsRay = true;
+		m_world_axis_transform = nullptr;
+		m_is_ray = true;
 
 		// Offset m_Start to be in the center of the box...
-		m_StartOffset.init();
-		m_Start = start;
+		m_start_offset.init();
+		m_start = start;
 	}
 
-	void Init(const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs)
+	void init(const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs)
 	{
-		m_Delta = end - start;
+		m_delta = end - start;
 
-		m_pWorldAxisTransform = nullptr;
-		m_IsSwept = (m_Delta.length_sqr() != 0);
+		m_world_axis_transform = nullptr;
+		m_is_swept = (m_delta.length_sqr() != 0);
 
-		m_Extents = maxs - mins;
-		m_Extents *= 0.5f;
-		m_IsRay = (m_Extents.length_sqr() < 1e-6);
+		m_extents = maxs - mins;
+		m_extents *= 0.5f;
+		m_is_ray = (m_extents.length_sqr() < 1e-6);
 
 		// Offset m_Start to be in the center of the box...
-		m_StartOffset = maxs + mins;
-		m_StartOffset *= 0.5f;
-		m_Start = start + m_StartOffset;
-		m_StartOffset *= -1.0f;
+		m_start_offset = maxs + mins;
+		m_start_offset *= 0.5f;
+		m_start = start + m_start_offset;
+		m_start_offset *= -1.0f;
 	}
 
-	vec3_t InvDelta() const
+	[[nodiscard]] vec3_t inv_delta() const
 	{
 		vec3_t vecInvDelta;
 		for (int iAxis = 0; iAxis < 3; ++iAxis)
 		{
-			if (m_Delta[iAxis] != 0.0f)
+			if (m_delta[iAxis] != 0.0f)
 			{
-				vecInvDelta[iAxis] = 1.0f / m_Delta[iAxis];
+				vecInvDelta[iAxis] = 1.0f / m_delta[iAxis];
 			}
 			else
 			{
@@ -420,133 +408,58 @@ struct Ray_t
 		}
 		return vecInvDelta;
 	}
-
-private:
 };
 
-class CBaseTrace
+class c_base_trace
 {
 public:
-	bool IsDispSurface(void) { return ((dispFlags & DISPSURF_FLAG_SURFACE) != 0); }
-	bool IsDispSurfaceWalkable(void) { return ((dispFlags & DISPSURF_FLAG_WALKABLE) != 0); }
-	bool IsDispSurfaceBuildable(void) { return ((dispFlags & DISPSURF_FLAG_BUILDABLE) != 0); }
-	bool IsDispSurfaceProp1(void) { return ((dispFlags & DISPSURF_FLAG_SURFPROP1) != 0); }
-	bool IsDispSurfaceProp2(void) { return ((dispFlags & DISPSURF_FLAG_SURFPROP2) != 0); }
-
-public:
-	// these members are aligned!!
-	vec3_t startpos; // start position
-	vec3_t endpos; // final position
-	cplane_t plane; // surface normal at impact
-
-	float fraction; // time completed, 1.0 = didn't hit anything
-
-	int contents; // contents on other side of surface hit
-	unsigned short dispFlags; // displacement flags for marking surfaces with data
-
-	bool allsolid; // if true, plane is not valid
-	bool startsolid; // if true, the initial point was in a solid area
-
-	CBaseTrace()
-	{
-	}
+	vec3_t			m_start;		// start position
+	vec3_t			m_end;			// final position
+	cplane_t		m_plane;			// surface normal at impact
+	float			m_fraction{};		// time completed, 1.0 = didn't hit anything
+	int				m_contents{};		// contents on other side of surface hit
+	uint16_t		m_disp_flags{};		// displacement flags for marking surfaces with data
+	bool			m_all_solid{};		// if true, plane is not valid
+	bool			m_start_solid{};	// if true, the initial point was in a solid area
 };
 
-
-class c_game_trace : public CBaseTrace
+class c_game_trace : public c_base_trace
 {
 public:
-	bool did_hit_world() const;
-	bool did_hit_non_world_entity() const;
-	int GetEntityIndex() const;
-	bool DidHit() const;
-	bool IsVisible() const;
+	c_game_trace() {}
 
-public:
-	float fractionleftsolid; // time we left a solid, only valid if we started in solid
-	csurface_t surface; // surface hit (impact surface)
-	int hitgroup; // 0 == generic, non-zero is specific body part
-	short physicsbone; // physics bone hit by trace in studio
-	unsigned short worldSurfaceIndex; // Index of the msurface2_t, if applicable
-	i_client_entity* hit_entity;
-	int hitbox; // box hit by trace in studio
-
-	c_game_trace()
+	bool did_hit()
 	{
+		return m_fraction < 1.0f || m_all_solid || m_start_solid;
 	}
 
-	__forceinline void CleanOut()
+	bool is_visible()
 	{
-		std::memset(this, 0, sizeof(c_game_trace));
-
-		fraction = 1.f;
-		surface.name = "**empty**";
+		return m_fraction > 0.97f;
 	}
 
-	// No copy constructors allowed
-	c_game_trace(const c_game_trace& other) :
-		fractionleftsolid(other.fractionleftsolid),
-		surface(other.surface),
-		hitgroup(other.hitgroup),
-		physicsbone(other.physicsbone),
-		worldSurfaceIndex(other.worldSurfaceIndex),
-		hit_entity(other.hit_entity),
-		hitbox(other.hitbox)
-	{
-		startpos = other.startpos;
-		endpos = other.endpos;
-		plane = other.plane;
-		fraction = other.fraction;
-		contents = other.contents;
-		dispFlags = other.dispFlags;
-		allsolid = other.allsolid;
-		startsolid = other.startsolid;
-	}
-
-	/*c_game_trace& c_game_trace::operator=(const c_game_trace& other)
-	{
-		startpos = other.startpos;
-		endpos = other.endpos;
-		plane = other.plane;
-		fraction = other.fraction;
-		contents = other.contents;
-		dispFlags = other.dispFlags;
-		allsolid = other.allsolid;
-		startsolid = other.startsolid;
-		fractionleftsolid = other.fractionleftsolid;
-		surface = other.surface;
-		hitgroup = other.hitgroup;
-		physicsbone = other.physicsbone;
-		worldSurfaceIndex = other.worldSurfaceIndex;
-		hit_entity = other.hit_entity;
-		hitbox = other.hitbox;
-		return *this;
-	}*/
+	float				m_fraction_left_solid{};	// time we left a solid, only valid if we started in solid
+	csurface_t			m_surface{};				// surface hit (impact surface)
+	int					m_hit_group{};				// 0 == generic, non-zero is specific body part
+	std::uint16_t		m_world_surface_index{};		// index of the msurface2_t, if applicable
+	c_base_player*		m_entity{};				// entity hit by trace
+	int					m_hitbox{};				// box hit by trace in studio
 };
 
-inline bool c_game_trace::DidHit() const
-{
-	return fraction < 1 || allsolid || startsolid;
-}
-
-inline bool c_game_trace::IsVisible() const
-{
-	return fraction > 0.97f;
-}
+using trace_t = c_game_trace;
 
 class c_engine_trace
 {
 public:
-	virtual int GetPointContents(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL,
-		IHandleEntity** ppEntity = nullptr) = 0;
-	virtual int GetPointContents_WorldOnly(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL) = 0;
-	virtual int GetPointContents_Collideable(ICollideable* pCollide, const vec3_t& vecAbsPosition) = 0;
-	virtual void ClipRayToEntity(const Ray_t& ray, unsigned int fMask, IHandleEntity* pEnt, c_game_trace* pTrace) = 0;
-	virtual void ClipRayToCollideable(const Ray_t& ray, unsigned int fMask, ICollideable* pCollide, c_game_trace* pTrace)
+	virtual int get_point_contents(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL,
+		i_handle_entity** ppEntity = nullptr) = 0;
+	virtual int get_point_contents_world_only(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL) = 0;
+	virtual int get_point_contents_collideable(i_collideable* pCollide, const vec3_t& vecAbsPosition) = 0;
+	virtual void clip_ray_to_entity(const ray_t& ray, unsigned int fMask, i_handle_entity* pEnt, trace_t* pTrace) = 0;
+	virtual void clip_ray_to_collideable(const ray_t& ray, unsigned int fMask, i_collideable* pCollide, trace_t* pTrace)
 		= 0;
-	virtual void TraceRay(const Ray_t& ray, unsigned int fMask, ITraceFilter* pTraceFilter, c_game_trace* pTrace) = 0;
+	virtual void trace_ray(const ray_t& ray, unsigned int fMask, i_trace_filter* pTraceFilter, trace_t* pTrace) = 0;
 
-	void TraceLine(vec3_t src, vec3_t dst, int mask, IHandleEntity* entity, int collision_group, c_game_trace* trace);
-	void TraceHull(vec3_t src, vec3_t dst, vec3_t mins, vec3_t maxs, int mask, IHandleEntity* entity,
-		int collision_group, c_game_trace* trace);
+	void trace_line(vec3_t src, vec3_t dst, int mask, i_handle_entity* entity, int collision_group,
+		trace_t* trace);
 };

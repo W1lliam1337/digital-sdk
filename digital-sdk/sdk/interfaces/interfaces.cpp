@@ -39,6 +39,15 @@ void c_interfaces::init() const
 	g_sdk.m_interfaces.m_model_info = static_cast<i_model_info*>(this->get_interface(
 		g_sdk.m_modules.m_engine_dll, _("VModelInfoClient004")));
 
+	g_sdk.m_interfaces.m_cvar = static_cast<i_cvar*>(this->get_interface(
+		g_sdk.m_modules.m_vstd_dll, _("VEngineCvar007")));
+
+	g_sdk.m_interfaces.m_physics_surface_props = static_cast<i_physics_surface_props*>(this->get_interface(
+		g_sdk.m_modules.m_physics_dll, _("VPhysicsSurfaceProps001")));
+
+	g_sdk.m_interfaces.m_trace = static_cast<c_engine_trace*>(this->get_interface(
+		g_sdk.m_modules.m_engine_dll, _("EngineTraceClient004")));
+
 	g_sdk.m_interfaces.m_input = *reinterpret_cast<i_input**>(c_utils::find_sig(
 		g_sdk.m_modules.m_client_dll, _("B9 ? ? ? ? F3 0F 11 04 24 FF 50 10"))
 		+ 0x1);

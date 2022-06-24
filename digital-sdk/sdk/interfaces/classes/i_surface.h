@@ -33,7 +33,7 @@ public:
 		return call_vfunc<void(__thiscall*)(void*, int, int, int, int)>(this,15)(this, r, g, b, a);
 	}
 
-	void set_drawing_color(const color col) {
+	void set_drawing_color(const c_color col) {
 		using original_fn = void(__thiscall*)(void*, int, int, int, int);
 		return call_vfunc<void(__thiscall*)(void*, int, int, int, int)>(this, 15)(this, col.r(), col.g(), col.b(), col.a());
 	}
@@ -60,7 +60,7 @@ public:
 		return call_vfunc<void(__thiscall*)(void*, unsigned long)>(this,23)(this, font);
 	}
 
-	void set_text_color(const color col) {
+	void set_text_color(const c_color col) {
 		return call_vfunc<void(__thiscall*)(void*, int, int, int, int)>(this,25)(this, col.r(), col.g(), col.b(), col.a());
 	}
 

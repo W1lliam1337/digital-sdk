@@ -30,7 +30,8 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -71,12 +72,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>../dll/debug/</OutDir>
     <IntDir>../log/debug/</IntDir>
     <TargetName>CSGOHack</TargetName>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)\digital-sdk\dependencies\minhook\headers\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\digital-sdk\dependencies\minhook\libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\digital-sdk\dependencies\freetype\headers\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)\digital-sdk\dependencies\minhook\headers\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\digital-sdk\dependencies\freetype\libs\;$(SolutionDir)\digital-sdk\dependencies\minhook\libs\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -93,18 +94,27 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;CSGOSDK_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SDLCheck>false</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
+      <EnableUAC>true</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,12 +127,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <EnableModules>false</EnableModules>
+      <EnableModules>true</EnableModules>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <Optimization>Disabled</Optimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cheat\functions\autowall\autowall.cpp" />
     <ClCompile Include="cheat\functions\antiaim\anti_aimbot.cpp" />
     <ClCompile Include="cheat\functions\ragebot\aimbot\aimbot.cpp" />
     <ClCompile Include="cheat\menu\menu.cpp" />
@@ -176,12 +189,10 @@
     <ClCompile Include="cheat\functions\ragebot\lag comp\player\player_anims.cpp" />
     <ClCompile Include="dependencies\color\color.cpp" />
     <ClCompile Include="dependencies\imgui\imgui.cpp" />
-    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_freetype.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="dependencies\imgui\imgui_stdlib.cpp" />
-    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="dependencies\render\render.cpp" />
     <ClCompile Include="sdk\math\math.cpp" />
@@ -204,12 +215,110 @@
     <ClCompile Include="cheat\functions\visuals\world esp\world_esp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cheat\functions\autowall\autowall.h" />
     <ClInclude Include="cheat\functions\antiaim\anti_aimbot.h" />
     <ClInclude Include="cheat\functions\ragebot\aimbot\aimbot.h" />
     <ClInclude Include="cheat\menu\menu.h" />
     <ClInclude Include="cheat\functions\visuals\player esp\player_esp.h" />
     <ClInclude Include="cheat\functions\visuals\grenade esp\grenade_esp.h" />
     <ClInclude Include="cheat\functions\ragebot\lag comp\local\local_anims.h" />
+    <ClInclude Include="dependencies\freetype\headers\config\ftconfig.h" />
+    <ClInclude Include="dependencies\freetype\headers\config\ftheader.h" />
+    <ClInclude Include="dependencies\freetype\headers\config\ftmodule.h" />
+    <ClInclude Include="dependencies\freetype\headers\config\ftoption.h" />
+    <ClInclude Include="dependencies\freetype\headers\config\ftstdlib.h" />
+    <ClInclude Include="dependencies\freetype\headers\freetype.h" />
+    <ClInclude Include="dependencies\freetype\headers\ft2build.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftadvanc.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftautoh.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftbbox.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftbdf.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftbitmap.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftbzip2.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftcache.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftcffdrv.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftchapters.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftcid.h" />
+    <ClInclude Include="dependencies\freetype\headers\fterrdef.h" />
+    <ClInclude Include="dependencies\freetype\headers\fterrors.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftfntfmt.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftgasp.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftglyph.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftgxval.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftgzip.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftimage.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftincrem.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftlcdfil.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftlist.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftlzw.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftmac.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftmm.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftmodapi.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftmoderr.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftotval.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftoutln.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftpcfdrv.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftpfr.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftrender.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftsizes.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftsnames.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftstroke.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftsynth.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftsystem.h" />
+    <ClInclude Include="dependencies\freetype\headers\fttrigon.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftttdrv.h" />
+    <ClInclude Include="dependencies\freetype\headers\fttypes.h" />
+    <ClInclude Include="dependencies\freetype\headers\ftwinfnt.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\autohint.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftcalc.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftdebug.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftdriver.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftgloadr.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\fthash.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftmemory.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftobjs.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftpic.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftrfork.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftserv.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftstream.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\fttrace.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\ftvalid.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\internal.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\psaux.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\pshints.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svbdf.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svcid.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svfntfmt.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svgldict.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svgxval.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svkern.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svmetric.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svmm.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svotval.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svpfr.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svpostnm.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svprop.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svpscmap.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svpsinfo.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svsfnt.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svttcmap.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svtteng.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svttglyf.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\services\svwinfnt.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\sfnt.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\t1types.h" />
+    <ClInclude Include="dependencies\freetype\headers\internal\tttypes.h" />
+    <ClInclude Include="dependencies\freetype\headers\t1tables.h" />
+    <ClInclude Include="dependencies\freetype\headers\ttnameid.h" />
+    <ClInclude Include="dependencies\freetype\headers\tttables.h" />
+    <ClInclude Include="dependencies\freetype\headers\tttags.h" />
+    <ClInclude Include="dependencies\freetype\headers\ttunpat.h" />
+    <ClInclude Include="dependencies\imgui\imgui_freetype.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_multiplayer_physics.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_convar.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_cvar.h" />
     <ClInclude Include="sdk\interfaces\classes\i_model_info.h" />
     <ClInclude Include="cheat\functions\ragebot\lag comp\player\player_anims.h" />
     <ClInclude Include="sdk\interfaces\classes\i_debug_overlay.h" />
@@ -221,11 +330,9 @@
     <ClInclude Include="dependencies\imgui\imgui_impl_dx9.h" />
     <ClInclude Include="dependencies\imgui\imgui_impl_win32.h" />
     <ClInclude Include="dependencies\imgui\imgui_internal.h" />
-    <ClInclude Include="dependencies\imgui\imgui_stdlib.h" />
     <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
-    <ClInclude Include="dependencies\render\font.h" />
     <ClInclude Include="dependencies\render\fonts\esp_font.h" />
     <ClInclude Include="dependencies\render\render.h" />
     <ClInclude Include="sdk\math\math.h" />
@@ -285,6 +392,7 @@
     <ClInclude Include="cheat\functions\visuals\world esp\world_esp.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="dependencies\freetype\libs\freetype.lib" />
     <Library Include="dependencies\minhook\libs\MinHook.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

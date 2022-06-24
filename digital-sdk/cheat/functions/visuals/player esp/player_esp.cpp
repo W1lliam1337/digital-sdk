@@ -1,15 +1,17 @@
 #include "player_esp.h"
 
 /* @fix-me: funny and stupid code */
-bool get_bounding_box(c_base_player* entity, bbox_t& box)
+RECT get_bounding_box(c_base_player* entity)
 {
+	constexpr RECT rect{};
+
 	const auto collideable = entity->get_collideable();
-	const auto &coordinate_frame = entity->get_coordinate_frame();
+	const auto& coordinate_frame = entity->get_coordinate_frame();
 
-	const auto &min = collideable->obb_mins();
-	const auto &max = collideable->obb_maxs();
+	const auto& min = collideable->obb_mins();
+	const auto& max = collideable->obb_maxs();
 
-	const vec3_t points[8] =
+	const vec3_t points[] =
 	{
 		vec3_t(min.x, min.y, min.z),
 		vec3_t(min.x, max.y, min.z),
@@ -26,62 +28,30 @@ bool get_bounding_box(c_base_player* entity, bbox_t& box)
 	for (auto i = 0; i < 8; i++)
 		c_math::vector_transform(points[i], coordinate_frame, points_transformed[i]);
 
-	vec3_t flb;
-	vec3_t brt;
-	vec3_t blb;
-	vec3_t frt;
-	vec3_t frb;
-	vec3_t brb;
-	vec3_t blt;
-	vec3_t flt;
+	vec3_t screen_points[8] = {};
+	for (int i = 0; i < 8; i++)
+		if (g_sdk.m_interfaces.m_debug_overlay->screen_position(points_transformed[i], screen_points[i]))
+			return rect;
 
-	const auto b_flb = c_math::world_to_screen(points_transformed[3], flb);
-	const auto b_brt = c_math::world_to_screen(points_transformed[5], brt);
-	const auto b_blb = c_math::world_to_screen(points_transformed[0], blb);
-	const auto b_frt = c_math::world_to_screen(points_transformed[4], frt);
-	const auto b_frb = c_math::world_to_screen(points_transformed[2], frb);
-	const auto b_brb = c_math::world_to_screen(points_transformed[1], brb);
-	const auto b_blt = c_math::world_to_screen(points_transformed[6], blt);
-	const auto b_flt = c_math::world_to_screen(points_transformed[7], flt);
-
-	if (!b_flb && !b_brt && !b_blb && !b_frt && !b_frb && !b_brb && !b_blt && !b_flt)
-		return false;
-
-	const vec3_t arr[8] =
-	{
-		flb,
-		brt,
-		blb,
-		frt,
-		frb,
-		brb,
-		blt,
-		flt
-	};
-
-	auto left = flb.x;
-	auto top = flb.y;
-	auto right = flb.x;
-	auto bottom = flb.y;
+	auto left = screen_points[0].x;
+	auto top = screen_points[0].y;
+	auto right = screen_points[0].x;
+	auto bottom = screen_points[0].y;
 
 	for (auto i = 1; i < 8; i++)
 	{
-		if (left > arr[i].x)
-			left = arr[i].x;
-		if (top < arr[i].y)
-			top = arr[i].y;
-		if (right < arr[i].x)
-			right = arr[i].x;
-		if (bottom > arr[i].y)
-			bottom = arr[i].y;
+		if (left > screen_points[i].x)
+			left = screen_points[i].x;
+		if (top < screen_points[i].y)
+			top = screen_points[i].y;
+		if (right < screen_points[i].x)
+			right = screen_points[i].x;
+		if (bottom > screen_points[i].y)
+			bottom = screen_points[i].y;
 	}
 
-	box.x = left;
-	box.y = bottom;
-	box.w = right - left;
-	box.h = top - bottom;
 
-	return true;
+	return {static_cast<long>(left), static_cast<long>(bottom), static_cast<long>(right), static_cast<long>(top)};
 }
 
 int c_player_esp::get_type(c_base_player* player)
@@ -90,12 +60,12 @@ int c_player_esp::get_type(c_base_player* player)
 		return esp_type_t::player;
 
 	if (player == g_sdk.m_local() && g_sdk.m_interfaces.m_input->m_camera_in_third_person)
-		return esp_type_t::local;
+		return local;
 
 	if (player->get_team() == g_sdk.m_local()->get_team())
-		return esp_type_t::team;
+		return team;
 
-	return esp_type_t::both;
+	return both;
 }
 
 void c_player_esp::draw()
@@ -109,12 +79,10 @@ void c_player_esp::draw()
 
 		m_type = get_type(entity);
 
-		if (m_type != esp_type_t::player)
+		if (m_type != player)
 			continue;
 
-		bbox_t bbox;
-		if (!get_bounding_box(entity, bbox))
-			return;
+		const auto bbox = get_bounding_box(entity);
 
 		render_box(bbox, entity);
 		render_name(bbox, entity);
@@ -122,26 +90,36 @@ void c_player_esp::draw()
 	}
 }
 
-void c_player_esp::render_box(const bbox_t bbox, c_base_player* player)
+void c_player_esp::render_box(const RECT bbox, c_base_player* player)
 {
-	c_render::rect(bbox.x - 1, bbox.y - 1, bbox.w + 2, bbox.h + 2, color::black);
-	c_render::rect(bbox.x, bbox.y, bbox.w, bbox.h, color::white);
-	c_render::rect(bbox.x + 1, bbox.y + 1, bbox.w - 2, bbox.h - 2, color::black);
+	c_render::get()->rect(bbox.left + 1, bbox.top + 1, bbox.right - 1, bbox.bottom - 1, c_color(0.f, 0.f, 0.f));
+	c_render::get()->rect(bbox.left - 1, bbox.top - 1, bbox.right + 1, bbox.bottom + 1, c_color(0.f, 0.f, 0.f));
+	c_render::get()->rect(bbox.left, bbox.top, bbox.right, bbox.bottom, c_color::white);
 }
 
-void c_player_esp::render_name(const bbox_t bbox, const c_base_player* player)
+void c_player_esp::render_name(const RECT bbox, const c_base_player* player)
 {
 	player_info_t p_info{};
 	g_sdk.m_interfaces.m_engine->get_player_info(player->get_index(), &p_info);
 	const std::string name = p_info.m_name;
 
-	c_render::text(g_sdk.m_fonts.m_esp, bbox.x + (bbox.w / 2), bbox.y - 13, color(150, 150, 150, 255), hfont_centered_x, name.c_str());
+	c_render::get()->text(g_sdk.m_fonts.m_esp, ImVec2(bbox.left + (bbox.right - bbox.left) * 0.5f, bbox.top - 17),
+	                      name.c_str(), c_color::white, true);
 }
 
-void c_player_esp::render_health_bar(const bbox_t bbox, const c_base_player* player) const
+void c_player_esp::render_health_bar(const RECT bbox, const c_base_player* player) const
 {
-	c_render::rect(bbox.x - 7, bbox.y - 1, 4, bbox.h + 2, color::black);
-	const int pixel_value = player->get_health() * bbox.h / 100;
-	c_render::rect_filled(bbox.x - 6, bbox.y + bbox.h - pixel_value, 2, pixel_value, color(0, 255, 0));
-	c_render::text(g_sdk.m_fonts.m_esp, bbox.x - 9, bbox.y + bbox.h - pixel_value - 5, color(150,150,150,255), hfont_centered_x | hfont_centered_y, std::to_string(player->get_health()).c_str());
+	const auto box_height = static_cast<float>(bbox.bottom - bbox.top);
+
+	const float colored_bar_height = box_height * min(player->get_health(), 100) / 100.0f;
+	const float colored_bar_max_height = box_height * 100.0f / 100.0f;
+
+	c_render::get()->rect_filled(bbox.left - 6.0f, bbox.top - 1, bbox.left - 2.0f,
+	                             bbox.top + colored_bar_max_height + 1, c_color(0.0f, 0.0f, 0.0f));
+
+	c_render::get()->rect_filled(bbox.left - 5.0f, bbox.top + (colored_bar_max_height - colored_bar_height),
+	                             bbox.left - 3.0f, bbox.top + colored_bar_max_height, c_color(0, 255, 0));
+
+	c_render::get()->text(g_sdk.m_fonts.m_esp, ImVec2(bbox.left - 20, bbox.top - 2.0f),
+	                      std::to_string(player->get_health()), c_color(0, 255, 0), false, true);
 }

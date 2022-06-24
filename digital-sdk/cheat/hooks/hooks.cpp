@@ -38,7 +38,7 @@ void c_hooks::init_wnd_proc()
 
 long __stdcall c_hooks::hk_present(IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region) noexcept
 {
-	if (!ImGui::GetCurrentContext()) 
+	if (!ImGui::GetCurrentContext())
 		return g_sdk.m_hooks_data.m_originals.m_present(device, src, dest, window_override, dirty_region);
 
 	ImGui_ImplDX9_Init(device);
@@ -69,7 +69,7 @@ long __stdcall c_hooks::hk_present(IDirect3DDevice9* device, const RECT* src, co
 	c_menu::get()->render();
 
 	ImGui::EndFrame();
-	ImGui::Render();
+	ImGui::Render(c_render::get()->render_scene());
 
 	if (device->BeginScene() == D3D_OK)
 	{
@@ -87,18 +87,12 @@ long __stdcall c_hooks::hk_present(IDirect3DDevice9* device, const RECT* src, co
 
 long __stdcall c_hooks::hk_wnd_proc(HWND window, UINT msg, WPARAM wparm, LPARAM lparm) noexcept
 {
-	[[maybe_unused]] static const auto once = [](const HWND& window) noexcept
-	{
-		ImGui::CreateContext();
-		ImGui_ImplWin32_Init(window);
-
-		return true;
-	}(window);
+	ImGui_ImplWin32_Init(window);
 
 	c_utils::init_key_sys(msg, wparm);
 
-	long ImGui_ImplWin32_WndProcHandler(HWND window, UINT msg, WPARAM wparm, LPARAM lparm);
-	ImGui_ImplWin32_WndProcHandler(window, msg, wparm, lparm);
+	if (ImGui_ImplWin32_WndProcHandler(window, msg, wparm, lparm) && g_sdk.m_menu_data.m_is_menu_opened && !(msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_MOUSEMOVE))
+		return false;
 
 	if (g_sdk.m_menu_data.m_is_menu_opened && (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_MOUSEMOVE))
 		return false;
@@ -109,7 +103,10 @@ long __stdcall c_hooks::hk_wnd_proc(HWND window, UINT msg, WPARAM wparm, LPARAM 
 long __stdcall c_hooks::hk_reset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params) noexcept
 {
 	ImGui_ImplDX9_InvalidateDeviceObjects();
-	return g_sdk.m_hooks_data.m_originals.m_reset(device, params);
+	const auto og = g_sdk.m_hooks_data.m_originals.m_reset(device, params);
+	ImGui_ImplDX9_CreateDeviceObjects();
+
+	return og;
 }
 
 void __stdcall c_hooks::hk_lock_cursor() noexcept
@@ -153,11 +150,11 @@ void __stdcall c_hooks::hk_create_move(int sequence, float frame_time, bool is_a
 	g_sdk.m_packet_data.m_send_packet = true /*frame_time == 0.0f*/;
 
 	c_movement::get()->bunny_hop();
-
 	c_engine_prediction::get()->setup();
 	c_engine_prediction::get()->begin();
 	{
 		c_anti_aimbot::get()->init();
+		//c_ragebot::get()->init();
 	}
 	c_engine_prediction::get()->end();
 
@@ -190,20 +187,12 @@ void __fastcall c_hooks::hk_paint_traverse(void* ecx, void* edx, vgui::vpanel pa
 			panel_id = panel;
 	}
 
-	static int old_width = 0, old_height = 0;
-	static int width, height;
-
-	g_sdk.m_interfaces.m_engine->get_screen_size(width, height);
-
-	if (width != old_width || height != old_height)
-	{
-		old_width = width;
-		old_height = height;
-		c_render::get()->init();
-	}
-
 	if (panel_id == panel)
 	{
-		c_player_esp::get()->draw();
+		c_render::get()->begin();
+		{
+			c_player_esp::get()->draw();
+		}
+		c_render::get()->end();
 	}
 }

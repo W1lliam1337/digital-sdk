@@ -180,7 +180,7 @@ public:
 		*this = normalized();
 	}
 
-	[[nodiscard]] vec3_t normalized() const
+	vec3_t normalized()
 	{
 		vec3_t res = *this;
 		if (const float l = res.length(); l != 0.0f)

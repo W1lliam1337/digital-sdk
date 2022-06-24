@@ -2,14 +2,14 @@
 
 void c_anti_aimbot::init()
 {
-	if (dont_can_work())
+	if (cant_work())
 		return;
 
 	pitch();
 	yaw();
 }
 
-bool c_anti_aimbot::dont_can_work()
+bool c_anti_aimbot::cant_work()
 {
 	if (!g_cfg.m_anti_aim.m_enable)
 		return true;
@@ -30,13 +30,13 @@ bool c_anti_aimbot::dont_can_work()
 	if (!g_sdk.m_local()->get_active_weapon())
 		return true;
 
-	if (g_sdk.m_packet_data.m_cmd->m_buttons & IN_ATTACK && g_sdk.m_local()->get_active_weapon()->get_idx() != weapon_revolver)
+	if (g_sdk.m_packet_data.m_cmd->m_buttons & in_attack && g_sdk.m_local()->get_active_weapon()->get_idx() != weapon_revolver)
 		return true;
 
-	if ((g_sdk.m_packet_data.m_cmd->m_buttons & IN_ATTACK || g_sdk.m_packet_data.m_cmd->m_buttons & IN_ATTACK2) && g_sdk.m_local()->get_active_weapon()->is_knife())
+	if ((g_sdk.m_packet_data.m_cmd->m_buttons & in_attack || g_sdk.m_packet_data.m_cmd->m_buttons & in_attack2) && g_sdk.m_local()->get_active_weapon()->is_knife())
 		return true;
 
-	if (g_sdk.m_packet_data.m_cmd->m_buttons & IN_USE)
+	if (g_sdk.m_packet_data.m_cmd->m_buttons & in_use)
 		return true;
 
 	if (g_sdk.m_local()->is_defusing())

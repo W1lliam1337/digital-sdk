@@ -39,7 +39,7 @@ public:
 	virtual void add_line_overlay_alpha(const vec3_t& origin, const vec3_t& dest, int r, int g, int b, int a,
 		bool noDepthTest, float duration) = 0;
 	virtual void add_box_overlay2(const vec3_t& origin, const vec3_t& mins, const vec3_t& max, const vec3_t& orientation,
-		color faceColor, color edgeColor, float duration) = 0;
+		c_color faceColor, c_color edgeColor, float duration) = 0;
 	virtual void add_line_overlay(const vec3_t& origin, const vec3_t& dest, int r, int g, int b, int a, float, float) = 0;
 	virtual void purge_text_overlays() = 0;
 	virtual void add_capsule_overlay(const vec3_t& mins, const vec3_t& max, float& radius, int r, int g, int b, int a,

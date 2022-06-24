@@ -88,31 +88,40 @@ public:
 	GET_NETVAR(qangle_t, get_view_punch, _("DT_BasePlayer"), _("m_viewPunchAngle"));
 	GET_NETVAR(qangle_t, get_punch, _("DT_BasePlayer"), _("m_aimPunchAngle"));
 	GET_NETVAR(c_handle < c_weapon >, get_active_weapon_handle, _("DT_BaseCombatCharacter"), _("m_hActiveWeapon"));
+	GET_NETVAR(bool, has_heavy_armor, _("DT_CSPlayer"), _("m_bHasHeavyArmor"));
+	GET_NETVAR(bool, has_helmet, _("DT_CSPlayer"), _("m_bHasHelmet"));
+	GET_NETVAR(int, get_armour_value, _("DT_CSPlayer"), _("m_ArmorValue"));
+	GET_OFFSET(get_take_damage, int, 0x280);
 
-	[[nodiscard]] c_weapon* get_active_weapon() const;
+	c_weapon* get_active_weapon() const;
 	void invalidate_bone_cache();
 	vec3_t& get_abs_origin();
 	bool is_weapon();
 	bool is_player();
+	unsigned int physics_solid_mask_for_entity();
 	void get_think();
 	void get_pre_think();
 	void set_sequence(int flag);
 	void studio_frame_advance();
 	void update_collistion_bounds();
 	void update_client_side_animations();
-	vec3_t get_eye_pos();
+	vec3_t& get_eye_pos();
+	int is_max_health();
+	const char* get_classname();
 	void invalidate_physics_recursive(int flag);
 	void select_item(const char* string, int sub_type);
 	void physics_simulated_entites();
 	void post_think();
-	animstate_t* get_anim_state();
+	c_animstate* get_anim_state();
 	animlayer_t* get_anim_layers();
 	int get_sequence_activity(int sequence);
 	bool using_standard_weapons_in_vehicle();
+	bool is_breakable();
 	bool post_think_v_physics();
 	bool is_alive();
 	bool physics_run_think(int index);
 	vec3_t get_shoot_pos();
+	vec3_t get_hitbox_pos(int hitbox_id);
 };
 
 class c_base_attributable_item : public c_base_entity
@@ -123,7 +132,7 @@ public:
 	GET_NETVAR(int, get_original_owner_xuid_high, _("DT_BaseAttributableItem"), _("m_OriginalOwnerXuidHigh"));
 	GET_NETVAR(int, get_fallback_stat_trak, _("DT_BaseAttributableItem"), _("m_nFallbackStatTrak"));
 	GET_NETVAR(int, get_fallback_paint_kit, _("DT_BaseAttributableItem"), _("m_nFallbackPaintKit"));
-	GET_NETVAR(int, get_nFallbackSeed, _("DT_BaseAttributableItem"), _("m_nFallbackSeed"));
+	GET_NETVAR(int, get_fallback_seed, _("DT_BaseAttributableItem"), _("m_nFallbackSeed"));
 	GET_NETVAR(float, get_fallback_wear, _("DT_BaseAttributableItem"), _("m_flFallbackWear"));
 	GET_NETVAR(bool, is_initialized, _("DT_BaseAttributableItem"), _("m_bInitialized"));
 	GET_NETVAR(int, get_entity_level, _("DT_BaseAttributableItem"), _("m_iEntityLevel"));
@@ -138,7 +147,7 @@ public:
 class c_weapon : public c_base_attributable_item
 {
 public:
-	GET_NETVAR(float, m_flLastShotTime, _("DT_WeaponCSBase"), _("m_fLastShotTime"));
+	GET_NETVAR(float, get_last_shot_time, _("DT_WeaponCSBase"), _("m_fLastShotTime"));
 	GET_NETVAR(int, get_ammo, _("DT_BaseCombatWeapon"), _("m_iClip1"));
 	GET_NETVAR(c_base_handle, get_owner, _("DT_BaseCombatWeapon"), _("m_hOwner"));
 	GET_NETVAR(c_base_handle, get_weapon_world_model, _("DT_BaseCombatWeapon"), _("m_hWeaponWorldModel"));
@@ -149,14 +158,14 @@ public:
 	GET_NETVAR(float, get_throw_time, _("DT_BaseCSGrenade"), _("m_fThrowTime"));
 	GET_NETVAR(int, get_zoom_level, _("DT_WeaponCSBaseGun"), _("m_zoomLevel"));
 	GET_NETVAR(float, get_post_pone_fire_ready_time, _("DT_WeaponCSBase"), _("m_flPostponeFireReadyTime"));
-	GET_NETVAR(float, m_flRecoilIndex, _("DT_WeaponCSBase"), _("m_flRecoilIndex"));
-	GET_NETVAR(float, m_fAccuracyPenalty, _("DT_WeaponCSBase"), _("m_fAccuracyPenalty"));
+	GET_NETVAR(float, get_recoil_index, _("DT_WeaponCSBase"), _("m_flRecoilIndex"));
+	GET_NETVAR(float, get_accuracy_penalty, _("DT_WeaponCSBase"), _("m_fAccuracyPenalty"));
 	GET_NETVAR(float, get_throw_strength, _("DT_BaseCSGrenade"), _("m_flThrowStrength"));
-	GET_OFFSET(m_hThrower, c_handle < c_base_player >, 0x29B0);
-	GET_DATAMAP(int, m_Activity);
+	GET_OFFSET(get_thrower, c_handle < c_base_player >, 0x29B0);
+	GET_DATAMAP(int, m_activity);
 
-	[[nodiscard]] std::string get_name() const;
-	[[nodiscard]] int get_weapon_type() const;
+	std::string get_name();
+	int get_weapon_type();
 
 	bool is_smg();
 	bool is_grenade();
@@ -169,5 +178,11 @@ public:
 	void update_accuracy_penalty();
 	float get_spread();
 	float get_inaccuracy();
-	[[nodiscard]] c_weapon_info* get_weapon_data() const;
+	c_weapon_info* get_weapon_data();
+};
+
+class c_breakable_surface : public c_base_entity, public i_breakable_with_prop_data
+{
+public:
+	GET_NETVAR(bool, is_broken, _("DT_BreakableSurface"), _("m_bIsBroken"));
 };

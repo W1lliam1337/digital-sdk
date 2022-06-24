@@ -4,3 +4,4 @@
 #include "visuals/player esp/player_esp.h"
 #include "antiaim/anti_aimbot.h"
 #include "ragebot/aimbot/aimbot.h"
+#include "autowall/autowall.h"

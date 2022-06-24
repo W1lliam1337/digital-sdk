@@ -1,32 +1,68 @@
 #pragma once
 
 #define MULTIPLAYER_BACKUP 150
-#define IN_ATTACK  (1 << 0)
-#define IN_JUMP   (1 << 1)
-#define IN_DUCK   (1 << 2)
-#define IN_FORWARD  (1 << 3)
-#define IN_BACK   (1 << 4)
-#define IN_USE   (1 << 5)
-#define IN_CANCEL  (1 << 6)
-#define IN_LEFT   (1 << 7)
-#define IN_RIGHT  (1 << 8)
-#define IN_MOVELEFT  (1 << 9)
-#define IN_MOVERIGHT (1 << 10)
-#define IN_ATTACK2  (1 << 11)
-#define IN_RUN   (1 << 12)
-#define IN_RELOAD  (1 << 13)
-#define IN_ALT1   (1 << 14)
-#define IN_ALT2   (1 << 15)
-#define IN_SCORE  (1 << 16)   // Used by client.dll for when scoreboard is held down
-#define IN_SPEED  (1 << 17) // Player is holding the speed key
-#define IN_WALK   (1 << 18) // Player holding walk key
-#define IN_ZOOM   (1 << 19) // Zoom key for HUD zoom
-#define IN_WEAPON1  (1 << 20) // weapon defines these bits
-#define IN_WEAPON2  (1 << 21) // weapon defines these bits
-#define IN_BULLRUSH  (1 << 22)
-#define IN_GRENADE1  (1 << 23) // grenade 1
-#define IN_GRENADE2  (1 << 24) // grenade 2
-#define IN_LOOKSPIN  (1 << 25)
+
+enum e_buttons : int {
+	in_attack = 1 << 0,
+	in_jump = 1 << 1,
+	in_duck = 1 << 2,
+	in_forward = 1 << 3,
+	in_back = 1 << 4,
+	in_use = 1 << 5,
+	in_cancel = 1 << 6,
+	in_left = 1 << 7,
+	in_right = 1 << 8,
+	in_moveleft = 1 << 9,
+	in_moveright = 1 << 10,
+	in_attack2 = 1 << 11,
+	in_run = 1 << 12,
+	in_reload = 1 << 13,
+	in_alt1 = 1 << 14,
+	in_alt2 = 1 << 15,
+	in_score = 1 << 16,
+	in_speed = 1 << 17,
+	in_walk = 1 << 18,
+	in_zoom = 1 << 19,
+	in_weapon1 = 1 << 20,
+	in_weapon2 = 1 << 21,
+	in_bullrush = 1 << 22,
+	in_grenade1 = 1 << 23,
+	in_grenade2 = 1 << 24,
+	in_lookspin = 1 << 25
+};
+
+enum e_chars
+{
+	char_tex_antlion = 'a',
+	char_tex_bloodyflesh = 'b',
+	char_tex_concrete = 'c',
+	char_tex_dirt = 'd',
+	char_tex_eggshell = 'e',
+	char_tex_flesh = 'f',
+	char_tex_grate = 'g',
+	char_tex_alienflesh = 'h',
+	char_tex_clip = 'i',
+	char_tex_plastic = 'l',
+	char_tex_metal = 'm',
+	char_tex_sand = 'n',
+	char_tex_foliage = 'o',
+	char_tex_computer = 'p',
+	char_tex_slosh = 's',
+	char_tex_tile = 't',
+	char_tex_cardboard = 'u',
+	char_tex_vent = 'v',
+	char_tex_wood = 'w',
+	char_tex_glass = 'y',
+	char_tex_warpshield = 'z',
+};
+
+enum e_team_id
+{
+	team_unassigned = 0,
+	team_spectator,
+	team_tt,
+	team_ct
+};
 
 enum e_life_state
 {
@@ -56,18 +92,44 @@ enum e_move_type
 
 enum e_flags
 {
-	fl_on_ground = (1 << 0),
-	fl_ducking = (1 << 1),
-	fl_water_jump = (1 << 2),
-	fl_on_train = (1 << 3),
-	fl_in_rain = (1 << 4),
-	fl_frozen = (1 << 5),
-	fl_at_controls = (1 << 6),
-	fl_client = (1 << 7),
-	fl_fake_client = (1 << 8),
+	fl_on_ground = 1 << 0,
+	fl_ducking = 1 << 1,
+	fl_water_jump = 1 << 2,
+	fl_on_train = 1 << 3,
+	fl_in_rain = 1 << 4,
+	fl_frozen = 1 << 5,
+	fl_at_controls = 1 << 6,
+	fl_client = 1 << 7,
+	fl_fake_client = 1 << 8,
 	max_entity_flags
 };
 
+enum e_collision_group
+{
+	collision_group_none = 0,
+	collision_group_debris,						// collides with nothing but world and static stuff
+	collision_group_debris_trigger,				// same as debris, but hits triggers
+	collision_group_interactive_debris,			// collides with everything except other interactive debris or debris
+	collision_group_interactive,				// collides with everything except interactive debris or debris
+	collision_group_player,
+	collision_group_breakable_glass,
+	collision_group_vehicle,
+	collision_group_player_movement,			// for HL2, same as Collision_Group_Player, for / TF2, this filters out other players and CBaseObjects
+	collision_group_npc,						// generic NPC group
+	collision_group_in_vehicle,					// for any entity inside a vehicle
+	collision_group_weapon,						// for any weapons that need collision detection
+	collision_group_vehicle_clip,				// vehicle clip brush to restrict vehicle movement
+	collision_group_projectile,					// projectiles!
+	collision_group_door_blocker,				// blocks entities not permitted to get near moving doors
+	collision_group_passable_door,				// doors that the player shouldn't collide with
+	collision_group_dissolving,					// things that are dissolving are in this group
+	collision_group_pushaway,					// nonsolid on client and server, pushaway in player code
+	collision_group_npc_actor,					// used so NPCs in scripts ignore the player.
+	collision_group_npc_scripted,				// used for NPCs in scripts that should not collide with each other
+	collision_group_pz_clip,
+	collision_group_debris_block_projectile,	// only collides with bullets
+	last_shared_collision_group
+};
 
 enum e_idx : short
 {

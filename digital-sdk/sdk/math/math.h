@@ -21,9 +21,10 @@ public:
 	static float normalize_yaw(float yaw);
 	static float angle_diff(const float dest_angle, const float src_angle);
 	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst) const;
+	static void vector_angles(const vec3_t& forward, qangle_t& view);
 	static void vector_angles(const vec3_t& forward, const vec3_t& up, qangle_t& angles);
 	void sin_cos(float radians, float* sine, float* cosine) const;
-	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) const;
+	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right = nullptr, vec3_t* up = nullptr) const;
 	static bool screen_transform(const vec3_t& in, vec3_t& out);
 	static bool world_to_screen(const vec3_t& in, vec3_t& out);
 };

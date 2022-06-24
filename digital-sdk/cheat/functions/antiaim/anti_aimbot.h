@@ -30,6 +30,6 @@ public:
 	void init();
 	static void pitch();
 	void yaw();
-	static bool dont_can_work();
+	static bool cant_work();
 };
 

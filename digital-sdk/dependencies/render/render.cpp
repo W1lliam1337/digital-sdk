@@ -1,83 +1,189 @@
 #include "render.h"
 #include "../../sdk/sdk.hpp"
+#include "fonts/esp_font.h"
+#include "../imgui/imgui_freetype.h"
 
-void c_render::init() const
+void c_render::init()
 {
-	static auto create_font = [](const char* name, const int size, const int weight, const DWORD flags) -> vgui::h_font
-	{
-		const auto font = g_sdk.m_interfaces.m_surface->font_create();
-		g_sdk.m_interfaces.m_surface->set_font_glyph(font, name, size, weight, NULL, NULL, flags);
+	ImGui::CreateContext();
+	m_draw_list = new ImDrawList(ImGui::GetDrawListSharedData());
+	m_draw_list_act = new ImDrawList(ImGui::GetDrawListSharedData());
+	m_draw_list_rendering = new ImDrawList(ImGui::GetDrawListSharedData());
 
-		return font;
+	ImFontConfig cfg;
+	cfg.PixelSnapH = false;
+	cfg.OversampleH = 5;
+	cfg.OversampleV = 5;
+	cfg.RasterizerMultiply = 1.2f;
+
+	static const ImWchar ranges[] =
+	{
+		0x0020, 0x00FF, // Basic Latin + Latin Supplement
+		0x0400, 0x052F, // Cyrillic + Cyrillic Supplement
+		0x2DE0, 0x2DFF, // Cyrillic Extended-A
+		0xA640, 0xA69F, // Cyrillic Extended-B
+		0xE000, 0xE226, // icons
+		0,
 	};
 
-	g_sdk.m_fonts.m_esp = create_font(_("Verdana"), 12, FW_NORMAL, fontflag_antialias | fontflag_dropshadow);
+	cfg.GlyphRanges = ranges;
+
+	g_sdk.m_fonts.m_esp = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+		roboto_medium_compressed_data,
+		roboto_medium_compressed_size,
+		12.f,
+		&cfg, ranges);
+
+	ImGui::GetIO().Fonts->AddFontDefault();
+	ImGuiFreeType::BuildFontAtlas(ImGui::GetIO().Fonts, 0x00);
 }
 
-void c_render::line(const vector_2d& v0, const vector_2d& v1, const color color) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_line(v0.x, v0.y, v1.x, v1.y);
-}
-
-void c_render::line(const int x0, const int y0, const int x1, const int y1, const color color) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_line(x0, y0, x1, y1);
-}
-
-void c_render::rect(const int x, const int y, const int w, const int h, const color color) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_outlined_rect(x, y, x + w, y + h);
-}
-
-void c_render::rect_filled(const int x, const int y, const int w, const int h, const color color) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_filled_rectangle(x, y, x + w, y + h);
-}
-
-void c_render::rect_filled_fade(const int x, const int y, const int w, const int h, const color color, const int a1, const int a2) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_filled_rect_fade(x, y, x + w, y + h, a1, a2, false);
-}
-
-void c_render::rect_outlined(const int x, const int y, const int w, const int h, const color color1, const color color2) {
-	rect(x, y, w, h, color1);
-	rect(x - 1, y - 1, w + 2, h + 2, color2);
-	rect(x + 1, y + 1, w - 2, h - 2, color2);
-}
-
-void c_render::gradient(const int x, const int y, const int w, const int h, const color color1, const color color2) {
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color1);
-	g_sdk.m_interfaces.m_surface->draw_filled_rect_fade(x, y, x + w, y + h, color1.a(), 0, false);
-
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color2);
-	g_sdk.m_interfaces.m_surface->draw_filled_rect_fade(x, y, x + w, y + h, 0, color2.a(), false);
-}
-
-void c_render::text(const vgui::h_font font, int x, int y, const color color, DWORD flags, const char* msg, ...)
+void c_render::begin() const
 {
-	va_list va_alist;
-	char buffer[1024];
-	va_start(va_alist, msg);
-	_vsnprintf(buffer, sizeof(buffer), msg, va_alist);
-	va_end(va_alist);
-	wchar_t wbuf[1024];
+	m_draw_list->Clear();
+	m_draw_list->PushClipRectFullScreen();
+}
 
-	MultiByteToWideChar(CP_UTF8, 0, buffer, 256, wbuf, 256);
+void c_render::end()
+{
+	m_render_mutex.lock();
+	*m_draw_list_act = *m_draw_list;
+	m_render_mutex.unlock();
+}
 
-	int width, height;
-	g_sdk.m_interfaces.m_surface->get_text_size(font, wbuf, width, height);
+void c_render::clear_draw_list() {
+	m_render_mutex.lock();
+	m_draw_list_act->Clear();
+	m_render_mutex.unlock();
+}
 
-	if (!(flags & hfont_centered_none))
-	{
-		if (flags & hfont_centered_x)
-			x -= width * 0.5f;
+ImDrawList* c_render::render_scene() {
 
-		if (flags & hfont_centered_y)
-			y -= height * 0.5f;
+	if (m_render_mutex.try_lock()) {
+		*m_draw_list_rendering = *m_draw_list_act;
+		m_render_mutex.unlock();
 	}
 
-	g_sdk.m_interfaces.m_surface->draw_text_font(font);
-	g_sdk.m_interfaces.m_surface->set_drawing_color(color);
-	g_sdk.m_interfaces.m_surface->draw_text_pos(x, y);
-	g_sdk.m_interfaces.m_surface->draw_render_text(wbuf, wcslen(wbuf));
+	return m_draw_list_rendering;
+}
+
+void c_render::rect(const float x1, const float y1, const float x2, const float y2, const c_color color, const float thickness, const float rounding) const
+{
+	m_draw_list->AddRect(ImVec2(x1, y1), ImVec2(x2, y2), get_u32(color), rounding, 15, thickness);
+}
+
+void c_render::rect_filled(const float x1, const float y1, const float x2, const float y2, const c_color color) const
+{
+	m_draw_list->AddRectFilled(ImVec2(x1, y1), ImVec2(x2, y2), get_u32(color), 0.0f);
+}
+
+void c_render::circle_2d(const vec3_t position, const int point_count, const float radius, const c_color color) const
+{
+	auto screen_position = vec3_t(0, 0, 0);
+	if (g_sdk.m_interfaces.m_debug_overlay->screen_position(position, screen_position))
+		return;
+
+	m_draw_list->AddCircle(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
+}
+
+void c_render::circle_2d_filled(const vec3_t position, const int point_count, const float radius, const c_color color) const
+{
+	auto screen_position = vec3_t(0, 0, 0);
+	if (g_sdk.m_interfaces.m_debug_overlay->screen_position(position, screen_position))
+		return;
+
+	m_draw_list->AddCircleFilled(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
+}
+
+void c_render::circle_3d(const vec3_t position, const int point_count, const float radius, const c_color color) const
+{
+	const float fl_step = 3.14159265358979323846f * 2.0f / static_cast<float>(point_count);
+	for (float a = 0; a < 3.14159265358979323846f * 2.0f; a += fl_step)
+	{
+		auto start = vec3_t(radius * cosf(a) + position.x, radius * sinf(a) + position.y, position.z);
+		auto end = vec3_t(radius * cosf(a + fl_step) + position.x, radius * sinf(a + fl_step) + position.y,
+			position.z);
+
+		vec3_t start_2d, end_2d;
+		if (g_sdk.m_interfaces.m_debug_overlay->screen_position(start, start_2d) 
+			|| g_sdk.m_interfaces.m_debug_overlay->screen_position(end, end_2d))
+			return;
+
+		line(start_2d.x, start_2d.y, end_2d.x, end_2d.y, color, 1.0f);
+	}
+}
+
+void c_render::circle_3d_filled(const vec3_t& origin, const float radius, const c_color color) const
+{
+	static auto previous_screen_pos = vec3_t(0, 0, 0);
+	static float step = 3.14159265358979323846f * 2.0f / 72.0f;
+
+	auto screen_position = vec3_t(0, 0, 0);
+	if (g_sdk.m_interfaces.m_debug_overlay->screen_position(origin, screen_position))
+		return;
+
+	for (float rotation = 0.0f; rotation <= 3.14159265358979323846f * 2.0f; rotation += step)
+	{
+		auto world_position = vec3_t(radius * cos(rotation) + origin.x,
+			radius * sin(rotation) + origin.y, origin.z);
+
+		if (g_sdk.m_interfaces.m_debug_overlay->screen_position(world_position, screen_position))
+			continue;
+
+		line(previous_screen_pos.x, previous_screen_pos.y, screen_position.x, screen_position.y, color,
+			1.0f);
+		triangle
+		(
+			ImVec2(screen_position.x, screen_position.y),
+			ImVec2(screen_position.x, screen_position.y),
+			ImVec2(previous_screen_pos.x, previous_screen_pos.y),
+			c_color(color.r(), color.g(), color.b(), color.a() / 2)
+		);
+
+		previous_screen_pos = screen_position;
+	}
+}
+
+void c_render::line(const float x1, const float y1, const float x2, const float y2, const c_color color, const float thickness) const
+{
+	m_draw_list->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), get_u32(color), thickness);
+}
+
+void c_render::triangle(const ImVec2 first, const ImVec2 second, const ImVec2 third, const c_color color) const
+{
+	m_draw_list->AddTriangleFilled(first, second, third, get_u32(color));
+}
+
+void c_render::text(const ImFont* font, ImVec2 text_position, const std::string& text, const c_color color, const bool centered,
+	const bool outline, const bool menu)
+{
+	const ImVec2 im_text_size = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.0f, text.c_str());
+	if (!font->ContainerAtlas)
+		return;
+
+	ImDrawList* old_draw_list = m_draw_list;
+	if (menu)
+		m_draw_list = ImGui::GetOverlayDrawList();
+
+	m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
+	if (centered)
+		text_position.x -= im_text_size.x / 2.0f;
+
+	if (outline)
+	{
+		m_draw_list->AddText(font, font->FontSize, ImVec2(text_position.x + 1, text_position.y + 1),
+			get_u32(c_color(30, 30, 36, color.a())), text.c_str());
+		m_draw_list->AddText(font, font->FontSize, ImVec2(text_position.x - 1, text_position.y - 1),
+			get_u32(c_color(30, 30, 36, color.a())), text.c_str());
+		m_draw_list->AddText(font, font->FontSize, ImVec2(text_position.x + 1, text_position.y - 1),
+			get_u32(c_color(30, 30, 36, color.a())), text.c_str());
+		m_draw_list->AddText(font, font->FontSize, ImVec2(text_position.x - 1, text_position.y + 1),
+			get_u32(c_color(30, 30, 36, color.a())), text.c_str());
+	}
+
+	m_draw_list->AddText(font, font->FontSize, text_position, get_u32(color), text.c_str());
+	m_draw_list->PopTextureID();
+
+	if (menu)
+		m_draw_list = old_draw_list;
 }
