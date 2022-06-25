@@ -35,6 +35,11 @@ public:
 		return call_vfunc< bool(__thiscall*)(void*, int, player_info_t*) >(this, 8)(this, ent_num, info);
 	}
 
+	int get_player_for_user_id(const int user_id) 
+	{
+		return call_vfunc<int(__thiscall*)(void*, int)>(this, 9)(this, user_id);
+	}
+
 	bool con_is_visible()
 	{
 		return call_vfunc< bool(__thiscall*)(void*) >(this, 11)(this);

@@ -23,20 +23,20 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{5dd078a2-39e2-417e-8d21-82e96a117e7a}</ProjectGuid>
     <RootNamespace>csgosdk</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -195,6 +195,8 @@
     <ClCompile Include="dependencies\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="dependencies\render\render.cpp" />
+    <ClCompile Include="cheat\functions\misc\events\events.cpp" />
+    <ClCompile Include="cheat\functions\misc\logs system\logs.cpp" />
     <ClCompile Include="sdk\math\math.cpp" />
     <ClCompile Include="dependencies\config manager\config_manager.cpp" />
     <ClCompile Include="sdk\utils\handle\base_handle.cpp" />
@@ -314,7 +316,10 @@
     <ClInclude Include="dependencies\freetype\headers\tttags.h" />
     <ClInclude Include="dependencies\freetype\headers\ttunpat.h" />
     <ClInclude Include="dependencies\imgui\imgui_freetype.h" />
+    <ClInclude Include="cheat\functions\misc\events\events.h" />
+    <ClInclude Include="cheat\functions\misc\logs system\logs.h" />
     <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_event_manager.h" />
     <ClInclude Include="sdk\interfaces\classes\i_multiplayer_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_convar.h" />

@@ -48,6 +48,9 @@ void c_interfaces::init() const
 	g_sdk.m_interfaces.m_trace = static_cast<c_engine_trace*>(this->get_interface(
 		g_sdk.m_modules.m_engine_dll, _("EngineTraceClient004")));
 
+	g_sdk.m_interfaces.m_event_manager = static_cast<i_game_event_manager*>(this->get_interface(
+		g_sdk.m_modules.m_engine_dll, _("GAMEEVENTSMANAGER002")));
+
 	g_sdk.m_interfaces.m_input = *reinterpret_cast<i_input**>(c_utils::find_sig(
 		g_sdk.m_modules.m_client_dll, _("B9 ? ? ? ? F3 0F 11 04 24 FF 50 10"))
 		+ 0x1);

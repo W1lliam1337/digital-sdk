@@ -283,3 +283,41 @@ public:
 	float m_max_pitch; //0x0338 
 	float m_min_pitch; //0x033C
 };
+
+class c_bone_accressor
+{
+public:
+	matrix_t* GetBoneArrayForWrite()
+	{
+		return m_aBoneArray;
+	}
+
+	void SetBoneArrayForWrite(matrix_t* bone_array)
+	{
+		m_aBoneArray = bone_array;
+	}
+
+	int GetReadableBones()
+	{
+		return m_ReadableBones;
+	}
+
+	void SetReadableBones(int flags)
+	{
+		m_ReadableBones = flags;
+	}
+
+	int GetWritableBones()
+	{
+		return m_WritableBones;
+	}
+
+	void SetWritableBones(int flags)
+	{
+		m_WritableBones = flags;
+	}
+
+	alignas(16) matrix_t* m_aBoneArray;
+	int m_ReadableBones;
+	int m_WritableBones;
+};

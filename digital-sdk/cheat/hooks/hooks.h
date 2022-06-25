@@ -24,6 +24,7 @@ class c_hooks : public c_singleton<c_hooks>
 	static long __stdcall hk_wnd_proc(HWND window, UINT msg, WPARAM wparm, LPARAM lparm) noexcept;
 	static void __stdcall hk_lock_cursor() noexcept;
 	static void __fastcall hk_paint_traverse(void* ecx, void* edx, unsigned panel, bool force_repaint, bool allow_force);
+	static  void __fastcall hk_frame_stage_notify(void* ecx, void* edx, int stage);
 public:
 	static void init();
 	static void init_wnd_proc();

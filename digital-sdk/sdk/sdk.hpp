@@ -59,6 +59,7 @@
 #include "interfaces/classes/i_engine_trace.h"
 #include "interfaces/classes/i_multiplayer_physics.h"
 #include "interfaces/classes/i_breakable_with_prop_data.h"
+#include "interfaces/classes/i_event_manager.h"
 #include "entity/enums.h"
 #include "entity/classes.h"
 #include "entity/entity.h"
@@ -76,6 +77,7 @@ using present_t = long (__stdcall*)(IDirect3DDevice9*, const RECT*, const RECT*,
 using reset_t = long(__stdcall*)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
 using lock_cursor_t = void(__thiscall*)(void*);
 using paint_traverse_t = void(__thiscall*)(void*, vgui::vpanel, bool, bool);
+using fsn_t = void(__thiscall*)(void*, int);
 
 class c_sdk
 {
@@ -94,6 +96,12 @@ public:
 		c_base_player* m_player{};
 	}m_rage_data{};
 
+	struct m_player_data_t
+	{
+		bool m_anim_update{};
+		bool m_setup_bones{};
+	}m_player_data{};
+
 	struct m_legit_data_t
 	{
 		
@@ -108,6 +116,7 @@ public:
 	struct fonts_t
 	{
 		ImFont* m_esp{};
+		ImFont* m_logs{};
 		std::string m_last_font_name;
 	}m_fonts{};
 
@@ -131,6 +140,7 @@ public:
 		i_cvar* m_cvar{};
 		i_physics_surface_props* m_physics_surface_props{};
 		c_engine_trace* m_trace{};
+		i_game_event_manager* m_event_manager{};
 	}m_interfaces{};
 
 	struct m_module_list_t
@@ -161,6 +171,7 @@ public:
 			lock_cursor_t m_lock_cursor{};
 			WNDPROC m_wnd_proc{};
 			paint_traverse_t m_paint_traverse{};
+			fsn_t m_frame_stage_notify{};
 		}m_originals{};
 	}m_hooks_data{};
 
@@ -178,8 +189,11 @@ public:
 	[[nodiscard]] c_base_player* m_local() const;
 };
 
-inline c_base_player* c_sdk::m_local() const
+__forceinline c_base_player* c_sdk::m_local() const
 {
+	if (!m_interfaces.m_entity_list || !m_interfaces.m_engine)
+		return nullptr;
+
 	const auto local_player = reinterpret_cast<c_base_player*>(m_interfaces.m_entity_list->get_client_entity(m_interfaces.m_engine->get_local_player()));
 	if (!local_player)
 		return nullptr;
@@ -187,7 +201,7 @@ inline c_base_player* c_sdk::m_local() const
 	return local_player;
 }
 
-#define TIME_TO_TICKS(time) ((int)(0.5f + (float)((time)) / g_sdk.m_interfaces.m_globals->m_interval_per_tick))
-#define TICKS_TO_TIME(tick) (float)((tick ) * g_sdk.m_interfaces.m_globals->m_interval_per_tick)
+#define TIME_TO_TICKS(time_) ((int)(0.5f + (float)((time_)) / g_sdk.m_interfaces.m_globals->m_interval_per_tick))
+#define TICKS_TO_TIME(tick) (float)((tick) * g_sdk.m_interfaces.m_globals->m_interval_per_tick)
 
 inline c_sdk g_sdk = c_sdk();

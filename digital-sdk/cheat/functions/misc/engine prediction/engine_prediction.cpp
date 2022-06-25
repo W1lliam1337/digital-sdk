@@ -96,6 +96,12 @@ void c_engine_prediction::begin()
 
 void c_engine_prediction::end() const
 {
+	if (!m_prediction_player || !m_prediction_seed)
+		return;
+
+	if (!(*reinterpret_cast<c_user_cmd**>(reinterpret_cast<uintptr_t>(g_sdk.m_local()) + 0x3348)))
+		return;
+
 	/* restore globals to backup data */
 	g_sdk.m_interfaces.m_globals->m_current_time = m_backup_data.m_current_time;
 	g_sdk.m_interfaces.m_globals->m_frame_time = m_backup_data.m_frame_time;

@@ -76,22 +76,26 @@ public:
 	GET_NETVAR(c_handle < c_base_player >, get_vehicle, _("DT_BasePlayer"), _("m_hVehicle"));
 	GET_NETVAR(int, get_life_state, _("DT_BasePlayer"), _("m_lifeState"));
 	GET_NETVAR(float, get_duck_amount, _("DT_BasePlayer"), _("m_flDuckAmount"));
+	GET_NETVAR(float, get_lby, _("DT_BasePlayer"), _("m_flLowerBodyYawTarget"));
 	GET_NETVAR(bit_flag_t<int>, get_flags, _("DT_BasePlayer"), _("m_fFlags"));
 	GET_NETVAR(bool, is_defusing, _("DT_BasePlayer"), _("m_bIsDefusing"));
 	GET_NETVAR(int, get_sequence, _("DT_BasePlayer"), _("m_nSequence"));
 	GET_NETVAR(int, get_health, _("DT_BasePlayer"), _("m_iHealth"));
 	GET_NETVAR(int, get_tick_base, _("DT_BasePlayer"), _("m_nTickBase"));
+	GET_NETVAR(bit_flag_t<int>, get_effects, _("DT_BasePlayer"), _("m_fEffects"));
 	GET_NETVAR(int, get_observer_mode, _("DT_BasePlayer"), _("m_iObserverMode"));
 	GET_NETVAR(float, get_fall_velocity, _("DT_BasePlayer"), _("m_flFallVelocity"));
 	GET_NETVAR(vec3_t, get_view_origin, _("DT_BasePlayer"), _("m_vecViewOffset[0]"));
 	GET_NETVAR(vec3_t, get_velocity, _("DT_BasePlayer"), _("m_vecVelocity[0]"));
 	GET_NETVAR(qangle_t, get_view_punch, _("DT_BasePlayer"), _("m_viewPunchAngle"));
 	GET_NETVAR(qangle_t, get_punch, _("DT_BasePlayer"), _("m_aimPunchAngle"));
+	GET_NETVAR(qangle_t, get_eye_angles, _("DT_CSPlayer"), _("m_angEyeAngles[0]"));
 	GET_NETVAR(c_handle < c_weapon >, get_active_weapon_handle, _("DT_BaseCombatCharacter"), _("m_hActiveWeapon"));
 	GET_NETVAR(bool, has_heavy_armor, _("DT_CSPlayer"), _("m_bHasHeavyArmor"));
 	GET_NETVAR(bool, has_helmet, _("DT_CSPlayer"), _("m_bHasHelmet"));
 	GET_NETVAR(int, get_armour_value, _("DT_CSPlayer"), _("m_ArmorValue"));
 	GET_OFFSET(get_take_damage, int, 0x280);
+	GET_OFFSET(get_bone_accessor, c_bone_accressor, 0x26A8);
 
 	c_weapon* get_active_weapon() const;
 	void invalidate_bone_cache();
@@ -114,6 +118,8 @@ public:
 	void post_think();
 	c_animstate* get_anim_state();
 	animlayer_t* get_anim_layers();
+	CUtlVector<matrix_t>& get_bone_cache();
+	void set_abs_origin(vec3_t position);
 	int get_sequence_activity(int sequence);
 	bool using_standard_weapons_in_vehicle();
 	bool is_breakable();

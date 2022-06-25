@@ -10,12 +10,14 @@ void c_hooks::init()
 	init_wnd_proc();
 
 	const auto create_move = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_client))[22]);
+	const auto frame_stage_notify = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_client))[37]);
 	const auto reset = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_direct_device))[16]);
 	const auto present = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_direct_device))[17]);
 	const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_surface))[67]);
 	const auto paint_traverse = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_panel))[41]);
 
 	HOOK(create_move, hk_create_move_proxy, g_sdk.m_hooks_data.m_originals.m_create_move);
+	HOOK(frame_stage_notify, hk_frame_stage_notify, g_sdk.m_hooks_data.m_originals.m_frame_stage_notify);
 	HOOK(reset, hk_reset, g_sdk.m_hooks_data.m_originals.m_reset);
 	HOOK(present, hk_present, g_sdk.m_hooks_data.m_originals.m_present);
 	HOOK(lock_cursor, hk_lock_cursor, g_sdk.m_hooks_data.m_originals.m_lock_cursor);
@@ -191,8 +193,38 @@ void __fastcall c_hooks::hk_paint_traverse(void* ecx, void* edx, vgui::vpanel pa
 	{
 		c_render::get()->begin();
 		{
+			c_logs::get()->instance();
 			c_player_esp::get()->draw();
 		}
 		c_render::get()->end();
+	}
+}
+
+void __fastcall c_hooks::hk_frame_stage_notify(void* ecx, void* edx, int stage)
+{
+	if (!g_sdk.m_local() || !g_sdk.m_local()->is_alive())
+		return g_sdk.m_hooks_data.m_originals.m_frame_stage_notify(ecx, stage);
+
+	g_sdk.m_hooks_data.m_originals.m_frame_stage_notify(ecx, stage);
+
+	switch (stage)
+	{
+	case frame_start:
+		break;
+	case frame_net_update_start:
+		break;
+	case frame_net_update_postdataupdate_start:
+		break;
+	case frame_net_update_postdataupdate_end:
+		break;
+	case frame_net_update_end:
+		/* @ref: https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/client/cdll_client_int.cpp#L2153 */
+		//c_player_lagcomp::get()->on_frame();
+		break;
+	case frame_render_end:
+		break;
+	case frame_render_start:
+		break;
+	default: break;
 	}
 }

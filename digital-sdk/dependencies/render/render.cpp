@@ -34,6 +34,12 @@ void c_render::init()
 		12.f,
 		&cfg, ranges);
 
+	g_sdk.m_fonts.m_logs = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+		roboto_medium_compressed_data,
+		roboto_medium_compressed_size,
+		15.f,
+		&cfg, ranges);
+
 	ImGui::GetIO().Fonts->AddFontDefault();
 	ImGuiFreeType::BuildFontAtlas(ImGui::GetIO().Fonts, 0x00);
 }

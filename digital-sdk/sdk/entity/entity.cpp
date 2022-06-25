@@ -361,6 +361,17 @@ animlayer_t* c_base_player::get_anim_layers()
 	return *reinterpret_cast<animlayer_t**>(reinterpret_cast<DWORD>(this) + 0x2990);
 }
 
+CUtlVector <matrix_t>& c_base_player::get_bone_cache() {
+	static auto sig = *reinterpret_cast<DWORD*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("FF B7 ?? ?? ?? ?? 52")) + 0x2) + 0x4;
+	return *reinterpret_cast<CUtlVector<matrix_t>*>(reinterpret_cast<uintptr_t>(this) + sig);
+}
+
+void c_base_player::set_abs_origin(vec3_t position) {
+
+	static auto set_position_fn = reinterpret_cast<void(__thiscall*)(void*, const vec3_t&)>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8")));
+	set_position_fn(this, position);
+}
+
 int c_base_player::get_sequence_activity(const int sequence)
 {
 	if (!this)

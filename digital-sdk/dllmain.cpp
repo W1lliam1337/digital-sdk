@@ -5,6 +5,7 @@
 #include "cheat/hooks/hooks.h"
 #include "dependencies/config manager/config_manager.h"
 #include "dependencies/render/render.h"
+#include "cheat/functions/misc/events/events.h"
 
 int instance()
 {
@@ -42,6 +43,9 @@ int instance()
 
 	printf(_("init hooks...\n"));
 	c_hooks::get()->init();
+
+	printf(_("init events...\n"));
+	g_events.init();
 
 	FreeConsole();
 	return EXIT_SUCCESS;
