@@ -38,7 +38,7 @@ enum e_enum;
 - anti-aimbot (yaw and pitch modifiers)
 - player esp (box, name, health bar and text)
 - bunnyhop
-- logs system
+- log system
 #
 
 # hooks
