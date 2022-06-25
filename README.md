@@ -38,13 +38,16 @@ enum e_enum;
 - anti-aimbot (yaw and pitch modifiers)
 - player esp (box, name, health bar and text)
 - bunnyhop
+- logs system
 #
+
 # hooks
 - createmove
 - reset
 - present
 - lock cursor
 - paint traverse
+- frame stage notify
 #
 
 ![App menu](https://i.imgur.com/nHQW7MP.png)
