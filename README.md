@@ -1,3 +1,6 @@
+![Downloads](https://img.shields.io/github/downloads/W1lliam1337/digital-sdk/total?logoColor=%239774c4&style=plastic)
+![UNDETECTED](https://img.shields.io/badge/-undetect-%239774c4)
+
 # digital-sdk
 
 # language 
