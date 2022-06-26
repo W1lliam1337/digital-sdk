@@ -1,12 +1,6 @@
 #pragma once
 #include "../sdk/sdk.hpp"
 
-struct key_bind_t
-{
-	int m_mode_selected = 0;
-	int m_key_selected = 0;
-};
-
 class c_utils : public c_singleton<c_utils>
 {
 public:

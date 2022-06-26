@@ -52,6 +52,6 @@ void c_logs::instance()
 			logs->m_printed = true;
 		}
 
-		c_render::get()->text(g_sdk.m_fonts.m_logs, ImVec2(5.0f, spacing + 2.5f), logs->m_text.c_str(), logs->m_color, false);
+		c_render::get()->text(g_sdk.m_fonts.m_logs, ImVec2(5.0f, spacing + 2.5f), logs->m_text, logs->m_color, false);
 	}
 }

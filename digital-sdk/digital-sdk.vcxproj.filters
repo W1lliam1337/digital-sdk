@@ -659,6 +659,9 @@
     <ClInclude Include="cheat\functions\misc\logs system\logs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_render_view.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\minhook\libs\MinHook.lib" />

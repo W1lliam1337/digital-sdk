@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../sdk/sdk.hpp"
+#include "../../../dependencies/utils.h"
 
 struct fire_bullet_data_t
 {

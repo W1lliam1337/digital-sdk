@@ -1,6 +1,11 @@
 #pragma once
-#include "../utils.h"
-struct key_bind_t;
+
+struct key_bind_t
+{
+	int m_mode_selected = 0;
+	int m_key_selected = 0;
+};
+
 //#include "../singleton/singleton.h"
 //#include "../json/json.h"
 //#include "base64.h"
@@ -47,7 +52,12 @@ struct config_t
 
 	struct misc_t
 	{
+		bool m_third_person{};
 		bool m_no_scope{};
+		bool m_bunny_hop{};
+
+		int m_third_person_distance{};
+		key_bind_t m_third_person_bind;
 	}m_misc{};
 
 	struct anti_aim_t

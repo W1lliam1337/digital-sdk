@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "../sdk/sdk.hpp"
 
 uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
 {

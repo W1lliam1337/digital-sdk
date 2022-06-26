@@ -15,7 +15,8 @@ class c_menu : public c_singleton<c_menu>
 {
 public:
 	static bool init_style() noexcept;
-	void render();
+	static void color_edit(const char* label, c_color* color);
+	void render() const;
 	static void rage_tab();
 	static void antiaim_tab();
 	static void world_esp_tab();

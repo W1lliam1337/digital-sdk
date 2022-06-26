@@ -60,6 +60,7 @@
 #include "interfaces/classes/i_multiplayer_physics.h"
 #include "interfaces/classes/i_breakable_with_prop_data.h"
 #include "interfaces/classes/i_event_manager.h"
+#include "interfaces/classes/i_render_view.h"
 #include "entity/enums.h"
 #include "entity/classes.h"
 #include "entity/entity.h"
@@ -78,6 +79,7 @@ using reset_t = long(__stdcall*)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
 using lock_cursor_t = void(__thiscall*)(void*);
 using paint_traverse_t = void(__thiscall*)(void*, vgui::vpanel, bool, bool);
 using fsn_t = void(__thiscall*)(void*, int);
+using override_view_t = void(__thiscall*)(void*, c_view_setup*);
 
 class c_sdk
 {
@@ -172,6 +174,7 @@ public:
 			WNDPROC m_wnd_proc{};
 			paint_traverse_t m_paint_traverse{};
 			fsn_t m_frame_stage_notify{};
+			override_view_t m_override_view{};
 		}m_originals{};
 	}m_hooks_data{};
 

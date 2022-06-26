@@ -15,6 +15,7 @@ void c_hooks::init()
 	const auto present = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_direct_device))[17]);
 	const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_surface))[67]);
 	const auto paint_traverse = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_panel))[41]);
+	const auto override_view = c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58"));
 
 	HOOK(create_move, hk_create_move_proxy, g_sdk.m_hooks_data.m_originals.m_create_move);
 	HOOK(frame_stage_notify, hk_frame_stage_notify, g_sdk.m_hooks_data.m_originals.m_frame_stage_notify);
@@ -22,6 +23,7 @@ void c_hooks::init()
 	HOOK(present, hk_present, g_sdk.m_hooks_data.m_originals.m_present);
 	HOOK(lock_cursor, hk_lock_cursor, g_sdk.m_hooks_data.m_originals.m_lock_cursor);
 	HOOK(paint_traverse, hk_paint_traverse, g_sdk.m_hooks_data.m_originals.m_paint_traverse);
+	HOOK(override_view, hk_override_view, g_sdk.m_hooks_data.m_originals.m_override_view);
 
 	MH_EnableHook(nullptr);
 }
@@ -227,4 +229,24 @@ void __fastcall c_hooks::hk_frame_stage_notify(void* ecx, void* edx, int stage)
 		break;
 	default: break;
 	}
+}
+
+void __fastcall c_hooks::hk_override_view(void* ecx, void* edx, c_view_setup* setup_view)
+{
+	if (!g_sdk.m_local()->is_alive())
+	{
+		g_sdk.m_interfaces.m_input->m_camera_in_third_person = false;
+		return;
+	}
+
+	if (!g_sdk.m_interfaces.m_input->m_camera_in_third_person && c_utils::get()->is_bind_active(g_cfg.m_misc.m_third_person_bind))
+		g_sdk.m_interfaces.m_input->m_camera_in_third_person = true;
+	else 
+	{
+		if (!c_utils::get()->is_bind_active(g_cfg.m_misc.m_third_person_bind))
+			g_sdk.m_interfaces.m_input->m_camera_in_third_person = false;
+	}
+
+	g_sdk.m_interfaces.m_input->m_camera_offset.z = static_cast<float>(g_cfg.m_misc.m_third_person_distance);
+	return g_sdk.m_hooks_data.m_originals.m_override_view(ecx, setup_view);
 }

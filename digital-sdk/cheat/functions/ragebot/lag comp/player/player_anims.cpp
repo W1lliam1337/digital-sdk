@@ -45,6 +45,9 @@ void c_player_lagcomp::on_frame()
             }
             memcpy(entity->get_anim_state(), &animstate, sizeof(c_animstate));
             memcpy(entity->get_anim_layers(), animation_layers.data(), sizeof(animlayer_t) * animation_layer_count);
+
+            build_matrix(entity, lag_record.m_matrices.at(main_matrix).data(), bone_used_by_anything);
+            memcpy(entity->get_bone_cache().Base(), lag_record.m_matrices.at(main_matrix).data(), sizeof(matrix_t) * entity->get_bone_cache().Count());
         }
 
         while (m_current_records[i].size() > 32)

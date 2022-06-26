@@ -231,6 +231,142 @@ void ImGui::TextUnformatted(const char* text, const char* text_end)
     }
 }
 
+bool ImGui::Keybind(const char* str_id, int* current_key, int* key_style, bool types)
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+    ImGuiContext& g = *GImGui;
+
+    const ImGuiStyle& style = g.Style;
+    const ImGuiID id = window->GetID(str_id);
+    ImGuiIO& io = g.IO;
+
+    const ImVec2 str_id_size = CalcTextSize(str_id, NULL, false);
+    const ImVec2 label_size = CalcTextSize(keyss_str[*current_key]);
+    const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + label_size);
+    const ImRect total_bb(window->DC.CursorPos + ImVec2(str_id_size.x + 4, 0), window->DC.CursorPos + ImVec2(frame_bb.Max.x + style.FramePadding.x + 4, label_size.y));
+
+    ItemSize(total_bb, style.FramePadding.y);
+    if (!ItemAdd(total_bb, id, &frame_bb))
+        return false;
+
+    const bool hovered = IsItemHovered();
+    const bool edit_requested = hovered && io.MouseClicked[0];
+    const bool style_requested = hovered && io.MouseClicked[1];
+
+    if (edit_requested) {
+        if (g.ActiveId != id) {
+            memset(io.MouseDown, 0, sizeof(io.MouseDown));
+            memset(io.KeysDown, 0, sizeof(io.KeysDown));
+            *current_key = 0;
+        }
+
+        SetActiveID(id, window);
+        FocusWindow(window);
+    }
+    else if (!hovered && io.MouseClicked[0] && g.ActiveId == id)
+        ClearActiveID();
+
+    bool value_changed = false;
+    int key = *current_key;
+
+    if (g.ActiveId == id) {
+        for (auto i = 0; i < 5; i++) {
+            if (io.MouseDown[i]) {
+                switch (i) {
+                case 0:
+                    key = VK_LBUTTON;
+                    break;
+                case 1:
+                    key = VK_RBUTTON;
+                    break;
+                case 2:
+                    key = VK_MBUTTON;
+                    break;
+                case 3:
+                    key = VK_XBUTTON1;
+                    break;
+                case 4:
+                    key = VK_XBUTTON2;
+                }
+                value_changed = true;
+                ClearActiveID();
+            }
+        }
+
+        if (!value_changed) {
+            for (auto i = VK_BACK; i <= VK_RMENU; i++) {
+                if (io.KeysDown[i]) {
+                    key = i;
+                    value_changed = true;
+                    ClearActiveID();
+                }
+            }
+        }
+
+        if (IsKeyPressedMap(ImGuiKey_Escape)) {
+            *current_key = 0;
+            ClearActiveID();
+        }
+        else
+            *current_key = key;
+    }
+    else {
+        if (key_style && types) {
+            bool popup_open = IsPopupOpen(id);
+
+            if (style_requested && !popup_open)
+                OpenPopupEx(id);
+
+            if (popup_open) {
+                SetNextWindowSize(ImVec2(100, 75));
+
+                char name[16];
+                ImFormatString(name, IM_ARRAYSIZE(name), "##Combo_%02d", g.BeginPopupStack.Size); // Recycle windows based on depth
+
+                // Peak into expected window size so we can position it
+                if (ImGuiWindow* popup_window = FindWindowByName(name))
+                    if (popup_window->WasActive)
+                    {
+                        ImVec2 size_expected = CalcWindowExpectedSize(popup_window);
+                        ImRect r_outer = GetWindowAllowedExtentRect(popup_window);
+                        ImVec2 pos = FindBestWindowPosForPopupEx(frame_bb.GetBL(), size_expected, &popup_window->AutoPosLastDirection, r_outer, frame_bb, ImGuiPopupPositionPolicy_ComboBox);
+                        SetNextWindowPos(pos);
+                    }
+
+                // Horizontally align ourselves with the framed text
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_Popup | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+                PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(-1, 7));
+                bool ret = Begin(name, NULL, window_flags);
+                PopStyleVar();
+
+                if (Selectable("toggle", *key_style == 0))
+                    *key_style = 0;
+
+                if (Selectable("hold", *key_style == 1))
+                    *key_style = 1;
+
+                EndPopup();
+            }
+        }
+    }
+
+    char buf_display[64] = "[-]";
+
+    if (*current_key != 0 && g.ActiveId != id)
+        strcpy_s(buf_display, keyss_str[*current_key]);
+    else if (g.ActiveId == id)
+        strcpy_s(buf_display, "[]");
+
+    ImGui::RenderText(ImVec2(frame_bb.Min.x + style.FramePadding.x + str_id_size.x + 4, frame_bb.Min.y - 2), buf_display);
+
+    if (str_id_size.x > 0)
+        ImGui::RenderText(ImVec2(frame_bb.Min.x, frame_bb.Min.y), str_id);
+
+    return value_changed;
+}
+
 void ImGui::Text(const char* fmt, ...)
 {
     va_list args;

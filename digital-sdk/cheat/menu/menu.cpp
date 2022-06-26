@@ -18,7 +18,21 @@ bool c_menu::init_style() noexcept
 	return true;
 }
 
-void c_menu::render()
+void c_menu::color_edit(const char* label, c_color* color)
+{
+	float a_colour[4] =
+	{
+		color->r() / 255.0f,
+		color->g() / 255.0f,
+		color->b() / 255.0f,
+		color->a() / 255.0f
+	};
+
+	if (ImGui::ColorEdit4(label, a_colour, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_RGB))
+		color->set_color(a_colour[0], a_colour[1], a_colour[2], a_colour[3]);
+}
+
+void c_menu::render() const
 {
 	auto& style = ImGui::GetStyle();
 	const auto& io = ImGui::GetIO();
@@ -39,10 +53,10 @@ void c_menu::render()
 	style.Alpha = std::fmin(style.Alpha + io.DeltaTime * 6.0f, 1.f);
 
 	static std::uint32_t selected_tab = 0;
-	ImGui::SetNextWindowSize(ImVec2{ 412.f, 515.f }, ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2{ 512.f, 515.f }, ImGuiCond_Once);
 	ImGui::Begin(_("digital csgo sdk"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
-	ImGui::BeginChild("Tabs Panel", ImVec2{ 150, 0 }, true);
+	ImGui::BeginChild(_("Tabs Panel"), ImVec2{ 150, 0 }, true);
 	{
 		static constexpr const char* tabs[]{
 			"Rage",
@@ -111,6 +125,14 @@ void c_menu::player_esp_tab()
 
 void c_menu::misc_tab()
 {
+	ImGui::Text("Misc");
+	ImGui::Separator();
+
+	ImGui::Checkbox(_("Bunny hop"), &g_cfg.m_misc.m_bunny_hop);
+	ImGui::Checkbox(_("Remove scope"), &g_cfg.m_misc.m_no_scope);
+	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
+	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
+
 	ImGui::Text("Configs");
 	ImGui::Separator();
 
@@ -121,12 +143,12 @@ void c_menu::misc_tab()
 	ImGui::Separator();
 
 	//ImGui::Checkbox("test", &g_cfg.m_text.test_var);
-	if (ImGui::Button("Save Config", ImVec2{ 338.f, 19.f }))
+	if (ImGui::Button("Save Config", ImVec2{ 138.f, 19.f }))
 	{
 		//c_config_manager::get()->save_config("fd");
 	}
 
-	if (ImGui::Button("Update Configs", ImVec2{ 338.f, 19.f }))
+	if (ImGui::Button("Update Configs", ImVec2{ 138.f, 19.f }))
 	{
 
 	}

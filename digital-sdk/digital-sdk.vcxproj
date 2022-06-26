@@ -328,6 +328,7 @@
     <ClInclude Include="cheat\functions\ragebot\lag comp\player\player_anims.h" />
     <ClInclude Include="sdk\interfaces\classes\i_debug_overlay.h" />
     <ClInclude Include="sdk\interfaces\classes\i_panel.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_render_view.h" />
     <ClInclude Include="sdk\utils\vertex\vertex.h" />
     <ClInclude Include="dependencies\color\color.h" />
     <ClInclude Include="dependencies\imgui\imconfig.h" />

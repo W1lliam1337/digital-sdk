@@ -94,8 +94,10 @@ public:
 	GET_NETVAR(bool, has_heavy_armor, _("DT_CSPlayer"), _("m_bHasHeavyArmor"));
 	GET_NETVAR(bool, has_helmet, _("DT_CSPlayer"), _("m_bHasHelmet"));
 	GET_NETVAR(int, get_armour_value, _("DT_CSPlayer"), _("m_ArmorValue"));
+	GET_NETVAR(bool, get_client_side_animation, _("DT_BaseAnimating"), _("m_bClientSideAnimation"));
 	GET_OFFSET(get_take_damage, int, 0x280);
 	GET_OFFSET(get_bone_accessor, c_bone_accressor, 0x26A8);
+	GET_OFFSET(get_bone_cache, CUtlVector<matrix_t>, 0x2914)
 
 	c_weapon* get_active_weapon() const;
 	void invalidate_bone_cache();
@@ -118,7 +120,6 @@ public:
 	void post_think();
 	c_animstate* get_anim_state();
 	animlayer_t* get_anim_layers();
-	CUtlVector<matrix_t>& get_bone_cache();
 	void set_abs_origin(vec3_t position);
 	int get_sequence_activity(int sequence);
 	bool using_standard_weapons_in_vehicle();

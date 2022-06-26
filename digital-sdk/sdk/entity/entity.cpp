@@ -350,7 +350,8 @@ c_animstate* c_base_player::get_anim_state()
 	if (!this)
 		return nullptr;
 
-	return *reinterpret_cast<c_animstate**>(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this) + 0x9960));
+	/* @ida: https://prnt.sc/26pb622 */
+	return *reinterpret_cast<c_animstate**>(reinterpret_cast<DWORD>(this) + 0x9960);
 }
 
 animlayer_t* c_base_player::get_anim_layers()
@@ -359,11 +360,6 @@ animlayer_t* c_base_player::get_anim_layers()
 		return nullptr;
 
 	return *reinterpret_cast<animlayer_t**>(reinterpret_cast<DWORD>(this) + 0x2990);
-}
-
-CUtlVector <matrix_t>& c_base_player::get_bone_cache() {
-	static auto sig = *reinterpret_cast<DWORD*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("FF B7 ?? ?? ?? ?? 52")) + 0x2) + 0x4;
-	return *reinterpret_cast<CUtlVector<matrix_t>*>(reinterpret_cast<uintptr_t>(this) + sig);
 }
 
 void c_base_player::set_abs_origin(vec3_t position) {
