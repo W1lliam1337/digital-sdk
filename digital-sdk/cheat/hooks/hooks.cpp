@@ -158,6 +158,7 @@ void __stdcall c_hooks::hk_create_move(int sequence, float frame_time, bool is_a
 	c_engine_prediction::get()->begin();
 	{
 		c_anti_aimbot::get()->init();
+		c_legit_bot::get()->init();
 		//c_ragebot::get()->init();
 	}
 	c_engine_prediction::get()->end();

@@ -58,7 +58,7 @@ void c_engine_prediction::begin()
 		g_sdk.m_local()->get_impulse() = g_sdk.m_packet_data.m_cmd->m_impulse;
 
 	/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/29e4c1fda9698d5cebcdaf1a0de4b829fa149bf8/game/shared/baseplayer_shared.cpp#L961 */
-	int buttons_changed = g_sdk.m_packet_data.m_cmd->m_buttons ^ *reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(g_sdk.m_local()) + 0x3208);
+	const int buttons_changed = g_sdk.m_packet_data.m_cmd->m_buttons ^ *reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(g_sdk.m_local()) + 0x3208);
 
 	*reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(g_sdk.m_local()) + 0x320C) = *reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(g_sdk.m_local()) + 0x3208);
 	*reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(g_sdk.m_local()) + 0x3208) = g_sdk.m_packet_data.m_cmd->m_buttons;

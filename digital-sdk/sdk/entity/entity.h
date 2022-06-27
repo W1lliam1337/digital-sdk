@@ -95,6 +95,9 @@ public:
 	GET_NETVAR(bool, has_helmet, _("DT_CSPlayer"), _("m_bHasHelmet"));
 	GET_NETVAR(int, get_armour_value, _("DT_CSPlayer"), _("m_ArmorValue"));
 	GET_NETVAR(bool, get_client_side_animation, _("DT_BaseAnimating"), _("m_bClientSideAnimation"));
+	GET_NETVAR(qangle_t, get_aim_punch_angle, _("DT_BasePlayer"), _("m_aimPunchAngle"));
+	GET_NETVAR(int, get_shots_fired, _("DT_CSPlayer"), _("m_iShotsFired"));
+
 	GET_OFFSET(get_take_damage, int, 0x280);
 	GET_OFFSET(get_bone_accessor, c_bone_accressor, 0x26A8);
 	GET_OFFSET(get_bone_cache, CUtlVector<matrix_t>, 0x2914)

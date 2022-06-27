@@ -141,7 +141,7 @@ public:
 		i_model_info* m_model_info{};
 		i_cvar* m_cvar{};
 		i_physics_surface_props* m_physics_surface_props{};
-		c_engine_trace* m_trace{};
+		i_engine_trace* m_trace{};
 		i_game_event_manager* m_event_manager{};
 	}m_interfaces{};
 

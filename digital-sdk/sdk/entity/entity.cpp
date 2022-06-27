@@ -329,7 +329,7 @@ bool c_base_player::is_breakable()
 					return false;
 			}
 		}
-		else if (physics_solid_mask_for_entity() & CONTENTS_PLAYERCLIP)
+		else if (physics_solid_mask_for_entity() & contents_playerclip)
 		{
 			return false;
 		}

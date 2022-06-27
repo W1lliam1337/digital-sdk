@@ -1,6 +1,6 @@
 #include "modules.h"
 
-void c_modules::init()
+void c_modules::init() const
 {
 	g_sdk.m_modules.m_client_dll = GetModuleHandleA(_("client.dll"));
 	g_sdk.m_modules.m_engine_dll = GetModuleHandleA(_("engine.dll"));

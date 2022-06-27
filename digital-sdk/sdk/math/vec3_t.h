@@ -1,6 +1,6 @@
 #pragma once
-#include <cfloat>
 #include <cmath>
+#include <numbers>
 
 class vec3_t
 {
@@ -180,7 +180,7 @@ public:
 		*this = normalized();
 	}
 
-	vec3_t normalized()
+	[[nodiscard]] vec3_t normalized() const
 	{
 		vec3_t res = *this;
 		if (const float l = res.length(); l != 0.0f)
@@ -243,11 +243,20 @@ public:
 		result.z = a.x * b.y - a.y * b.x;
 	}
 
-	vec3_t cross(const vec3_t& v_other) const
+	[[nodiscard]] vec3_t cross(const vec3_t& v_other) const
 	{
 		vec3_t res;
 		vector_cross_product(*this, v_other, res);
 		return res;
+	}
+
+	[[nodiscard]] vec3_t to_angle() const
+	{
+		return {
+			std::atan2(-z, std::hypot(x, y)) * (180.0f / std::numbers::pi_v<float>),
+			std::atan2(y, x) * (180.0f / std::numbers::pi_v<float>),
+			0.0f
+		};
 	}
 
 	[[nodiscard]] float length() const

@@ -9,3 +9,4 @@
 #include "misc/engine prediction/engine_prediction.h"
 #include "misc/events/events.h"
 #include "misc/logs system/logs.h"
+#include "legitbot/legitbot.h"

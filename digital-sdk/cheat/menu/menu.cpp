@@ -60,6 +60,7 @@ void c_menu::render() const
 	{
 		static constexpr const char* tabs[]{
 			"Rage",
+			"Legit",
 			"Anti-aim",
 			"World esp",
 			"Player esp",
@@ -82,6 +83,9 @@ void c_menu::render() const
 		{
 		case e_menu::rage_tab:
 			rage_tab();
+			break;
+		case e_menu::legit_tab:
+			legit_tab();
 			break;
 		case aa_tab:
 			antiaim_tab();
@@ -108,6 +112,19 @@ void c_menu::rage_tab()
 	ImGui::Separator();
 }
 
+void c_menu::legit_tab() const
+{
+	ImGui::Text("Legit settings");
+	ImGui::Separator();
+
+	ImGui::Checkbox(_("Enable legitbot"), &g_cfg.m_legit_bot.m_enabled);
+	ImGui::Checkbox(_("Auto fire"), &g_cfg.m_legit_bot.m_auto_fire);
+	ImGui::Checkbox(_("Silent aim"), &g_cfg.m_legit_bot.m_silent);
+
+	ImGui::SliderInt(_("Smooth"), &g_cfg.m_legit_bot.m_smooth, 1, 100);
+	ImGui::SliderInt(_("FOV"), &g_cfg.m_legit_bot.m_fov, 1, 180);
+}
+
 void c_menu::antiaim_tab()
 {
 	
@@ -125,7 +142,7 @@ void c_menu::player_esp_tab()
 
 void c_menu::misc_tab()
 {
-	ImGui::Text("Misc");
+	ImGui::Text(_("Misc"));
 	ImGui::Separator();
 
 	ImGui::Checkbox(_("Bunny hop"), &g_cfg.m_misc.m_bunny_hop);
@@ -133,22 +150,22 @@ void c_menu::misc_tab()
 	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
 	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
 
-	ImGui::Text("Configs");
+	ImGui::Text(_("Configs"));
 	ImGui::Separator();
 
 	static ImGuiTextFilter configs_filter;
-	configs_filter.Draw("##cfg_filter", 338.f);
+	configs_filter.Draw(_("##cfg_filter"), 338.f);
 
-	ImGui::Text("Available configs");
+	ImGui::Text(_("Available configs"));
 	ImGui::Separator();
 
 	//ImGui::Checkbox("test", &g_cfg.m_text.test_var);
-	if (ImGui::Button("Save Config", ImVec2{ 138.f, 19.f }))
+	if (ImGui::Button(_("Save Config"), ImVec2{ 138.f, 19.f }))
 	{
 		//c_config_manager::get()->save_config("fd");
 	}
 
-	if (ImGui::Button("Update Configs", ImVec2{ 138.f, 19.f }))
+	if (ImGui::Button(_("Update Configs"), ImVec2{ 138.f, 19.f }))
 	{
 
 	}

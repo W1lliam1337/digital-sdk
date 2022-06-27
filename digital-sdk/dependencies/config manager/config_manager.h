@@ -44,6 +44,19 @@ struct key_bind_t
 
 struct config_t
 {
+	struct legit_bot_t
+	{
+		bool m_enabled{};
+		bool m_silent{};
+		bool m_auto_fire{};
+		bool m_auto_scope{};
+		bool m_rcs{};
+
+		int m_smooth{1};
+		int m_fov{1};
+		int m_rcs_x{};
+		int m_rcs_y{};
+	}m_legit_bot{};
 	struct esp_t
 	{
 		bool m_enable{};

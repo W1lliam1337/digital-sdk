@@ -3,114 +3,111 @@
 #include <cstring>
 #include "i_client_entity.h"
 
-#define   DISPSURF_FLAG_SURFACE           (1<<0)
-#define   DISPSURF_FLAG_WALKABLE          (1<<1)
-#define   DISPSURF_FLAG_BUILDABLE         (1<<2)
-#define   DISPSURF_FLAG_SURFPROP1         (1<<3)
-#define   DISPSURF_FLAG_SURFPROP2         (1<<4)
-
-#define   CONTENTS_EMPTY                0
-
-#define   CONTENTS_SOLID                0x1
-#define   CONTENTS_WINDOW               0x2
-#define   CONTENTS_AUX                  0x4
-#define   CONTENTS_GRATE                0x8
-#define   CONTENTS_SLIME                0x10
-#define   CONTENTS_WATER                0x20
-#define   CONTENTS_BLOCKLOS             0x40
-#define   CONTENTS_OPAQUE               0x80
-#define   LAST_VISIBLE_CONTENTS         CONTENTS_OPAQUE
-
-#define   ALL_VISIBLE_CONTENTS            (LAST_VISIBLE_CONTENTS | (LAST_VISIBLE_CONTENTS-1))
-
-#define   CONTENTS_TESTFOGVOLUME        0x100
-#define   CONTENTS_UNUSED               0x200
-#define   CONTENTS_BLOCKLIGHT           0x400
-#define   CONTENTS_TEAM1                0x800
-#define   CONTENTS_TEAM2                0x1000
-#define   CONTENTS_IGNORE_NODRAW_OPAQUE 0x2000
-#define   CONTENTS_MOVEABLE             0x4000
-#define   CONTENTS_AREAPORTAL           0x8000
-#define   CONTENTS_PLAYERCLIP           0x10000
-#define   CONTENTS_MONSTERCLIP          0x20000
-#define   CONTENTS_CURRENT_0            0x40000
-#define   CONTENTS_CURRENT_90           0x80000
-#define   CONTENTS_CURRENT_180          0x100000
-#define   CONTENTS_CURRENT_270          0x200000
-#define   CONTENTS_CURRENT_UP           0x400000
-#define   CONTENTS_CURRENT_DOWN         0x800000
-
-#define   CONTENTS_ORIGIN               0x1000000
-
-#define   CONTENTS_MONSTER              0x2000000
-#define   CONTENTS_DEBRIS               0x4000000
-#define   CONTENTS_DETAIL               0x8000000
-#define   CONTENTS_TRANSLUCENT          0x10000000
-#define   CONTENTS_LADDER               0x20000000
-#define   CONTENTS_HITBOX               0x40000000
-
-#define   SURF_LIGHT                    0x0001
-#define   SURF_SKY2D                    0x0002
-#define   SURF_SKY                      0x0004
-#define   SURF_WARP                     0x0008
-#define   SURF_TRANS                    0x0010
-#define   SURF_NOPORTAL                 0x0020
-#define   SURF_TRIGGER                  0x0040
-#define   SURF_NODRAW                   0x0080
-
-#define   SURF_HINT                     0x0100
-
-#define   SURF_SKIP                     0x0200
-#define   SURF_NOLIGHT                  0x0400
-#define   SURF_BUMPLIGHT                0x0800
-#define   SURF_NOSHADOWS                0x1000
-#define   SURF_NODECALS                 0x2000
-#define   SURF_NOPAINT                  SURF_NODECALS
-#define   SURF_NOCHOP                   0x4000
-#define   SURF_HITBOX                   0x8000
-
-#define CAM_HULL_OFFSET ( float )14.0f
-#define CAM_HULL_MIN Vector( -CAM_HULL_OFFSET,-CAM_HULL_OFFSET,-CAM_HULL_OFFSET )
-#define CAM_HULL_MAX Vector( CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET  )
-
-// -----------------------------------------------------
-// spatial content masks - used for spatial queries (traceline,etc.)
-// -----------------------------------------------------
-#define   MASK_ALL                      (0xFFFFFFFF)
-#define   MASK_SOLID                    (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_MONSTER|CONTENTS_GRATE)
-#define   MASK_PLAYERSOLID              (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER|CONTENTS_GRATE)
-#define   MASK_NPCSOLID                 (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER|CONTENTS_GRATE)
-#define   MASK_NPCFLUID                 (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define   MASK_WATER                    (CONTENTS_WATER|CONTENTS_MOVEABLE|CONTENTS_SLIME)
-#define   MASK_OPAQUE                   (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_OPAQUE)
-#define   MASK_OPAQUE_AND_NPCS          (MASK_OPAQUE|CONTENTS_MONSTER)
-#define   MASK_BLOCKLOS                 (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_BLOCKLOS)
-#define   MASK_BLOCKLOS_AND_NPCS        (MASK_BLOCKLOS|CONTENTS_MONSTER)
-#define   MASK_VISIBLE                  (MASK_OPAQUE|CONTENTS_IGNORE_NODRAW_OPAQUE)
-#define   MASK_VISIBLE_AND_NPCS         (MASK_OPAQUE_AND_NPCS|CONTENTS_IGNORE_NODRAW_OPAQUE)
-#define   MASK_SHOT                     (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_HITBOX)
-#define   MASK_SHOT_BRUSHONLY           (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_DEBRIS)
-#define   MASK_SHOT_HULL                (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_GRATE)
-#define   MASK_SHOT_PORTAL              (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define   MASK_SOLID_BRUSHONLY          (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_GRATE)
-#define   MASK_PLAYERSOLID_BRUSHONLY    (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_PLAYERCLIP|CONTENTS_GRATE)
-#define   MASK_NPCSOLID_BRUSHONLY       (CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_WINDOW|CONTENTS_MONSTERCLIP|CONTENTS_GRATE)
-#define   MASK_NPCWORLDSTATIC           (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_MONSTERCLIP|CONTENTS_GRATE)
-#define   MASK_NPCWORLDSTATIC_FLUID     (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_MONSTERCLIP)
-#define   MASK_SPLITAREAPORTAL          (CONTENTS_WATER|CONTENTS_SLIME)
-#define   MASK_CURRENT                  (CONTENTS_CURRENT_0|CONTENTS_CURRENT_90|CONTENTS_CURRENT_180|CONTENTS_CURRENT_270|CONTENTS_CURRENT_UP|CONTENTS_CURRENT_DOWN)
-#define   MASK_DEADSOLID                (CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_GRATE)
-
 class vec3_t;
 class i_handle_entity;
 struct ray_t;
 class i_collideable;
 class i_trace_list_data;
 class c_phys_collide;
-struct cplane_t;
 struct virtualmeshlist_t;
 
-enum class trace_type
+#define CAM_HULL_OFFSET ( float )14.0f
+#define CAM_HULL_MIN vec3_t( -CAM_HULL_OFFSET,-CAM_HULL_OFFSET,-CAM_HULL_OFFSET )
+#define CAM_HULL_MAX vec3_t( CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET  )
+
+enum e_surfaceflags {
+	dispsurf_flag_surface = (1 << 0),
+	dispsurf_flag_walkable = (1 << 1),
+	dispsurf_flag_buildable = (1 << 2),
+	dispsurf_flag_surfprop1 = (1 << 3),
+	dispsurf_flag_surfprop2 = (1 << 4),
+};
+
+enum e_contents
+{
+	contents_empty = 0,
+	contents_solid = 0x1,
+	contents_window = 0x2,
+	contents_aux = 0x4,
+	contents_grate = 0x8,
+	contents_slime = 0x10,
+	contents_water = 0x20,
+	contents_blocklos = 0x40,
+	contents_opaque = 0x80,
+	contents_testfogvolume = 0x100,
+	contents_unused = 0x200,
+	contents_blocklight = 0x400,
+	contents_team1 = 0x800,
+	contents_team2 = 0x1000,
+	contents_ignore_nodraw_opaque = 0x2000,
+	contents_moveable = 0x4000,
+	contents_areaportal = 0x8000,
+	contents_playerclip = 0x10000,
+	contents_monsterclip = 0x20000,
+	contents_current_0 = 0x40000,
+	contents_current_90 = 0x80000,
+	contents_current_180 = 0x100000,
+	contents_current_270 = 0x200000,
+	contents_current_up = 0x400000,
+	contents_current_down = 0x800000,
+	contents_origin = 0x1000000,
+	contents_monster = 0x2000000,
+	contents_debris = 0x4000000,
+	contents_detail = 0x8000000,
+	contents_translucent = 0x10000000,
+	contents_ladder = 0x20000000,
+	contents_hitbox = 0x40000000,
+};
+
+enum e_surf
+{
+	surf_light = 0x0001,
+	surf_sky2d = 0x0002,
+	surf_sky = 0x0004,
+	surf_warp = 0x0008,
+	surf_trans = 0x0010,
+	surf_noportal = 0x0020,
+	surf_trigger = 0x0040,
+	surf_nodraw = 0x0080,
+	surf_hint = 0x0100,
+	surf_skip = 0x0200,
+	surf_nolight = 0x0400,
+	surf_bumplight = 0x0800,
+	surf_noshadows = 0x1000,
+	surf_nodecals = 0x2000,
+	surf_nopaint = surf_nodecals,
+	surf_nochop = 0x4000,
+	surf_hitbox = 0x8000
+};
+
+enum e_masks {
+	mask_all = 0xffffffff,
+	mask_solid = contents_solid | contents_moveable | contents_window | contents_monster | contents_grate,
+	mask_playersolid = contents_solid | contents_moveable | contents_playerclip | contents_window | contents_monster | contents_grate,
+	mask_npcsolid = contents_solid | contents_moveable | contents_monsterclip | contents_window | contents_monster | contents_grate,
+	mask_npcfluid = contents_solid | contents_moveable | contents_monsterclip | contents_window | contents_monster | contents_grate,
+	mask_water = contents_water | contents_moveable | contents_slime,
+	mask_opaque = contents_solid | contents_moveable | contents_opaque,
+	mask_opaque_and_npcs = mask_opaque | contents_monster,
+	mask_blocklos = contents_solid | contents_moveable | contents_blocklos,
+	mask_blocklos_and_npcs = mask_blocklos | contents_monster,
+	mask_visible = mask_opaque | contents_ignore_nodraw_opaque,
+	mask_visible_and_npcs = mask_opaque_and_npcs | contents_ignore_nodraw_opaque,
+	mask_shot = contents_solid | contents_moveable | contents_monster | contents_window | contents_debris | contents_grate | contents_hitbox,
+	mask_shot_brushonly = contents_solid | contents_moveable | contents_window | contents_debris,
+	mask_shot_hull = contents_solid | contents_moveable | contents_monster | contents_window | contents_debris | contents_grate,
+	mask_shot_portal = contents_solid | contents_moveable | contents_window | contents_monster,
+	mask_solid_brushonly = contents_solid | contents_moveable | contents_window | contents_grate,
+	mask_playersolid_brushonly = contents_solid | contents_moveable | contents_window | contents_playerclip | contents_grate,
+	mask_npcsolid_brushonly = contents_solid | contents_moveable | contents_window | contents_monsterclip | contents_grate,
+	mask_npcworldstatic = contents_solid | contents_window | contents_monsterclip | contents_grate,
+	mask_npcworldstatic_fluid = contents_solid | contents_window | contents_monsterclip,
+	mask_splitareportal = contents_water | contents_slime,
+	mask_current = contents_current_0 | contents_current_90 | contents_current_180 | contents_current_270 | contents_current_up | contents_current_down,
+	mask_deadsolid = contents_solid | contents_playerclip | contents_window | contents_grate,
+};
+
+enum e_trace_type : std::int32_t
 {
 	trace_everything = 0,
 	trace_world_only,
@@ -122,190 +119,63 @@ class i_trace_filter
 {
 public:
 	virtual bool should_hit_entity(i_handle_entity* pEntity, int contentsMask) = 0;
-	virtual trace_type get_trace_type() const = 0;
+	virtual e_trace_type get_trace_type() const = 0;
 };
 
-//-----------------------------------------------------------------------------
-// Classes are expected to inherit these + implement the ShouldHitEntity method
-//-----------------------------------------------------------------------------
-
-// This is the one most normal traces will inherit from
 class c_trace_filter : public i_trace_filter
 {
 public:
-	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
+	bool should_hit_entity(i_handle_entity* entity, int contents_mask) override
 	{
-		const auto eCC = reinterpret_cast<i_client_entity*>(pEntityHandle)->get_client_class();
-		if (eCC && ccIgnore != nullptr && strcmp(ccIgnore, "") != 0) //-V526
-		{
-			if (eCC->m_network_name == ccIgnore)
-			{
-				return false;
-			}
-		}
-
-		return !(pEntityHandle == pSkip);
+		return entity != this->m_skip;
 	}
 
-	[[nodiscard]] trace_type get_trace_type() const override
+	[[nodiscard]] e_trace_type get_trace_type() const override
 	{
-		return trace_type::trace_everything;
+		return trace_everything;
 	}
 
-	void SetIgnoreClass(char* Class)
+	void set_ignore_class(const char* Class)
 	{
-		ccIgnore = Class;
+		m_ignore = Class;
 	}
 
-	void* pSkip;
-	const char* ccIgnore{ "" };
+	void* m_skip;
+	const char* m_ignore{ "" };
 };
-
-class c_trace_filter_skip_entity : public i_trace_filter
-{
-public:
-	c_trace_filter_skip_entity(i_handle_entity* pEntityHandle)
-	{
-		pSkip = pEntityHandle;
-	}
-
-	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
-	{
-		return !(pEntityHandle == pSkip);
-	}
-
-	trace_type get_trace_type() const override
-	{
-		return trace_type::trace_everything;
-	}
-
-	void* pSkip;
-};
-
-class c_trace_filter_entities_only : public i_trace_filter
-{
-public:
-	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
-	{
-		return true;
-	}
-
-	trace_type get_trace_type() const override
-	{
-		return trace_type::trace_entities_only;
-	}
-};
-
-
-//-----------------------------------------------------------------------------
-// Classes need not inherit from these
-//-----------------------------------------------------------------------------
-class c_trace_filter_world_only : public i_trace_filter
-{
-public:
-	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
-	{
-		return false;
-	}
-
-	[[nodiscard]] trace_type get_trace_type() const override
-	{
-		return trace_type::trace_world_only;
-	}
-};
-
-class c_trace_filter_world_and_props_only : public i_trace_filter
-{
-public:
-	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
-	{
-		return false;
-	}
-
-	trace_type get_trace_type() const override
-	{
-		return trace_type::trace_everything;
-	}
-};
-
-class c_trace_filter_players_only_skip_one : public i_trace_filter
-{
-public:
-	c_trace_filter_players_only_skip_one(i_client_entity* ent)
-	{
-		pEnt = ent;
-	}
-	
-	bool should_hit_entity(i_handle_entity* pEntityHandle, int /*contentsMask*/) override
-	{
-		return static_cast<void*>(pEntityHandle) != static_cast<void*>(pEnt) && reinterpret_cast<i_client_entity*>(
-			pEntityHandle)->get_client_class()->m_class_id == 40;
-	}
-
-	trace_type get_trace_type() const override
-	{
-		return trace_type::trace_entities_only;
-	}
-
-private:
-	i_client_entity* pEnt;
-};
-
-class c_trace_filter_hit_all : public c_trace_filter
-{
-public:
-	bool should_hit_entity(i_handle_entity* /*pServerEntity*/, int /*contentsMask*/) override
-	{
-		return true;
-	}
-};
-
-
-//-----------------------------------------------------------------------------
-// Enumeration interface for EnumerateLinkEntities
-//-----------------------------------------------------------------------------
-class i_entity_enumerator
-{
-public:
-	// This gets called with each handle
-	virtual bool enum_entity(i_handle_entity* pHandleEntity) = 0;
-};
-
 
 struct brush_side_info_t
 {
-	Vector4D plane; // The plane of the brush side
-	unsigned short bevel; // Bevel plane?
-	unsigned short thin; // Thin?
+	Vector4D m_plane; // The plane of the brush side
+	unsigned short m_bevel; // Bevel plane?
+	unsigned short m_thin; // Thin?
 };
 
 class c_phys_collide;
 
 struct vcollide_t
 {
-	unsigned short solid_count : 15;
-	unsigned short is_packed : 1;
-	unsigned short desc_size;
-	// VPhysicsSolids
-	c_phys_collide** solids;
-	char* p_key_values;
-	void* p_user_data;
+	unsigned short m_solid_count : 15;
+	unsigned short m_is_packed : 1;
+	unsigned short m_desc_size;
+	c_phys_collide** m_solids;
+	char* m_key_values;
+	void* m_user_data;
 };
 
 struct cmodel_t
 {
-	vec3_t mins, maxs;
-	vec3_t origin; // for sounds or lights
-	int headnode;
-	vcollide_t vcollisionData;
+	vec3_t m_mins, m_maxs;
+	vec3_t m_origin; // for sounds or lights
+	int m_headnode;
+	vcollide_t m_vcollision_data;
 };
 
 struct csurface_t
 {
-	const char* name;
-	short surfaceProps;
-	unsigned short flags;
-	// BUGBUG: These are declared per surface, not per material, but this database is per-material now
+	const char* m_name;
+	short m_surface_props;
+	bit_flag_t<unsigned short> m_flags;
 };
 
 class __declspec(align(16)) vector_aligned : public vec3_t
@@ -320,7 +190,6 @@ public:
 		init(X, Y, Z);
 	}
 
-public:
 	explicit vector_aligned(const vec3_t& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
@@ -391,75 +260,58 @@ struct ray_t
 		m_start = start + m_start_offset;
 		m_start_offset *= -1.0f;
 	}
-
-	[[nodiscard]] vec3_t inv_delta() const
-	{
-		vec3_t vecInvDelta;
-		for (int iAxis = 0; iAxis < 3; ++iAxis)
-		{
-			if (m_delta[iAxis] != 0.0f)
-			{
-				vecInvDelta[iAxis] = 1.0f / m_delta[iAxis];
-			}
-			else
-			{
-				vecInvDelta[iAxis] = FLT_MAX;
-			}
-		}
-		return vecInvDelta;
-	}
 };
 
-class c_base_trace
+struct cplane_t
 {
-public:
-	vec3_t			m_start;		// start position
-	vec3_t			m_end;			// final position
-	cplane_t		m_plane;			// surface normal at impact
-	float			m_fraction{};		// time completed, 1.0 = didn't hit anything
-	int				m_contents{};		// contents on other side of surface hit
-	uint16_t		m_disp_flags{};		// displacement flags for marking surfaces with data
-	bool			m_all_solid{};		// if true, plane is not valid
-	bool			m_start_solid{};	// if true, the initial point was in a solid area
+	vec3_t m_normal;
+	float m_dist;
+	uint8_t m_type; // for fast side tests
+	uint8_t m_signbits; // signx + (signy<<1) + (signz<<1)
+	uint8_t m_pad[2];
 };
 
-class c_game_trace : public c_base_trace
+class c_game_trace 
 {
 public:
-	c_game_trace() {}
-
-	bool did_hit()
+	[[nodiscard]] bool did_hit() const
 	{
 		return m_fraction < 1.0f || m_all_solid || m_start_solid;
 	}
 
-	bool is_visible()
+	[[nodiscard]] bool is_visible() const
 	{
 		return m_fraction > 0.97f;
 	}
 
-	float				m_fraction_left_solid{};	// time we left a solid, only valid if we started in solid
-	csurface_t			m_surface{};				// surface hit (impact surface)
-	int					m_hit_group{};				// 0 == generic, non-zero is specific body part
-	std::uint16_t		m_world_surface_index{};		// index of the msurface2_t, if applicable
-	c_base_player*		m_entity{};				// entity hit by trace
-	int					m_hitbox{};				// box hit by trace in studio
+	vec3_t			m_start;		// start position
+	vec3_t			m_end;			// final position
+	cplane_t		m_plane;			// surface normal at impact
+	float			m_fraction;		// time completed, 1.0 = didn't hit anything
+	int				m_contents;		// contents on other side of surface hit
+	uint16_t		m_disp_flags;		// displacement flags for marking surfaces with data
+	bool			m_all_solid;		// if true, plane is not valid
+	bool			m_start_solid;	// if true, the initial point was in a solid area
+	float				m_fraction_left_solid;	// time we left a solid, only valid if we started in solid
+	csurface_t			m_surface;				// surface hit (impact surface)
+	int					m_hit_group;				// 0 == generic, non-zero is specific body part
+	std::uint16_t		m_world_surface_index;		// index of the msurface2_t, if applicable
+	c_base_player*		m_entity;				// entity hit by trace
+	int					m_hitbox;				// box hit by trace in studio
 };
 
-using trace_t = c_game_trace;
-
-class c_engine_trace
+class i_engine_trace
 {
 public:
-	virtual int get_point_contents(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL,
+	virtual int get_point_contents(const vec3_t& abs_position, int contents_mask = mask_all,
 		i_handle_entity** ppEntity = nullptr) = 0;
-	virtual int get_point_contents_world_only(const vec3_t& vecAbsPosition, int contentsMask = MASK_ALL) = 0;
-	virtual int get_point_contents_collideable(i_collideable* pCollide, const vec3_t& vecAbsPosition) = 0;
-	virtual void clip_ray_to_entity(const ray_t& ray, unsigned int fMask, i_handle_entity* pEnt, trace_t* pTrace) = 0;
-	virtual void clip_ray_to_collideable(const ray_t& ray, unsigned int fMask, i_collideable* pCollide, trace_t* pTrace)
+	virtual int get_point_contents_world_only(const vec3_t& abs_position, int contents_mask = mask_all) = 0;
+	virtual int get_point_contents_collideable(i_collideable* collide, const vec3_t& abs_position) = 0;
+	virtual void clip_ray_to_entity(const ray_t& ray, unsigned int mask, i_handle_entity* ent, c_game_trace* trace) = 0;
+	virtual void clip_ray_to_collideable(const ray_t& ray, unsigned int mask, i_collideable* collide, c_game_trace* trace)
 		= 0;
-	virtual void trace_ray(const ray_t& ray, unsigned int fMask, i_trace_filter* pTraceFilter, trace_t* pTrace) = 0;
+	virtual void trace_ray(const ray_t& ray, unsigned int mask, c_trace_filter* filter, c_game_trace* engine_trace) = 0;
 
 	void trace_line(vec3_t src, vec3_t dst, int mask, i_handle_entity* entity, int collision_group,
-		trace_t* trace);
+	                c_game_trace* trace);
 };

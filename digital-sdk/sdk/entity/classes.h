@@ -287,37 +287,27 @@ public:
 class c_bone_accressor
 {
 public:
-	matrix_t* GetBoneArrayForWrite()
+	[[nodiscard]] matrix_t* get_bone_array_for_write() const
 	{
-		return m_aBoneArray;
+		return m_bone_array;
 	}
 
-	void SetBoneArrayForWrite(matrix_t* bone_array)
+	void set_bone_array_for_write(matrix_t* bone_array)
 	{
-		m_aBoneArray = bone_array;
+		m_bone_array = bone_array;
 	}
 
-	int GetReadableBones()
+	void set_readable_bones(const int flags)
 	{
-		return m_ReadableBones;
+		m_readable_bones = flags;
 	}
 
-	void SetReadableBones(int flags)
+	void set_writable_bones(const int flags)
 	{
-		m_ReadableBones = flags;
+		m_writable_bones = flags;
 	}
 
-	int GetWritableBones()
-	{
-		return m_WritableBones;
-	}
-
-	void SetWritableBones(int flags)
-	{
-		m_WritableBones = flags;
-	}
-
-	alignas(16) matrix_t* m_aBoneArray;
-	int m_ReadableBones;
-	int m_WritableBones;
+	alignas(16) matrix_t* m_bone_array;
+	int m_readable_bones;
+	int m_writable_bones;
 };

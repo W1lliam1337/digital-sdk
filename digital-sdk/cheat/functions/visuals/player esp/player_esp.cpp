@@ -70,7 +70,7 @@ int c_player_esp::get_type(c_base_player* player)
 
 void c_player_esp::draw()
 {
-	for (int i = 0; i < g_sdk.m_interfaces.m_globals->m_max_clients; i++)
+	for (int i{ 1 }; i < g_sdk.m_interfaces.m_globals->m_max_clients; i++)
 	{
 		const auto entity = static_cast<c_base_player*>(g_sdk.m_interfaces.m_entity_list->get_client_entity(i));
 

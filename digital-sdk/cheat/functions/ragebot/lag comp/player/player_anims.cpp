@@ -2,7 +2,7 @@
 
 void c_player_lagcomp::on_frame()
 {
-	for (int i{}; i < g_sdk.m_interfaces.m_globals->m_max_clients; i++)
+    for (int i{ 1 }; i < g_sdk.m_interfaces.m_globals->m_max_clients; i++)
 	{
 		const auto entity = static_cast<c_base_player*>(g_sdk.m_interfaces.m_entity_list->get_client_entity(i));
 		if (!entity || !entity->is_alive() || entity->get_team() == g_sdk.m_local()->get_team())
@@ -96,8 +96,8 @@ void c_player_lagcomp::build_matrix(c_base_player* player, matrix_t* matrix, con
     const auto& abs_origin = player->get_abs_origin();
 
     player->invalidate_bone_cache();
-    player->get_bone_accessor().m_ReadableBones = 0;
-    player->get_bone_accessor().m_WritableBones = 0;
+    player->get_bone_accessor().m_readable_bones = 0;
+    player->get_bone_accessor().m_writable_bones = 0;
     player->get_effects().add(8);
 
     if (player != g_sdk.m_local())

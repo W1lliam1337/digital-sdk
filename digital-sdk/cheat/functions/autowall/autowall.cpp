@@ -115,12 +115,12 @@ bool c_autowall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tra
 			clip_trace_to_players(cl_end, cl_start, 0x4600400B, reinterpret_cast<i_trace_filter*>(filt), exit_trace);
 		}
 
-		if (exit_trace->m_start_solid && exit_trace->m_surface.flags & SURF_HITBOX)
+		if (exit_trace->m_start_solid && exit_trace->m_surface.m_flags.has(surf_hitbox))
 		{
 			ray_t ray;
 			ray.init(cl_start, cl_end);
 
-			g_sdk.m_interfaces.m_trace->trace_ray(ray, 0x600400B, reinterpret_cast<i_trace_filter*>(filt), exit_trace);
+			g_sdk.m_interfaces.m_trace->trace_ray(ray, 0x600400B, reinterpret_cast<c_trace_filter*>(filt), exit_trace);
 
 			if (exit_trace->did_hit() && !exit_trace->m_start_solid)
 			{
@@ -136,7 +136,7 @@ bool c_autowall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tra
 			if (enter_trace->m_entity->is_breakable() && exit_trace->m_entity->is_breakable())
 				return true;
 
-			if (enter_trace->m_surface.flags & SURF_NODRAW || !(exit_trace->m_surface.flags & SURF_NODRAW) && exit_trace->m_plane.normal.dot(dir) <= 1.0f)
+			if (enter_trace->m_surface.m_flags.has(surf_nodraw) || !(exit_trace->m_surface.m_flags.has(surf_nodraw)) && exit_trace->m_plane.m_normal.dot(dir) <= 1.0f)
 			{
 				cl_start -= dir * exit_trace->m_fraction * 4.0f;
 				return true;
@@ -147,7 +147,7 @@ bool c_autowall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tra
 
 		if (!exit_trace->did_hit() || exit_trace->m_start_solid)
 		{
-			if (enter_trace->m_entity != nullptr && enter_trace->m_entity->get_index() != 0 && enter_trace->m_entity->is_breakable())
+			if (enter_trace->m_entity != nullptr && enter_trace->m_entity->get_index() > 0 && enter_trace->m_entity->is_breakable())
 			{
 				exit_trace = enter_trace;
 				exit_trace->m_end = cl_start + dir;
@@ -182,10 +182,10 @@ bool c_autowall::handle_bullet_penetration(fire_bullet_data_t& data) const
 	static auto ff_damage_bullet_penetration = g_sdk.m_interfaces.m_cvar->find_var(_("ff_damage_bullet_penetration"));
 	const auto damage_bullet_penetration = ff_damage_bullet_penetration->get_float();
 
-	const bool solid_surf = data.m_enter_trace.m_contents >> 3 & CONTENTS_SOLID;
-	const bool light_surf = data.m_enter_trace.m_surface.flags >> 7 & SURF_LIGHT;
+	const bool solid_surf = data.m_enter_trace.m_contents >> 3 & contents_solid;
+	const bool light_surf = data.m_enter_trace.m_surface.m_flags >> 7 & surf_light;
 
-	const int enter_material = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.surfaceProps)->m_game.m_material;
+	const int enter_material = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.m_surface_props)->m_game.m_material;
 
 	if (!light_surf && !solid_surf && enter_material != char_tex_grate && enter_material != char_tex_glass)
 		return false;
@@ -202,8 +202,8 @@ bool c_autowall::handle_bullet_penetration(fire_bullet_data_t& data) const
 	float dam_lost_percent;
 	float cb_penetration_modifier;
 
-	const float enter_penetration_modifier = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.surfaceProps)->m_game.m_penetration_modifier;
-	const float exit_penetration_modifier = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_exit_trace.m_surface.surfaceProps)->m_game.m_penetration_modifier;
+	const float enter_penetration_modifier = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
+	const float exit_penetration_modifier = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_exit_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
 
 	const auto player = data.m_enter_trace.m_entity;
 
@@ -234,7 +234,7 @@ bool c_autowall::handle_bullet_penetration(fire_bullet_data_t& data) const
 		dam_lost_percent = 0.16f;
 	}
 
-	const int exit_material = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_exit_trace.m_surface.surfaceProps)->m_game.m_material;
+	const int exit_material = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_exit_trace.m_surface.m_surface_props)->m_game.m_material;
 	if (enter_material == exit_material)
 	{
 		if (exit_material == char_tex_wood || exit_material == char_tex_cardboard)
@@ -276,7 +276,7 @@ bool c_autowall::simulate_fire_bullet(fire_bullet_data_t& data) const
 	data.m_current_damage = data.m_weapon_info->m_damage;
 
 	c_trace_filter filter;
-	filter.pSkip = g_sdk.m_local();
+	filter.m_skip = g_sdk.m_local();
 
 	while (data.m_penetrate_count > 0 && data.m_current_damage >= 1.0f)
 	{
@@ -286,11 +286,11 @@ bool c_autowall::simulate_fire_bullet(fire_bullet_data_t& data) const
 		ray_t ray;
 		ray.init(data.m_position, end);
 
-		g_sdk.m_interfaces.m_trace->trace_ray(ray, MASK_SHOT_HULL | CONTENTS_HITBOX, &filter, &data.m_enter_trace);
+		g_sdk.m_interfaces.m_trace->trace_ray(ray, mask_shot_hull | contents_hitbox, &filter, &data.m_enter_trace);
 
-		clip_trace_to_players(data.m_position, end + data.m_direction * 40.0f, MASK_SHOT_HULL | CONTENTS_HITBOX, &filter, &data.m_enter_trace);
+		clip_trace_to_players(data.m_position, end + data.m_direction * 40.0f, mask_shot_hull | contents_hitbox, &filter, &data.m_enter_trace);
 
-		const auto enter_surface_data = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.surfaceProps);
+		const auto enter_surface_data = g_sdk.m_interfaces.m_physics_surface_props->get_surface_data(data.m_enter_trace.m_surface.m_surface_props);
 
 		if (data.m_enter_trace.m_fraction == 1.0f)
 			break;
@@ -314,7 +314,7 @@ bool c_autowall::simulate_fire_bullet(fire_bullet_data_t& data) const
 	return false;
 }
 
-void c_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int mask, i_handle_entity* entity, const int collision_group, c_game_trace* trace)
+void i_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int mask, i_handle_entity* entity, const int collision_group, c_game_trace* trace)
 {
 	/* @ida: https://imgur.com/62wteAl
 	 * module: server; sig: E8 ? ? ? ? 8B 45 2C
@@ -384,7 +384,7 @@ void c_autowall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& ab
 		if (range < 0.0f || range > 60.0f)
 			continue;
 
-		g_sdk.m_interfaces.m_trace->clip_ray_to_entity(ray, mask | CONTENTS_HITBOX, entity, &game_trace);
+		g_sdk.m_interfaces.m_trace->clip_ray_to_entity(ray, mask | contents_hitbox, entity, &game_trace);
 
 		if (game_trace.m_fraction < smallest_fraction)
 		{

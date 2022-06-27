@@ -123,6 +123,9 @@
     <ClCompile Include="cheat\functions\misc\logs system\logs.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="cheat\functions\legitbot\legitbot.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sdk\interfaces\interfaces.h">
@@ -660,6 +663,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_render_view.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="cheat\functions\legitbot\legitbot.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
