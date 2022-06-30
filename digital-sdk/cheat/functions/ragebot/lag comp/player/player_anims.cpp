@@ -36,14 +36,14 @@ void c_player_lagcomp::on_frame()
             m_current_records[i].emplace_front(lag_record);
           
             std::array < animlayer_t, animation_layer_count > animation_layers{};
-            c_animstate animstate;
+            c_anim_state animstate;
 
             memcpy(animation_layers.data(), entity->get_anim_layers(), sizeof(animlayer_t) * animation_layer_count);
-            memcpy(&animstate, entity->get_anim_state(), sizeof(c_animstate));
+            memcpy(&animstate, entity->get_anim_state(), sizeof(c_anim_state));
             {
                 update_player(entity);
             }
-            memcpy(entity->get_anim_state(), &animstate, sizeof(c_animstate));
+            memcpy(entity->get_anim_state(), &animstate, sizeof(c_anim_state));
             memcpy(entity->get_anim_layers(), animation_layers.data(), sizeof(animlayer_t) * animation_layer_count);
 
             build_matrix(entity, lag_record.m_matrices.at(main_matrix).data(), bone_used_by_anything);

@@ -345,13 +345,13 @@ bool c_base_player::is_breakable()
 	return true;
 }
 
-c_animstate* c_base_player::get_anim_state()
+c_anim_state* c_base_player::get_anim_state()
 {
 	if (!this)
 		return nullptr;
 
 	/* @ida: https://prnt.sc/26pb622 */
-	return *reinterpret_cast<c_animstate**>(reinterpret_cast<DWORD>(this) + 0x9960);
+	return *reinterpret_cast<c_anim_state**>(reinterpret_cast<DWORD>(this) + 0x9960);
 }
 
 animlayer_t* c_base_player::get_anim_layers()

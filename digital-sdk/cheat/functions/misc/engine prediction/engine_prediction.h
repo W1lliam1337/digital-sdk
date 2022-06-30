@@ -4,7 +4,6 @@
 
 class c_engine_prediction : public c_singleton<c_engine_prediction>
 {
-protected:
 	uintptr_t m_prediction_player{};
 	uintptr_t m_prediction_seed{};
 

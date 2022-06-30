@@ -55,9 +55,9 @@ void c_anti_aimbot::pitch()
 	switch (g_cfg.m_anti_aim.m_pitch_mode)
 	{
 	case e_pitch_mode::down:
-	{ modifier_value = -89.0f; } break;
-	case e_pitch_mode::up:
 	{ modifier_value = 89.0f; } break;
+	case e_pitch_mode::up:
+	{ modifier_value = -89.0f; } break;
 	default: break;
 	}
 

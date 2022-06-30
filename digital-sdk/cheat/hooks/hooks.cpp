@@ -15,7 +15,9 @@ void c_hooks::init()
 	const auto present = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_direct_device))[17]);
 	const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_surface))[67]);
 	const auto paint_traverse = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_panel))[41]);
-	const auto override_view = c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58"));
+	const auto override_view = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
+	const auto modify_eye_position = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
+	const auto calculate_view = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
 
 	HOOK(create_move, hk_create_move_proxy, g_sdk.m_hooks_data.m_originals.m_create_move);
 	HOOK(frame_stage_notify, hk_frame_stage_notify, g_sdk.m_hooks_data.m_originals.m_frame_stage_notify);
@@ -24,6 +26,8 @@ void c_hooks::init()
 	HOOK(lock_cursor, hk_lock_cursor, g_sdk.m_hooks_data.m_originals.m_lock_cursor);
 	HOOK(paint_traverse, hk_paint_traverse, g_sdk.m_hooks_data.m_originals.m_paint_traverse);
 	HOOK(override_view, hk_override_view, g_sdk.m_hooks_data.m_originals.m_override_view);
+	HOOK(modify_eye_position, hk_modify_eye_position, g_sdk.m_hooks_data.m_originals.m_modify_eye_position);
+	HOOK(calculate_view, hk_calculate_view, g_sdk.m_hooks_data.m_originals.m_calculate_view);
 
 	MH_EnableHook(nullptr);
 }
@@ -250,4 +254,59 @@ void __fastcall c_hooks::hk_override_view(void* ecx, void* edx, c_view_setup* se
 
 	g_sdk.m_interfaces.m_input->m_camera_offset.z = static_cast<float>(g_cfg.m_misc.m_third_person_distance);
 	return g_sdk.m_hooks_data.m_originals.m_override_view(ecx, setup_view);
+}
+
+void __fastcall c_hooks::hk_modify_eye_position(void* ecx, void* edx, vec3_t& input_eye_pos)
+{
+	const auto anim_state = static_cast<c_anim_state*>(ecx);
+	if (!anim_state)
+		return g_sdk.m_hooks_data.m_originals.m_modify_eye_position(ecx, edx, input_eye_pos);
+
+	if (!anim_state->m_hit_ground && anim_state->m_duck_amount == 0.0f)
+	{
+		anim_state->m_smooth_height_valid = false;
+		anim_state->m_camera_smooth_height = 0x7F7FFFFF;
+		return;
+	}
+
+	using bone_lookup_fn = int(__thiscall*)(void*, const char*);
+	static auto lookup_bone = reinterpret_cast<bone_lookup_fn>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75 14 8B 46 04 8D 4E 04 FF 50 20 85 C0 74 07 8B CE E8 ? ? ? ? 8B 8E ? ? ? ? 85 C9 0F 84")));
+
+	auto head_pos = anim_state->m_player->get_bone_cache()[lookup_bone(anim_state->m_player, _("head_0"))].at(3);
+	head_pos.z += 1.7f;
+
+	if (input_eye_pos.z > head_pos.z)
+	{
+		const auto lol = abs(input_eye_pos.z - head_pos.z);
+		const auto v22 = (lol - 4.0) * 0.16666667;
+		float v23;
+
+		if (v22 >= 0.0)
+			v23 = fminf(v22, 1.0);
+		else
+			v23 = 0.0;
+
+		input_eye_pos.z = (head_pos.z - input_eye_pos.z) * (v23 * v23 * 3.0 - v23 * v23 * 2.0 * v23) +
+			input_eye_pos.z;
+	}
+}
+
+void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near, float& z_far, float& fov)
+{
+	/* @note: fixing weird landing animation
+	 * @ref eng: https://www.unknowncheats.me/forum/counterstrike-global-offensive/504841-fixing-weird-landing-animation.html
+	 * @ref ru: https://yougame.biz/threads/258573/
+	*/
+	const auto player = static_cast<c_base_player*>(ecx);
+
+	if (!player || !g_sdk.m_local() || player != g_sdk.m_local())
+		return g_sdk.m_hooks_data.m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
+
+	const auto backup_use_new_anim_state = player->should_use_new_anim_state();
+
+	player->should_use_new_anim_state() = false;
+	{
+		g_sdk.m_hooks_data.m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
+	}
+	player->should_use_new_anim_state() = backup_use_new_anim_state;
 }

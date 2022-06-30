@@ -207,7 +207,17 @@ struct animstate_pose_param_cache_t {
 	void set_value(c_base_player* e, float val);
 };
 
-class c_animstate {
+struct procedural_foot_t
+{
+	vec3_t m_vecPosAnim;
+	vec3_t m_vecPosAnimLast;
+	vec3_t m_vecPosPlant;
+	vec3_t m_vecPlantVel;
+	float m_LockAmount;
+	float m_LastPlantTime;
+};
+
+class c_anim_state {
 public:
 	std::uint8_t pad_0x0000[0x4]; //0x0000
 	bool m_force_update; //0x0005 
@@ -275,9 +285,16 @@ public:
 	animstate_pose_param_cache_t m_move_blend_walk_pose; //0x027C
 	animstate_pose_param_cache_t m_move_blend_run_pose; //0x0288
 	animstate_pose_param_cache_t m_move_blend_crouch_pose; //0x0294
-	uint8_t pad_0x02A0[0x4]; //0x02A0
-	float m_vel_unk; //0x02A4 
-	uint8_t pad_0x02A8[0x86]; //0x02A8
+	float m_duration_move_weight_is_too_high;
+	float m_static_approach_speed;
+	int m_previous_move_state;
+	float m_stutter_step;
+	float m_action_weight_bias_remainder;
+	procedural_foot_t m_foot_left;
+	procedural_foot_t m_foot_right;
+	float m_camera_smooth_height;
+	bool m_smooth_height_valid;
+	float m_last_time_velocity_over_ten;
 	float m_min_yaw; //0x0330 
 	float m_max_yaw; //0x0334 
 	float m_max_pitch; //0x0338 

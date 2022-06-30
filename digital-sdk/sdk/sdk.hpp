@@ -80,6 +80,8 @@ using lock_cursor_t = void(__thiscall*)(void*);
 using paint_traverse_t = void(__thiscall*)(void*, vgui::vpanel, bool, bool);
 using fsn_t = void(__thiscall*)(void*, int);
 using override_view_t = void(__thiscall*)(void*, c_view_setup*);
+using modify_eye_position_t = void(__thiscall* )(void*, void*, vec3_t&);
+using calculate_view_t = void(__fastcall* )(void*, void*, vec3_t&, qangle_t&, float&, float&, float&);
 
 class c_sdk
 {
@@ -175,6 +177,8 @@ public:
 			paint_traverse_t m_paint_traverse{};
 			fsn_t m_frame_stage_notify{};
 			override_view_t m_override_view{};
+			modify_eye_position_t m_modify_eye_position{};
+			calculate_view_t m_calculate_view{};
 		}m_originals{};
 	}m_hooks_data{};
 

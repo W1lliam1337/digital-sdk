@@ -97,7 +97,7 @@ public:
 	GET_NETVAR(bool, get_client_side_animation, _("DT_BaseAnimating"), _("m_bClientSideAnimation"));
 	GET_NETVAR(qangle_t, get_aim_punch_angle, _("DT_BasePlayer"), _("m_aimPunchAngle"));
 	GET_NETVAR(int, get_shots_fired, _("DT_CSPlayer"), _("m_iShotsFired"));
-
+	GET_OFFSET(should_use_new_anim_state, int, 0x9B14);
 	GET_OFFSET(get_take_damage, int, 0x280);
 	GET_OFFSET(get_bone_accessor, c_bone_accressor, 0x26A8);
 	GET_OFFSET(get_bone_cache, CUtlVector<matrix_t>, 0x2914)
@@ -121,7 +121,7 @@ public:
 	void select_item(const char* string, int sub_type);
 	void physics_simulated_entites();
 	void post_think();
-	c_animstate* get_anim_state();
+	c_anim_state* get_anim_state();
 	animlayer_t* get_anim_layers();
 	void set_abs_origin(vec3_t position);
 	int get_sequence_activity(int sequence);
