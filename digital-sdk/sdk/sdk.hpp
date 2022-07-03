@@ -61,6 +61,7 @@
 #include "interfaces/classes/i_breakable_with_prop_data.h"
 #include "interfaces/classes/i_event_manager.h"
 #include "interfaces/classes/i_render_view.h"
+#include "interfaces/classes/i_keyvalues_system.h"
 #include "entity/enums.h"
 #include "entity/classes.h"
 #include "entity/entity.h"
@@ -82,7 +83,7 @@ using fsn_t = void(__thiscall*)(void*, int);
 using override_view_t = void(__thiscall*)(void*, c_view_setup*);
 using modify_eye_position_t = void(__thiscall* )(void*, void*, vec3_t&);
 using calculate_view_t = void(__fastcall* )(void*, void*, vec3_t&, qangle_t&, float&, float&, float&);
-
+using alloc_keyvalues_memory_t = void* (__fastcall*)(i_keyvalues_system*, int, int);
 class c_sdk
 {
 public:
@@ -145,6 +146,7 @@ public:
 		i_physics_surface_props* m_physics_surface_props{};
 		i_engine_trace* m_trace{};
 		i_game_event_manager* m_event_manager{};
+		i_keyvalues_system* m_keyvalues{};
 	}m_interfaces{};
 
 	struct m_module_list_t
@@ -179,6 +181,7 @@ public:
 			override_view_t m_override_view{};
 			modify_eye_position_t m_modify_eye_position{};
 			calculate_view_t m_calculate_view{};
+			alloc_keyvalues_memory_t m_alloc_keyvalues_memory{};
 		}m_originals{};
 	}m_hooks_data{};
 

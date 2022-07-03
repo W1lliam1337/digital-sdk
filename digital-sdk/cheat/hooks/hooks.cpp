@@ -15,6 +15,7 @@ void c_hooks::init()
 	const auto present = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_direct_device))[17]);
 	const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_surface))[67]);
 	const auto paint_traverse = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_panel))[41]);
+	const auto alloc_keyvalues_memory = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_sdk.m_interfaces.m_keyvalues))[2]);
 	const auto override_view = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
 	const auto modify_eye_position = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
 	const auto calculate_view = static_cast<void*>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
@@ -28,6 +29,7 @@ void c_hooks::init()
 	HOOK(override_view, hk_override_view, g_sdk.m_hooks_data.m_originals.m_override_view);
 	HOOK(modify_eye_position, hk_modify_eye_position, g_sdk.m_hooks_data.m_originals.m_modify_eye_position);
 	HOOK(calculate_view, hk_calculate_view, g_sdk.m_hooks_data.m_originals.m_calculate_view);
+	HOOK(alloc_keyvalues_memory, hk_alloc_keyvalues_memory, g_sdk.m_hooks_data.m_originals.m_alloc_keyvalues_memory);
 
 	MH_EnableHook(nullptr);
 }
@@ -309,4 +311,15 @@ void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_ori
 		g_sdk.m_hooks_data.m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
 	}
 	player->should_use_new_anim_state() = backup_use_new_anim_state;
+}
+
+void* __fastcall c_hooks::hk_alloc_keyvalues_memory(i_keyvalues_system* thisptr, int edx, int iSize)
+{
+	static const std::uintptr_t engine = get_absolute_address((uintptr_t)c_utils::get()->find_sig(g_sdk.m_modules.m_engine_dll, _("E8 ? ? ? ? 83 C4 08 84 C0 75 10 FF 75 0C")) + 0x1) + 0x4A;
+	static const std::uintptr_t client = get_absolute_address((uintptr_t)c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("E8 ? ? ? ? 83 C4 08 84 C0 75 10")) + 0x1) + 0x3E;
+
+	if (const std::uintptr_t return_address = reinterpret_cast<std::uintptr_t>(_ReturnAddress()); return_address == engine || return_address == client)
+		return nullptr;
+
+	return g_sdk.m_hooks_data.m_originals.m_alloc_keyvalues_memory(thisptr, edx, iSize);
 }

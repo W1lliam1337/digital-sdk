@@ -198,6 +198,7 @@
     <ClCompile Include="cheat\functions\misc\events\events.cpp" />
     <ClCompile Include="cheat\functions\misc\logs system\logs.cpp" />
     <ClCompile Include="cheat\functions\legitbot\legitbot.cpp" />
+    <ClCompile Include="dependencies\keyvalues\keyvalues.cpp" />
     <ClCompile Include="sdk\math\math.cpp" />
     <ClCompile Include="dependencies\config manager\config_manager.cpp" />
     <ClCompile Include="sdk\utils\handle\base_handle.cpp" />
@@ -320,8 +321,10 @@
     <ClInclude Include="cheat\functions\misc\events\events.h" />
     <ClInclude Include="cheat\functions\misc\logs system\logs.h" />
     <ClInclude Include="cheat\functions\legitbot\legitbot.h" />
+    <ClInclude Include="dependencies\keyvalues\keyvalues.h" />
     <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h" />
     <ClInclude Include="sdk\interfaces\classes\i_event_manager.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_keyvalues_system.h" />
     <ClInclude Include="sdk\interfaces\classes\i_multiplayer_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_convar.h" />

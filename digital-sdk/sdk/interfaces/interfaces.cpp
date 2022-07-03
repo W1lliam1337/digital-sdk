@@ -68,4 +68,6 @@ void c_interfaces::init() const
 	g_sdk.m_interfaces.m_direct_device = **reinterpret_cast<IDirect3DDevice9***>(c_utils::find_sig(
 		g_sdk.m_modules.m_shader_dll,
 		_("A1 ? ? ? ? 50 8B 08 FF 51 0C")) + 0x1);
+
+	g_sdk.m_interfaces.m_keyvalues = reinterpret_cast<keyvalues_system_fn>(GetExportAddress(GetModuleHandleA(_("vstdlib.dll")), _("KeyValuesSystem")))();
 }

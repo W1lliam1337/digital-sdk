@@ -126,6 +126,9 @@
     <ClCompile Include="cheat\functions\legitbot\legitbot.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="dependencies\keyvalues\keyvalues.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sdk\interfaces\interfaces.h">
@@ -666,6 +669,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="cheat\functions\legitbot\legitbot.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\keyvalues\keyvalues.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_keyvalues_system.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

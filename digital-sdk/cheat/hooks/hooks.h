@@ -15,6 +15,7 @@
 
 struct qangle_t;
 class c_view_setup;
+class i_keyvalues_system;
 class matrix_t;
 class vec3_t;
 using quaternion = float[4];
@@ -34,8 +35,14 @@ class c_hooks : public c_singleton<c_hooks>
 	static void __fastcall hk_override_view(void* ecx, void* edx, c_view_setup* setup_view);
 	static void __fastcall hk_modify_eye_position(void* ecx, void* edx, vec3_t& input_eye_pos);
 	static void __fastcall hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near, float& z_far, float& fov);
+	static void* __fastcall	hk_alloc_keyvalues_memory(i_keyvalues_system* thisptr, int edx, int iSize);
 public:
 	static void init();
 	static void init_wnd_proc();
 };
 
+// move this lol
+__forceinline std::uintptr_t get_absolute_address(const std::uintptr_t uRelativeAddress)
+{
+	return uRelativeAddress + 0x4 + *reinterpret_cast<std::int32_t*>(uRelativeAddress);
+}
