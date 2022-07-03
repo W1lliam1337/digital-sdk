@@ -62,6 +62,8 @@
 #include "interfaces/classes/i_event_manager.h"
 #include "interfaces/classes/i_render_view.h"
 #include "interfaces/classes/i_keyvalues_system.h"
+#include "interfaces/classes/i_client_mode.h"
+#include "interfaces/classes/i_memalloc.h"
 #include "entity/enums.h"
 #include "entity/classes.h"
 #include "entity/entity.h"
@@ -128,6 +130,7 @@ public:
 	struct m_interfaces_t
 	{
 		i_base_client_dll* m_client{};
+		i_client_mode* m_client_mode{};
 		i_engine* m_engine{};
 		i_input* m_input{};
 		i_global_vars_base* m_globals{};
@@ -147,6 +150,7 @@ public:
 		i_engine_trace* m_trace{};
 		i_game_event_manager* m_event_manager{};
 		i_keyvalues_system* m_keyvalues{};
+		i_memalloc* m_memalloc{};
 	}m_interfaces{};
 
 	struct m_module_list_t

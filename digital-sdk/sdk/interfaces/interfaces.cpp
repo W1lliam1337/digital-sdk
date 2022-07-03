@@ -70,4 +70,8 @@ void c_interfaces::init() const
 		_("A1 ? ? ? ? 50 8B 08 FF 51 0C")) + 0x1);
 
 	g_sdk.m_interfaces.m_keyvalues = reinterpret_cast<keyvalues_system_fn>(GetExportAddress(GetModuleHandleA(_("vstdlib.dll")), _("KeyValuesSystem")))();
+
+	g_sdk.m_interfaces.m_memalloc = *static_cast<i_memalloc**>(GetExportAddress(GetModuleHandleA(_("tier0.dll")), _("g_pMemAlloc")));
+
+	g_sdk.m_interfaces.m_client_mode = **reinterpret_cast<i_client_mode***>((*(DWORD**)g_sdk.m_interfaces.m_client)[10] + 0x5);
 }

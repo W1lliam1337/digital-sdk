@@ -323,8 +323,10 @@
     <ClInclude Include="cheat\functions\legitbot\legitbot.h" />
     <ClInclude Include="dependencies\keyvalues\keyvalues.h" />
     <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_client_mode.h" />
     <ClInclude Include="sdk\interfaces\classes\i_event_manager.h" />
     <ClInclude Include="sdk\interfaces\classes\i_keyvalues_system.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_memalloc.h" />
     <ClInclude Include="sdk\interfaces\classes\i_multiplayer_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_convar.h" />

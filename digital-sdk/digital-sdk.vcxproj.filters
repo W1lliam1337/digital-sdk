@@ -677,6 +677,12 @@
     <ClInclude Include="sdk\interfaces\classes\i_keyvalues_system.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_client_mode.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_memalloc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\minhook\libs\MinHook.lib" />
