@@ -381,6 +381,28 @@ int c_base_player::get_sequence_activity(const int sequence)
 	return sequence_activity_fn(this, studio_hdr, sequence);
 }
 
+bool c_base_player::can_fire(const int shift_time) const
+{
+	if (!this)
+		return false;
+
+	const auto active_weapon = get_active_weapon();
+	if (!active_weapon)
+		return false;
+
+	const auto server_time = TICKS_TO_TIME(this->get_tick_base() - shift_time);
+	if (active_weapon->get_clip1() <= 0)
+		return false;
+
+	if (active_weapon->get_postpone_fire_ready_time() >= server_time || active_weapon->m_activity() != 208)
+		return false;
+
+	if (this->get_next_attack() > server_time)
+		return false;
+
+	return active_weapon->get_next_primary_attack() <= server_time;
+}
+
 void c_weapon::update_accuracy_penalty()
 {
 	if (!this)

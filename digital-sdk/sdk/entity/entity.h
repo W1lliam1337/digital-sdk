@@ -97,8 +97,10 @@ public:
 	GET_NETVAR(bool, get_client_side_animation, _("DT_BaseAnimating"), _("m_bClientSideAnimation"));
 	GET_NETVAR(qangle_t, get_aim_punch_angle, _("DT_BasePlayer"), _("m_aimPunchAngle"));
 	GET_NETVAR(int, get_shots_fired, _("DT_CSPlayer"), _("m_iShotsFired"));
+	GET_NETVAR(float, get_next_attack, _("DT_BaseCombatCharacter"), _("m_flNextAttack"));
 	GET_OFFSET(should_use_new_anim_state, int, 0x9B14);
 	GET_OFFSET(get_take_damage, int, 0x280);
+	GET_DATAMAP(vec3_t, m_vec_abs_velocity);
 	GET_OFFSET(get_bone_accessor, c_bone_accressor, 0x26A8);
 	GET_OFFSET(get_bone_cache, CUtlVector<matrix_t>, 0x2914)
 
@@ -125,6 +127,7 @@ public:
 	animlayer_t* get_anim_layers();
 	void set_abs_origin(vec3_t position);
 	int get_sequence_activity(int sequence);
+	bool can_fire(int shift_time = 0) const;
 	bool using_standard_weapons_in_vehicle();
 	bool is_breakable();
 	bool post_think_v_physics();
@@ -171,6 +174,9 @@ public:
 	GET_NETVAR(float, get_recoil_index, _("DT_WeaponCSBase"), _("m_flRecoilIndex"));
 	GET_NETVAR(float, get_accuracy_penalty, _("DT_WeaponCSBase"), _("m_fAccuracyPenalty"));
 	GET_NETVAR(float, get_throw_strength, _("DT_BaseCSGrenade"), _("m_flThrowStrength"));
+	GET_NETVAR(int, get_clip1, _("DT_BaseCombatWeapon"), _("m_iClip1"));
+	GET_NETVAR(int, get_clip2, _("DT_BaseCombatWeapon"), _("m_iClip2"));
+	GET_NETVAR(float, get_postpone_fire_ready_time, _("DT_WeaponCSBase"), _("m_flPostponeFireReadyTime"));
 	GET_OFFSET(get_thrower, c_handle < c_base_player >, 0x29B0);
 	GET_DATAMAP(int, m_activity);
 
@@ -185,6 +191,7 @@ public:
 	bool is_knife();
 	bool is_gun();
 
+	bool can_fire();
 	void update_accuracy_penalty();
 	float get_spread();
 	float get_inaccuracy();

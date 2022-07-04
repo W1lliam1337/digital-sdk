@@ -37,7 +37,7 @@ public:
 	const c_base_handle& operator=(const i_handle_entity* pEntity);
 	const c_base_handle& set(const i_handle_entity* pEntity);
 
-	static i_handle_entity* get();
+	[[nodiscard]] i_handle_entity* get() const;
 protected:
 	unsigned long  m_Index;
 };
