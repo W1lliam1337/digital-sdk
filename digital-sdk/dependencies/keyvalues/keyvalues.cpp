@@ -19,7 +19,7 @@ c_keyvalues::~c_keyvalues()
 void* c_keyvalues::operator new(std::size_t nAllocSize)
 {
 	// manually allocate memory, because game constructor doesn't call it automatically
-	return g_sdk.m_interfaces.m_keyvalues->AllocKeyValuesMemory(nAllocSize);
+	return g_sdk.m_interfaces.m_keyvalues->alloc_keyvalues_memory(nAllocSize);
 }
 
 void c_keyvalues::operator delete(void* pMemory)
@@ -30,12 +30,12 @@ void c_keyvalues::operator delete(void* pMemory)
 }
 
 
-const char* c_keyvalues::GetName()
+const char* c_keyvalues::get_name()
 {
-	return g_sdk.m_interfaces.m_keyvalues->GetStringForSymbol(this->uKeyNameCaseSensitive1 | (this->uKeyNameCaseSensitive2 << 8));
+	return g_sdk.m_interfaces.m_keyvalues->get_string_for_symbol(this->u_key_name_case_sensitive1 | (this->u_key_name_case_sensitive2 << 8));
 }
 
-c_keyvalues* c_keyvalues::FromString(const char* szName, const char* szValue)
+c_keyvalues* c_keyvalues::from_string(const char* szName, const char* szValue)
 {
 	static auto oFromString = c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 81 EC ? ? ? ? 85 D2 53")); // @xref: "#empty#", "#int#"
 	c_keyvalues* pKeyValues = nullptr;
@@ -56,7 +56,7 @@ c_keyvalues* c_keyvalues::FromString(const char* szName, const char* szValue)
 	return pKeyValues;
 }
 
-void c_keyvalues::LoadFromBuffer(char const* szResourceName, const char* szBuffer, void* pFileSystem, const char* szPathID, GetSymbolProcFn pfnEvaluateSymbolProc)
+void c_keyvalues::load_from_buffer(char const* szResourceName, const char* szBuffer, void* pFileSystem, const char* szPathID, get_symbol_proc_fn pfnEvaluateSymbolProc)
 {
 	using LoadFromBufferFn = void(__thiscall*)(void*, const char*, const char*, void*, const char*, void*, void*);
 	static auto oLoadFromBuffer = reinterpret_cast<LoadFromBufferFn>(c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89"))); // @xref: "KeyValues::LoadFromBuffer(%s%s%s): Begin"
@@ -65,7 +65,7 @@ void c_keyvalues::LoadFromBuffer(char const* szResourceName, const char* szBuffe
 	oLoadFromBuffer(this, szResourceName, szBuffer, pFileSystem, szPathID, pfnEvaluateSymbolProc, nullptr);
 }
 
-bool c_keyvalues::LoadFromFile(void* pFileSystem, const char* szResourceName, const char* szPathID, GetSymbolProcFn pfnEvaluateSymbolProc)
+bool c_keyvalues::load_from_file(void* pFileSystem, const char* szResourceName, const char* szPathID, get_symbol_proc_fn pfnEvaluateSymbolProc)
 {
 	using LoadFromFileFn = bool(__thiscall*)(void*, void*, const char*, const char*, void*);
 	static auto oLoadFromFile = reinterpret_cast<LoadFromFileFn>(c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 14 53 56 8B 75 08 57 FF"))); // @xref: "rb"
@@ -74,7 +74,7 @@ bool c_keyvalues::LoadFromFile(void* pFileSystem, const char* szResourceName, co
 	return oLoadFromFile(this, pFileSystem, szResourceName, szPathID, pfnEvaluateSymbolProc);
 }
 
-c_keyvalues* c_keyvalues::FindKey(const char* szKeyName, const bool bCreate)
+c_keyvalues* c_keyvalues::find_key(const char* szKeyName, const bool bCreate)
 {
 	using FindKeyFn = c_keyvalues * (__thiscall*)(void*, const char*, bool);
 	static auto oFindKey = reinterpret_cast<FindKeyFn>(c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 EC 1C 53 8B D9 85 DB")));
@@ -83,21 +83,21 @@ c_keyvalues* c_keyvalues::FindKey(const char* szKeyName, const bool bCreate)
 	return oFindKey(this, szKeyName, bCreate);
 }
 
-int c_keyvalues::GetInt(const char* szKeyName, const int iDefaultValue)
+int c_keyvalues::get_int(const char* szKeyName, const int iDefaultValue)
 {
-	c_keyvalues* pSubKey = this->FindKey(szKeyName, false);
+	c_keyvalues* pSubKey = this->find_key(szKeyName, false);
 
 	if (pSubKey == nullptr)
 		return iDefaultValue;
 
-	switch (pSubKey->iDataType)
+	switch (pSubKey->i_data_type)
 	{
 	case TYPE_STRING:
-		return std::atoi(pSubKey->szValue);
+		return std::atoi(pSubKey->sz_value);
 	case TYPE_WSTRING:
-		return _wtoi(pSubKey->wszValue);
+		return _wtoi(pSubKey->wsz_value);
 	case TYPE_FLOAT:
-		return static_cast<int>(pSubKey->flValue);
+		return static_cast<int>(pSubKey->fl_value);
 	case TYPE_UINT64:
 		// can't convert, since it would lose data
 		assert(false);
@@ -106,35 +106,35 @@ int c_keyvalues::GetInt(const char* szKeyName, const int iDefaultValue)
 		break;
 	}
 
-	return pSubKey->iValue;
+	return pSubKey->i_value;
 }
 
-float c_keyvalues::GetFloat(const char* szKeyName, const float flDefaultValue)
+float c_keyvalues::get_float(const char* szKeyName, const float flDefaultValue)
 {
-	c_keyvalues* pSubKey = this->FindKey(szKeyName, false);
+	c_keyvalues* pSubKey = this->find_key(szKeyName, false);
 
 	if (pSubKey == nullptr)
 		return flDefaultValue;
 
-	switch (pSubKey->iDataType)
+	switch (pSubKey->i_data_type)
 	{
 	case TYPE_STRING:
-		return static_cast<float>(std::atof(pSubKey->szValue));
+		return static_cast<float>(std::atof(pSubKey->sz_value));
 	case TYPE_WSTRING:
-		return std::wcstof(pSubKey->wszValue, nullptr);
+		return std::wcstof(pSubKey->wsz_value, nullptr);
 	case TYPE_FLOAT:
-		return pSubKey->flValue;
+		return pSubKey->fl_value;
 	case TYPE_INT:
-		return static_cast<float>(pSubKey->iValue);
+		return static_cast<float>(pSubKey->i_value);
 	case TYPE_UINT64:
-		return static_cast<float>(*reinterpret_cast<std::uint64_t*>(pSubKey->szValue));
+		return static_cast<float>(*reinterpret_cast<std::uint64_t*>(pSubKey->sz_value));
 	case TYPE_PTR:
 	default:
 		return 0.0f;
 	}
 }
 
-const char* c_keyvalues::GetString(const char* szKeyName, const char* szDefaultValue)
+const char* c_keyvalues::get_string(const char* szKeyName, const char* szDefaultValue)
 {
 	using GetStringFn = const char* (__thiscall*)(void*, const char*, const char*);
 	static auto oGetString = reinterpret_cast<GetStringFn>(c_utils::get()->find_sig(g_sdk.m_modules.m_client_dll, _("55 8B EC 83 E4 C0 81 EC ? ? ? ? 53 8B 5D 08")));
@@ -143,9 +143,9 @@ const char* c_keyvalues::GetString(const char* szKeyName, const char* szDefaultV
 	return oGetString(this, szKeyName, szDefaultValue);
 }
 
-void c_keyvalues::SetString(const char* szKeyName, const char* szStringValue)
+void c_keyvalues::set_string(const char* szKeyName, const char* szStringValue)
 {
-	c_keyvalues* pSubKey = FindKey(szKeyName, true);
+	c_keyvalues* pSubKey = find_key(szKeyName, true);
 
 	if (pSubKey == nullptr)
 		return;
@@ -157,32 +157,32 @@ void c_keyvalues::SetString(const char* szKeyName, const char* szStringValue)
 	oSetString(pSubKey, szStringValue);
 }
 
-void c_keyvalues::SetInt(const char* szKeyName, const int iValue)
+void c_keyvalues::set_int(const char* szKeyName, const int iValue)
 {
-	c_keyvalues* pSubKey = FindKey(szKeyName, true);
+	c_keyvalues* pSubKey = find_key(szKeyName, true);
 
 	if (pSubKey == nullptr)
 		return;
 
-	pSubKey->iValue = iValue;
-	pSubKey->iDataType = TYPE_INT;
+	pSubKey->i_value = iValue;
+	pSubKey->i_data_type = TYPE_INT;
 }
 
-void c_keyvalues::SetUint64(const char* szKeyName, const int nLowValue, const int nHighValue)
+void c_keyvalues::set_uint64(const char* szKeyName, const int nLowValue, const int nHighValue)
 {
-	c_keyvalues* pSubKey = FindKey(szKeyName, true);
+	c_keyvalues* pSubKey = find_key(szKeyName, true);
 
 	if (pSubKey == nullptr)
 		return;
 
 	// delete the old value
-	delete[] pSubKey->szValue;
+	delete[] pSubKey->sz_value;
 
 	// make sure we're not storing the WSTRING - as we're converting over to STRING
-	delete[] pSubKey->wszValue;
-	pSubKey->wszValue = nullptr;
+	delete[] pSubKey->wsz_value;
+	pSubKey->wsz_value = nullptr;
 
-	pSubKey->szValue = new char[sizeof(std::uint64_t)];
-	*reinterpret_cast<std::uint64_t*>(pSubKey->szValue) = static_cast<std::uint64_t>(nHighValue) << 32ULL | nLowValue;
-	pSubKey->iDataType = TYPE_UINT64;
+	pSubKey->sz_value = new char[sizeof(std::uint64_t)];
+	*reinterpret_cast<std::uint64_t*>(pSubKey->sz_value) = static_cast<std::uint64_t>(nHighValue) << 32ULL | nLowValue;
+	pSubKey->i_data_type = TYPE_UINT64;
 }

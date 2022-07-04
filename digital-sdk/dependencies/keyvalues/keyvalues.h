@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "../../sdk/interfaces/classes/i_keyvalues_system.h"
 
-using GetSymbolProcFn = bool(__cdecl*)(const char*);
+using get_symbol_proc_fn = bool(__cdecl*)(const char*);
 
 class c_keyvalues
 {
@@ -30,49 +30,49 @@ public:
 	void* operator new(std::size_t nAllocSize);
 	void operator delete(void* pMemory);
 
-	const char* GetName();
+	const char* get_name();
 
-	static c_keyvalues* FromString(const char* szName, const char* szValue);
-	void LoadFromBuffer(char const* szResourceName, const char* szBuffer, void* pFileSystem = nullptr, const char* szPathID = nullptr, GetSymbolProcFn pfnEvaluateSymbolProc = nullptr);
-	bool LoadFromFile(void* pFileSystem, const char* szResourceName, const char* szPathID = nullptr, GetSymbolProcFn pfnEvaluateSymbolProc = nullptr);
+	static c_keyvalues* from_string(const char* szName, const char* szValue);
+	void load_from_buffer(char const* szResourceName, const char* szBuffer, void* pFileSystem = nullptr, const char* szPathID = nullptr, get_symbol_proc_fn pfnEvaluateSymbolProc = nullptr);
+	bool load_from_file(void* pFileSystem, const char* szResourceName, const char* szPathID = nullptr, get_symbol_proc_fn pfnEvaluateSymbolProc = nullptr);
 
-	c_keyvalues* FindKey(const char* szKeyName, const bool bCreate);
+	c_keyvalues* find_key(const char* szKeyName, const bool bCreate);
 
-	int GetInt(const char* szKeyName, const int iDefaultValue);
-	float GetFloat(const char* szKeyName, const float flDefaultValue);
-	const char* GetString(const char* szKeyName, const char* szDefaultValue);
+	int get_int(const char* szKeyName, const int iDefaultValue);
+	float get_float(const char* szKeyName, const float flDefaultValue);
+	const char* get_string(const char* szKeyName, const char* szDefaultValue);
 
-	void SetString(const char* szKeyName, const char* szStringValue);
-	void SetInt(const char* szKeyName, const int iValue);
-	void SetUint64(const char* szKeyName, const int nLowValue, const int nHighValue);
+	void set_string(const char* szKeyName, const char* szStringValue);
+	void set_int(const char* szKeyName, const int iValue);
+	void set_uint64(const char* szKeyName, const int nLowValue, const int nHighValue);
 
-	inline void SetBool(const char* szKeyName, const bool bValue)
+	inline void set_bool(const char* szKeyName, const bool bValue)
 	{
-		SetInt(szKeyName, bValue ? 1 : 0);
+		set_int(szKeyName, bValue ? 1 : 0);
 	}
 
 private:
-	std::uint32_t uKeyName : 24; // 0x00
-	std::uint32_t uKeyNameCaseSensitive1 : 8; // 0x3 // byte, explicitly specify bits due to packing
-	char* szValue; // 0x04
-	wchar_t* wszValue; // 0x08
+	std::uint32_t u_key_name : 24; // 0x00
+	std::uint32_t u_key_name_case_sensitive1 : 8; // 0x3 // byte, explicitly specify bits due to packing
+	char* sz_value; // 0x04
+	wchar_t* wsz_value; // 0x08
 
 	union
 	{
-		int iValue;
-		float flValue;
-		void* pValue;
-		unsigned char arrColor[4];
+		int i_value;
+		float fl_value;
+		void* p_value;
+		unsigned char arr_color[4];
 	}; // 0x0C
 
-	std::int8_t iDataType; // 0x10
-	bool bHasEscapeSequences; // 0x11
-	std::uint16_t uKeyNameCaseSensitive2; // 0x12
-	void* pUnknown14; // 0x14 // seems like IKeyValuesSystem*, but why do they need it here? also calling smth on destructor and cleans up
-	bool bHasCaseInsensitiveKeySymbol; // 0x18
-	c_keyvalues* pPeer; // 0x1C
-	c_keyvalues* pSub; // 0x20
-	c_keyvalues* pChain; // 0x24
-	GetSymbolProcFn	pExpressionGetSymbolProc; // 0x28
+	std::int8_t i_data_type; // 0x10
+	bool b_has_escape_sequences; // 0x11
+	std::uint16_t u_key_name_case_sensitive2; // 0x12
+	void* p_unknown14; // 0x14 // seems like IKeyValuesSystem*, but why do they need it here? also calling smth on destructor and cleans up
+	bool b_has_case_insenseitive_key_symbol; // 0x18
+	c_keyvalues* p_peer; // 0x1C
+	c_keyvalues* p_sub; // 0x20
+	c_keyvalues* p_chain; // 0x24
+	get_symbol_proc_fn	p_expression_get_symbol_proc; // 0x28
 };
 static_assert(sizeof(c_keyvalues) == 0x2C);
