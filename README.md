@@ -47,7 +47,6 @@ enum e_enum;
 - present
 - lock cursor
 - paint traverse
-- frame stage notify
 #
 
 ![App menu](https://i.imgur.com/nHQW7MP.png)
