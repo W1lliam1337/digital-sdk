@@ -109,37 +109,37 @@ struct qangle_t
 
 	qangle_t operator-(void) const
 	{
-		return {-x, -y, -z};
+		return { -x, -y, -z };
 	}
 
 	qangle_t operator+(const qangle_t& v) const
 	{
-		return {x + v.x, y + v.y, z + v.z};
+		return { x + v.x, y + v.y, z + v.z };
 	}
 
 	qangle_t operator-(const qangle_t& v) const
 	{
-		return {x - v.x, y - v.y, z - v.z};
+		return { x - v.x, y - v.y, z - v.z };
 	}
 
 	qangle_t operator*(float fl) const
 	{
-		return {x * fl, y * fl, z * fl};
+		return { x * fl, y * fl, z * fl };
 	}
 
 	qangle_t operator*(const qangle_t& v) const
 	{
-		return {x * v.x, y * v.y, z * v.z};
+		return { x * v.x, y * v.y, z * v.z };
 	}
 
 	qangle_t operator/(const float fl) const
 	{
-		return {x / fl, y / fl, z / fl};
+		return { x / fl, y / fl, z / fl };
 	}
 
 	qangle_t operator/(const qangle_t& v) const
 	{
-		return {x / v.x, y / v.y, z / v.z};
+		return { x / v.x, y / v.y, z / v.z };
 	}
 
 	[[nodiscard]] float length() const

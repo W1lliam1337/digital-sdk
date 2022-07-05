@@ -1,5 +1,4 @@
 #include "math.h"
-#include "../sdk.hpp"
 
 void c_math::vector_transform(const vec3_t& in1, const matrix_t& in2, vec3_t& out) {
 	out[0] = in1.dot(in2[0]) + in2[0][3];
@@ -49,7 +48,7 @@ qangle_t c_math::calc_angle(const vec3_t& src, const vec3_t& dst) const
 
 vec3_t cross_product(const vec3_t& a, const vec3_t& b)
 {
-	return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+	return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
 void c_math::vector_angles(const vec3_t& forward, qangle_t& view)
@@ -136,9 +135,29 @@ void c_math::angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* righ
 	}
 }
 
+qangle_t c_math::angle_normalize(qangle_t &angle) const
+{
+	while (angle.x > 89.f) {
+		angle.x -= 180.f;
+	}
+	while (angle.x < -89.f) {
+		angle.x += 180.f;
+	}
+	if (angle.y > 180) {
+		angle.y -= round(angle.y / 360) * 360.f;
+	}
+	else if (angle.y < -180) {
+		angle.y += round(angle.y / 360) * -360.f;
+	}
+	if (angle.z > 50 || angle.z < 50) {
+		angle.z = 0;
+	}
+	return angle;
+}
+
 bool c_math::screen_transform(const vec3_t& in, vec3_t& out)
 {
-	static auto& w2s_matrix = g_sdk.m_interfaces.m_engine->world_to_screen_matrix();
+	static auto& w2s_matrix = g_interfaces.m_engine->world_to_screen_matrix();
 
 	out.x = w2s_matrix.m[0][0] * in.x + w2s_matrix.m[0][1] * in.y + w2s_matrix.m[0][2] * in.z + w2s_matrix.m[0][3];
 	out.y = w2s_matrix.m[1][0] * in.x + w2s_matrix.m[1][1] * in.y + w2s_matrix.m[1][2] * in.z + w2s_matrix.m[1][3];
@@ -156,10 +175,4 @@ bool c_math::screen_transform(const vec3_t& in, vec3_t& out)
 	out.y /= w;
 
 	return true;
-}
-
-#include "../../utils.h"
-bool c_math::world_to_screen(const vec3_t& in, vec3_t& out)
-{
-	return !g_sdk.m_interfaces.m_debug_overlay->screen_position(in, out);
 }

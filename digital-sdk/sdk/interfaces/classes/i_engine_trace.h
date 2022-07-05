@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include "i_client_entity.h"
+#include "../math/vec4.h"
 
 class vec3_t;
 class i_handle_entity;
@@ -125,9 +126,16 @@ public:
 class c_trace_filter : public i_trace_filter
 {
 public:
-	bool should_hit_entity(i_handle_entity* entity, int contents_mask) override
+	bool should_hit_entity(i_handle_entity* pEntityHandle, int contents_mask) override
 	{
-		return entity != this->m_skip;
+		auto e_cc = static_cast<i_client_entity*>(pEntityHandle)->get_client_class();
+		if (e_cc && m_ignore != nullptr && strcmp(m_ignore, "") != 0)
+		{
+			if (e_cc->m_network_name == m_ignore)
+				return false;
+		}
+
+		return !(pEntityHandle == m_skip);
 	}
 
 	[[nodiscard]] e_trace_type get_trace_type() const override
@@ -175,7 +183,7 @@ struct csurface_t
 {
 	const char* m_name;
 	short m_surface_props;
-	bit_flag_t<unsigned short> m_flags;
+	unsigned short m_flags;
 };
 
 class __declspec(align(16)) vector_aligned : public vec3_t
@@ -271,7 +279,7 @@ struct cplane_t
 	uint8_t m_pad[2];
 };
 
-class c_game_trace 
+class c_game_trace
 {
 public:
 	[[nodiscard]] bool did_hit() const
@@ -296,7 +304,7 @@ public:
 	csurface_t			m_surface;				// surface hit (impact surface)
 	int					m_hit_group;				// 0 == generic, non-zero is specific body part
 	std::uint16_t		m_world_surface_index;		// index of the msurface2_t, if applicable
-	c_base_player*		m_entity;				// entity hit by trace
+	c_base_player* m_entity;				// entity hit by trace
 	int					m_hitbox;				// box hit by trace in studio
 };
 
@@ -313,5 +321,5 @@ public:
 	virtual void trace_ray(const ray_t& ray, unsigned int mask, c_trace_filter* filter, c_game_trace* engine_trace) = 0;
 
 	void trace_line(vec3_t src, vec3_t dst, int mask, i_handle_entity* entity, int collision_group,
-	                c_game_trace* trace);
+		c_game_trace* trace);
 };

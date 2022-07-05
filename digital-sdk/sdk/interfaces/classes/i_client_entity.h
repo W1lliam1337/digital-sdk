@@ -1,8 +1,12 @@
 #pragma once
 #include "i_client.h"
-//#include "../../../utils/utils.h"
-//#include "../../sdk.hpp"
 #include "i_model_render.h"
+#include "../../other/bfread/bfread.h"
+#include "../../other/handle/i_handle_entity.h"
+
+class matrix_t;
+struct qangle_t;
+class vec3_t;
 
 enum e_solid_type {
 	solid_none,
@@ -114,12 +118,6 @@ public:
 	virtual bool					should_draw_for_split_screen_user(int slot) = 0;
 	virtual uint8_t					override_alpha_modulation(uint8_t alpha) = 0;
 	virtual uint8_t					override_shadow_alpha_modulation(uint8_t alpha) = 0;
-
-	//__forceinline static uint8_t* get_vtable() {
-	//	static const auto vtable = c_utils::find_sig(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C") + 0x4E;
-
-	//	return vtable;
-	//}
 };
 
 class c_base_entity;
@@ -127,7 +125,8 @@ class c_base_player;
 class i_client_entity;
 class i_client_alpha_property;
 
-class i_client_unknown : public i_handle_entity {
+class i_client_unknown : public i_handle_entity
+{
 public:
 	virtual i_collideable* get_collideable() = 0;
 	virtual i_client_networkable* get_client_networkable() = 0;
@@ -141,4 +140,6 @@ public:
 class i_client_entity : public i_client_unknown, public i_client_renderable, public i_client_networkable, public i_client_thinkable {
 public:
 	virtual void release() = 0;
+	virtual const vec3_t& get_abs_origin() const = 0;
+	virtual const qangle_t& get_abs_angles() const = 0;
 };

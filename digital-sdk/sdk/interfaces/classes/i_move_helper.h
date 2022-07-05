@@ -1,5 +1,7 @@
 #pragma once
 
+class c_base_entity;
+
 class i_move_helper
 {
 	virtual void unknown_virtual() = 0;

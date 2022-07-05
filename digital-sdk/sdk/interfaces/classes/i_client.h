@@ -1,5 +1,6 @@
 #pragma once
-#include "../../sdk.hpp"
+#include <cstdint>
+#include "../../other/recv.h"
 
 class i_global_vars_base;
 
@@ -19,13 +20,13 @@ struct client_class_t {
 class i_base_client_dll
 {
 public:
-	virtual int              connect(uint32_t appSystemFactory, i_global_vars_base* pGlobals) = 0;
-	virtual int              disconnect(void) = 0;
-	virtual int              init(uint32_t appSystemFactory, i_global_vars_base* pGlobals) = 0;
+	virtual int              connect(uint32_t app_system_factory, i_global_vars_base* globals) = 0;
+	virtual int              disconnect() = 0;
+	virtual int              init(uint32_t app_system_factory, i_global_vars_base* globals) = 0;
 	virtual void             post_init() = 0;
-	virtual void             shutdown(void) = 0;
+	virtual void             shutdown() = 0;
 	virtual void             level_init_pre_entity(char const* pMapName) = 0;
 	virtual void             level_init_post_entity() = 0;
-	virtual void             level_shutdown(void) = 0;
-	virtual client_class_t* get_all_classes(void) = 0;
+	virtual void             level_shutdown() = 0;
+	virtual client_class_t* get_all_classes() = 0;
 };

@@ -15,7 +15,7 @@ public:
 	float		m_interpolation_amount{};			// 0x0024
 	int			m_sim_ticks_this_frame{};			// 0x0028
 	int			m_network_protocol{};				// 0x002C
-	void*		m_save_data{};						// 0x0030
+	void* m_save_data{};						// 0x0030
 	bool		m_client{};							// 0x0031
 	bool		m_remote_client{};					// 0x0032
 	int			m_timestamp_networking_base{};

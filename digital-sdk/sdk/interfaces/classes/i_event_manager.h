@@ -4,7 +4,7 @@
 class bf_write;
 class bf_read;
 
-class i_game_event 
+class i_game_event
 {
 public:
 	virtual					~i_game_event() {};
@@ -31,7 +31,7 @@ public:
 	virtual void			set_ptr(const char* keyname, const void* value) = 0;
 };
 
-class i_game_event_listener 
+class i_game_event_listener
 {
 public:
 	virtual ~i_game_event_listener() {}
@@ -40,7 +40,7 @@ public:
 	virtual int get_event_debug_id() { return 42; }
 };
 
-class i_game_event_manager 
+class i_game_event_manager
 {
 public:
 	virtual ~i_game_event_manager() = 0;

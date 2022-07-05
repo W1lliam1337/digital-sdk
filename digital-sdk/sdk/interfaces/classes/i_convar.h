@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 class c_color;
 
@@ -53,19 +54,13 @@ public:
 
 	__forceinline float get_float(void)
 	{
-		if (this == nullptr)
-			return 0.f;
-
-		int xord = static_cast<int>(*reinterpret_cast<int*>(&f_value) ^ reinterpret_cast<uintptr_t>(this));
+		int xord = static_cast<int>(*reinterpret_cast<int*>(&m_f_value) ^ reinterpret_cast<uintptr_t>(this));
 		return *reinterpret_cast<float*>(&xord);
 	}
 
 	__forceinline int get_int(void)
 	{
-		if (this == nullptr)
-			return 0;
-
-		const int xord = static_cast<int>(*&n_value ^ reinterpret_cast<uintptr_t>(this));
+		const int xord = static_cast<int>(*&m_n_value ^ reinterpret_cast<uintptr_t>(this));
 		return *&xord;
 	}
 
@@ -74,21 +69,21 @@ public:
 	}
 
 	unsigned char pad_0x0[0x4];
-	i_convar* next;
-	int registered;
-	char* name;
-	char* help_string;
-	int flags;
+	i_convar* m_next;
+	int m_registered;
+	char* m_name;
+	char* m_help_string;
+	int m_flags;
 	unsigned char pad_0x18[0x4];
-	i_convar* parent;
-	char* default_value;
-	char* string;
-	int string_len;
-	float f_value;
-	int n_value;
-	int has_min;
-	float min_val;
-	int has_max;
-	float max_val;
-	void* change_callback_fn;
+	i_convar* m_parent;
+	char* m_default_value;
+	char* m_string;
+	int m_string_len;
+	float m_f_value;
+	int m_n_value;
+	int m_has_min;
+	float m_min_val;
+	int m_has_max;
+	float m_max_val;
+	void* m_change_callback_fn;
 };

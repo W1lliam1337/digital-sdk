@@ -1,7 +1,5 @@
 #pragma once
-#include <cstddef>
-#include "../../math/qangle.h"
-#include "../../math/vec3_t.h"
+#include "../../../utils/utils.h"
 
 class c_view_setup
 {
@@ -51,4 +49,18 @@ public:
 	bool m_cull_font_faces{};
 	bool m_cache_full_scene_state{};
 	bool m_csm_view{};
+};
+
+class i_render_view
+{
+public:
+	void set_blend(const float blend)
+	{
+		g_utils.call_vfunc<void(__thiscall*)(void*, float)>(this, 4)(this, blend);
+	}
+
+	void set_color_modulation(const float blend)
+	{
+		g_utils.call_vfunc<void(__thiscall*)(void*, float)>(this, 6)(this, blend);
+	}
 };

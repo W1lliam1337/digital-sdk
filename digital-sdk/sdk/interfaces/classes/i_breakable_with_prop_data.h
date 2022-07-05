@@ -45,7 +45,7 @@ public:
 	virtual float		get_explosive_radius() = 0;
 	virtual float		get_explosive_damage() = 0;
 	virtual void		set_physics_damage_table(void* iszTableName) = 0;
-	virtual void*	get_physics_damage_table() = 0;
+	virtual void* get_physics_damage_table() = 0;
 	virtual void		set_breakable_model(void* iszModel) = 0;
 	virtual void* get_breakable_model() = 0;
 	virtual void		set_breakable_skin(int skin) = 0;
