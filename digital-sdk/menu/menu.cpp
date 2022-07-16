@@ -154,6 +154,7 @@ void c_menu::misc_tab()
 
 	ImGui::Checkbox(_("Bunny hop"), &g_cfg.m_misc.m_bunny_hop);
 	ImGui::Checkbox(_("Remove scope"), &g_cfg.m_misc.m_no_scope);
+	ImGui::Checkbox(_("Remove molotov"), &g_cfg.m_misc.m_remove_molotov);
 	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
 	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
 

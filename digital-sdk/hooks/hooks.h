@@ -15,6 +15,7 @@ using dme_t = void(__fastcall*)(void*, void*, void*, const draw_model_state_t&, 
 using override_view_t = void(__thiscall*)(void*, c_view_setup*);
 using modify_eye_position_t = void(__thiscall*)(void*, void*, vec3_t&);
 using calculate_view_t = void(__fastcall*)(void*, void*, vec3_t&, qangle_t&, float&, float&, float&);
+using inferno_client_think_t = void(__fastcall*)(void*, void*);
 
 class c_hooks
 {
@@ -31,6 +32,7 @@ protected:
 	static void __fastcall hk_modify_eye_position(void* ecx, void* edx, vec3_t& input_eye_pos);
 	static void __fastcall hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near,
 	                                  float& z_far, float& fov);
+	static void __fastcall hk_inferno_client_think(void* ecx, void* edx);
 	static void __fastcall hk_draw_model_execute(void* ecx, void* edx, void* context, const draw_model_state_t& state,
 	                                             const model_render_info_t& info, matrix_t* custom_bone_to_world);
 	static void __fastcall hk_override_view(void* ecx, void* edx, c_view_setup* setup_view);
@@ -47,6 +49,7 @@ public:
 		override_view_t m_override_view{};
 		modify_eye_position_t m_modify_eye_position{};
 		calculate_view_t m_calculate_view{};
+		inferno_client_think_t m_inferno_client_think{};
 	}m_originals{};
 
 	static void init();

@@ -15,6 +15,7 @@ void c_hooks::init()
 	const auto override_view = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
 	const auto modify_eye_position = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
 	const auto calculate_view = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
+	const auto inferno_client_think = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
 
 	HOOK(create_move, hk_create_move_proxy, g_hooks.m_originals.m_create_move);
 	HOOK(reset, hk_reset, g_hooks.m_originals.m_reset);
@@ -24,6 +25,7 @@ void c_hooks::init()
 	HOOK(override_view, hk_override_view, g_hooks.m_originals.m_override_view);
 	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks.m_originals.m_modify_eye_position);
 	HOOK(calculate_view, hk_calculate_view, g_hooks.m_originals.m_calculate_view);
+	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks.m_originals.m_inferno_client_think);
 
 	MH_EnableHook(nullptr);
 }
@@ -269,4 +271,13 @@ void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_ori
 		g_hooks.m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
 	}
 	player->should_use_new_anim_state() = backup_use_new_anim_state;
+}
+
+/* @ ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/Effects/clientinferno.cpp#L89 */
+void __fastcall c_hooks::hk_inferno_client_think(void* ecx, void* edx)
+{
+	if (!g_cfg.m_misc.m_remove_molotov)
+		return g_hooks.m_originals.m_inferno_client_think(ecx, edx);
+
+	return;
 }

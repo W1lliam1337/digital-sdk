@@ -21,6 +21,7 @@ public:
 		bool m_bunny_hop{};
 		bool m_no_scope{};
 		bool m_infinity_duck{};
+		bool m_remove_molotov{};
 
 		int m_third_person_distance{};
 		key_bind_t m_third_person_bind;
