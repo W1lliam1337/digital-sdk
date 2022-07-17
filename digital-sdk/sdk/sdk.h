@@ -1,6 +1,7 @@
 #pragma once
 #include "game/player.h"
 #include "game/weapon.h"
+#include "game/inferno.h"
 #include "interfaces/interfaces.h"
 
 class c_hitbox_data

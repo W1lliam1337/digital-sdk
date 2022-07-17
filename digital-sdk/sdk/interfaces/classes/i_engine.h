@@ -83,6 +83,11 @@ public:
 		return g_utils.call_vfunc< bool(__thiscall*)(void*) >(this, 224)(this);
 	}
 
+	void execute_client_cmd(const char* cmd_string)
+	{
+		return g_utils.call_vfunc< void(__thiscall*)(void*, const char*) >(this, 108)(this, cmd_string);
+	}
+
 	const VMatrix& world_to_screen_matrix() {
 		return g_utils.call_vfunc<const VMatrix& (__thiscall*)(void*)>(this, 37)(this);
 	}

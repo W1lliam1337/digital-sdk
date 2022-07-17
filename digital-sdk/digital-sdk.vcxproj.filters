@@ -402,6 +402,9 @@
     <ClInclude Include="sdk\game\breakable_surface.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\game\inferno.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

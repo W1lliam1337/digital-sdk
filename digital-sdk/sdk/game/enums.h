@@ -252,6 +252,8 @@ enum e_weapon_type {
 	weapon_type_unknown
 };
 
+enum { max_inferno_fires = 100 };
+
 enum e_class_id {
 	class_id_ai_base_npc = 0,
 	class_id_c_ak47,

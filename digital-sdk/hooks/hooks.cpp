@@ -16,7 +16,8 @@ void c_hooks::init()
 	const auto modify_eye_position = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
 	const auto calculate_view = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
 	const auto inferno_client_think = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
-
+	const auto blood_callback = static_cast<void*>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 8B 4D 08 F3 0F 10 51 ? 8D 51 18")));
+	
 	HOOK(create_move, hk_create_move_proxy, g_hooks.m_originals.m_create_move);
 	HOOK(reset, hk_reset, g_hooks.m_originals.m_reset);
 	HOOK(present, hk_present, g_hooks.m_originals.m_present);
@@ -26,6 +27,7 @@ void c_hooks::init()
 	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks.m_originals.m_modify_eye_position);
 	HOOK(calculate_view, hk_calculate_view, g_hooks.m_originals.m_calculate_view);
 	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks.m_originals.m_inferno_client_think);
+	HOOK(blood_callback, hk_blood_spray_callback, g_hooks.m_originals.m_inferno_client_think);
 
 	MH_EnableHook(nullptr);
 }
@@ -279,5 +281,12 @@ void __fastcall c_hooks::hk_inferno_client_think(void* ecx, void* edx)
 	if (!g_cfg.m_misc.m_remove_molotov)
 		return g_hooks.m_originals.m_inferno_client_think(ecx, edx);
 
+	return;
+}
+
+/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/fx_cs_blood.cpp#L376 */
+/* @note: way of removing blood on hit */
+void __cdecl c_hooks::hk_blood_spray_callback(void* ecx, void* edx)
+{
 	return;
 }

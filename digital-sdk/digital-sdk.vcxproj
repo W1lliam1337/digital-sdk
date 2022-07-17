@@ -159,6 +159,7 @@
     <ClInclude Include="features\misc\events\events.h" />
     <ClInclude Include="features\misc\log-system\logs.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
+    <ClInclude Include="sdk\game\inferno.h" />
     <ClInclude Include="sdk\math\math.h" />
     <ClInclude Include="sdk\math\matrix.h" />
     <ClInclude Include="sdk\math\qangle.h" />

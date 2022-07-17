@@ -33,6 +33,7 @@ protected:
 	static void __fastcall hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near,
 	                                  float& z_far, float& fov);
 	static void __fastcall hk_inferno_client_think(void* ecx, void* edx);
+	static void _cdecl hk_blood_spray_callback(void* ecx, void* edx);
 	static void __fastcall hk_draw_model_execute(void* ecx, void* edx, void* context, const draw_model_state_t& state,
 	                                             const model_render_info_t& info, matrix_t* custom_bone_to_world);
 	static void __fastcall hk_override_view(void* ecx, void* edx, c_view_setup* setup_view);
