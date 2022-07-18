@@ -30,13 +30,13 @@ public:
 
 #define GET_NETVAR_OFFSET(type, name, table, netvar, offset)                           \
     type& name() const {                                          \
-        static int _##name = g_netvars.get_offset(table, netvar) + offset;     \
+        static int _##name = g_netvars->get_offset(table, netvar) + offset;     \
         return *(type*)((DWORD)this + _##name);                 \
     }
 
 #define GET_NETVAR(type, name, table, netvar)                           \
     type& name() const {                                          \
-        static int _##name = g_netvars.get_offset(table, netvar);     \
+        static int _##name = g_netvars->get_offset(table, netvar);     \
         return *(type*)((DWORD)this + _##name);                 \
     }
 
@@ -47,4 +47,4 @@ __forceinline type& name( ) \
     return *( type* )( ( uintptr_t )( this ) + offset ); \
 }
 
-inline c_netvars g_netvars;
+inline const auto g_netvars = std::make_unique<c_netvars>();

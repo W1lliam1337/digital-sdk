@@ -10,7 +10,7 @@ class c_base_entity;
 
 #define GET_VFUNC( type, function_name, index, ...) \
 auto function_name { \
-return g_utils.call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
+return g_utils->call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
 };
 
 class c_base_attributable_item : public c_base_entity

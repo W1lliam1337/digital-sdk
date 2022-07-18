@@ -36,7 +36,7 @@ public:
 
 	void set_sequence(const int flag)
 	{
-		return g_utils.call_vfunc<void(__thiscall*)(void*, int)>(this, 219)(this, flag);
+		return g_utils->call_vfunc<void(__thiscall*)(void*, int)>(this, 219)(this, flag);
 	}
 
 	vec3_t get_hitbox_pos(const int hitbox_id)
@@ -48,7 +48,7 @@ public:
 
 		if (setup_bones(bone_matrix, MAXSTUDIOBONES, bone_used_by_hitbox, 0.0f))
 		{
-			const auto studio_model = g_interfaces.m_model_info->get_studio_model(this->get_model());
+			const auto studio_model = g_interfaces->m_model_info->get_studio_model(this->get_model());
 			if (studio_model)
 			{
 				const auto hitbox = studio_model->get_hitbox_set(hitbox_head)->get_hitbox(hitbox_id);
@@ -69,43 +69,43 @@ public:
 	void invalidate_physics_recursive(const int flag)
 	{
 		/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/shared/baseentity_shared.cpp#L1632 */
-		static auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3")));
+		static auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3")));
 		return invalidate_physics_recursive_fn(this, flag);
 	}
 
 	void select_item(const char* string, const int sub_type)
 	{
-		static auto select_item_fn = reinterpret_cast <void(__thiscall*)(void*, const char*, int)> (g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 56 8B F1 ? ? ? 85 C9 74 71 8B 06")));
+		static auto select_item_fn = reinterpret_cast <void(__thiscall*)(void*, const char*, int)> (g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 56 8B F1 ? ? ? 85 C9 74 71 8B 06")));
 		return select_item_fn(this, string, sub_type);
 	}
 
 	bool using_standard_weapons_in_vehicle()
 	{
-		static auto sig_fn = reinterpret_cast <bool(__thiscall*)(void*)> (g_utils.find_sig(g_modules.m_client_dll, _("56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41")));
+		static auto sig_fn = reinterpret_cast <bool(__thiscall*)(void*)> (g_utils->find_sig(g_modules->m_client_dll, _("56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41")));
 		return sig_fn(this);
 	}
 
 	bool post_think_v_physics()
 	{
-		static auto sig_fn = reinterpret_cast <bool(__thiscall*)(void*)> (g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB")));
+		static auto sig_fn = reinterpret_cast <bool(__thiscall*)(void*)> (g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB")));
 		return sig_fn(this);
 	}
 
 	void physics_simulated_entites()
 	{
-		static auto sig_fn = reinterpret_cast <void(__thiscall*)(void*)> (g_utils.find_sig(g_modules.m_client_dll, _("56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74")));
+		static auto sig_fn = reinterpret_cast <void(__thiscall*)(void*)> (g_utils->find_sig(g_modules->m_client_dll, _("56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74")));
 		return sig_fn(this);
 	}
 
 	bool physics_run_think(const int index)
 	{
-		static auto physics_run_think_fn = reinterpret_cast <bool(__thiscall*)(void*, int)> (g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 83 EC 10 53 56 57 8B F9 8B 87")));
+		static auto physics_run_think_fn = reinterpret_cast <bool(__thiscall*)(void*, int)> (g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 10 53 56 57 8B F9 8B 87")));
 		return physics_run_think_fn(this, index);
 	}
 
 	void post_think()
 	{
-		g_interfaces.m_mdl_cache->begin_lock();
+		g_interfaces->m_mdl_cache->begin_lock();
 		{
 			if (this->is_alive())
 			{
@@ -123,7 +123,7 @@ public:
 
 			this->physics_simulated_entites();
 		}
-		g_interfaces.m_mdl_cache->end_lock();
+		g_interfaces->m_mdl_cache->end_lock();
 	}
 
 	vec3_t get_shoot_pos()
@@ -132,7 +132,7 @@ public:
 		 * https://www.unknowncheats.me/forum/counterstrike-global-offensive/277792-getting-eye-position-m_vecviewoffset.html
 		*/
 
-		static auto eye_pos_fn = reinterpret_cast<float* (__thiscall*)(void*, vec3_t*)>(g_utils.find_sig(g_modules.m_client_dll, _("55 8B EC 56 8B 75 08 57 8B F9 56 8B 07 FF 90 ? ? ? ?"))); // 8B 07 FF 90 ? ? ? ? 80 BF ? ? ? ? ? 74 10 
+		static auto eye_pos_fn = reinterpret_cast<float* (__thiscall*)(void*, vec3_t*)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 56 8B 75 08 57 8B F9 56 8B 07 FF 90 ? ? ? ?"))); // 8B 07 FF 90 ? ? ? ? 80 BF ? ? ? ? ? 74 10 
 		vec3_t eye_pos;
 		eye_pos_fn(this, &eye_pos);
 		return eye_pos;

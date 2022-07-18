@@ -1,6 +1,5 @@
 #include "utils.h"
 #include "../sdk/interfaces/interfaces.h"
-#include <vector>
 #include "../sdk/sdk.h"
 
 uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
@@ -63,7 +62,7 @@ uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
 	return nullptr;
 }
 
-bool c_utils::is_bind_active(const key_bind_t key_bind) const
+bool c_utils::is_bind_active(const key_bind_t key_bind) const noexcept
 {
 	if (key_bind.m_key_selected <= 0)
 		return false;
@@ -83,9 +82,9 @@ bool c_utils::is_bind_active(const key_bind_t key_bind) const
 void c_utils::init_key_sys(const UINT msg, const WPARAM wParam)
 {
 	bool is_handle_possible = true;
-	if (g_interfaces.m_engine->is_connected() && g_interfaces.m_engine->is_in_game())
+	if (g_interfaces->m_engine->is_connected() && g_interfaces->m_engine->is_in_game())
 	{
-		if (g_interfaces.m_engine->con_is_visible())
+		if (g_interfaces->m_engine->con_is_visible())
 		{
 			is_handle_possible = false;
 			if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP || msg ==
@@ -165,7 +164,7 @@ void c_utils::init_key_sys(const UINT msg, const WPARAM wParam)
 		}
 	}
 
-	if (!g_sdk.m_local())
+	if (!g_sdk->m_local())
 	{
 		for (int i = 0; i < 256; i++)
 		{
@@ -176,25 +175,4 @@ void c_utils::init_key_sys(const UINT msg, const WPARAM wParam)
 			m_key_data.m_toggled_keys[i] = false;
 		}
 	}
-}
-
-int c_utils::random_int(const int min, const int max) const
-{
-	static DWORD dw_address = reinterpret_cast<DWORD>(
-		GetProcAddress(GetModuleHandleA(_("vstdlib.dll")), _("RandomInt")));
-	return reinterpret_cast<int(*)(int, int)>(dw_address)(min, max);
-}
-
-float c_utils::random_float(const float min, const float max) const
-{
-	static DWORD dw_address = reinterpret_cast<DWORD>(GetProcAddress(GetModuleHandleA(_("vstdlib.dll")),
-	                                                                 _("RandomFloat")));
-	return reinterpret_cast<float(*)(float, float)>(dw_address)(min, max);
-}
-
-void c_utils::random_seed(const int seed) const
-{
-	static DWORD dw_address = reinterpret_cast<DWORD>(GetProcAddress(GetModuleHandleA(_("vstdlib.dll")),
-	                                                                 _("RandomSeed")));
-	return reinterpret_cast<void(*)(int)>(dw_address)(seed);
 }

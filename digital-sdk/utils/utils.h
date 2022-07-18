@@ -3,6 +3,9 @@
 #include <string>
 #include <wtypes.h>
 #include <array>
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 struct key_bind_t
 {
@@ -26,11 +29,8 @@ public:
 		return (*static_cast<T**>(instance))[index];
 	}
 
-	bool is_bind_active(key_bind_t key_bind) const;
+	[[nodiscard]] bool is_bind_active(key_bind_t key_bind) const noexcept;
 	void init_key_sys(UINT msg, WPARAM wParam);
-	int random_int(int min, int max) const;
-	float random_float(float min, float max) const;
-	void random_seed(int seed) const;
 };
 
-inline c_utils g_utils;
+inline const auto g_utils = std::make_unique<c_utils>();

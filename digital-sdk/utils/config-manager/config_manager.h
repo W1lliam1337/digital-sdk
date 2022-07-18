@@ -55,4 +55,4 @@ public:
 	}m_esp{};
 };
 
-inline c_config_manager g_cfg;
+inline const auto g_cfg = std::make_unique<c_config_manager>();

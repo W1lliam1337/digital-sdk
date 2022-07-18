@@ -9,5 +9,4 @@ public:
 
 };
 
-inline c_rage_bot g_rage_bot;
-
+inline const auto g_rage_bot = std::make_unique<c_rage_bot>();

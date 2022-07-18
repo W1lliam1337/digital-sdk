@@ -1,15 +1,15 @@
 #include "events.h"
 #include "../log-system//logs.h"
 
-void c_events::init()
+void c_events::init() noexcept
 {
-	g_interfaces.m_event_manager->add_listener(this, _("player_hurt"), false);
-	g_interfaces.m_event_manager->add_listener(this, _("player_death"), false);
+	g_interfaces->m_event_manager->add_listener(this, _("player_hurt"), false);
+	g_interfaces->m_event_manager->add_listener(this, _("player_death"), false);
 }
 
 void c_events::fire_game_event(i_game_event* event)
 {
-	if (!event || !g_sdk.m_local() || !g_sdk.m_local()->is_alive())
+	if (!event || !g_sdk->m_local() || !g_sdk->m_local()->is_alive())
 		return;
 
 	const auto event_name = event->get_name();
@@ -20,13 +20,13 @@ void c_events::fire_game_event(i_game_event* event)
 
 void c_events::player_hurt(i_game_event* event, const char* event_name) const
 {
-	const auto user_id = g_interfaces.m_engine->get_player_for_user_id(event->get_int(_("userid")));
-	const auto attacker = g_interfaces.m_engine->get_player_for_user_id(event->get_int(_("attacker")));
+	const auto user_id = g_interfaces->m_engine->get_player_for_user_id(event->get_int(_("userid")));
+	const auto attacker = g_interfaces->m_engine->get_player_for_user_id(event->get_int(_("attacker")));
 
 	if (strcmp(event_name, _("player_hurt")))
 		return;
 
-	const auto hurt_player = static_cast<c_base_player*>(g_interfaces.m_entity_list->get_client_entity(user_id));
+	const auto hurt_player = static_cast<c_base_player*>(g_interfaces->m_entity_list->get_client_entity(user_id));
 
 	if (!hurt_player || !hurt_player->is_player())
 		return;
@@ -89,10 +89,10 @@ void c_events::player_hurt(i_game_event* event, const char* event_name) const
 		}
 	};
 
-	if (attacker == g_interfaces.m_engine->get_local_player())
+	if (attacker == g_interfaces->m_engine->get_local_player())
 	{
 		player_info_t info{};
-		g_interfaces.m_engine->get_player_info(hurt_player->get_index(), &info);
+		g_interfaces->m_engine->get_player_info(hurt_player->get_index(), &info);
 
 		std::string hit_str = "hit in ";
 		{
@@ -103,7 +103,7 @@ void c_events::player_hurt(i_game_event* event, const char* event_name) const
 			hit_str += get_hitbox_name_from_hitgroup(event->get_int(_("hitgroup")));
 		}
 
-		g_logs.push_log(hit_str);
+		g_logs->push_log(hit_str);
 	}
 }
 

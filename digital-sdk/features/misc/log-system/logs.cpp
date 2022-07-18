@@ -1,6 +1,6 @@
 #include "logs.h"
 
-void c_logs::push_log(const std::string& text, const std::string& icon, const c_color color)
+void c_logs::push_log(const std::string& text, const std::string& icon, const c_color color) noexcept
 {
 	m_logs.emplace_front
 	(
@@ -8,7 +8,7 @@ void c_logs::push_log(const std::string& text, const std::string& icon, const c_
 		(
 			text,					// m_text
 			icon,					// m_icon
-			g_interfaces.m_globals->m_realtime,	// m_creation_time
+			g_interfaces->m_globals->m_realtime,	// m_creation_time
 			color					// m_color
 		)
 	);
@@ -25,7 +25,7 @@ void c_logs::instance()
 		if (!logs)
 			continue;
 
-		const auto time_after_creation = g_interfaces.m_globals->m_realtime - logs->m_creation_time;
+		const auto time_after_creation = g_interfaces->m_globals->m_realtime - logs->m_creation_time;
 		if (time_after_creation >= 5.0f)
 		{
 			m_logs.erase(m_logs.begin() + i);
@@ -48,10 +48,10 @@ void c_logs::instance()
 
 		if (!logs->m_printed)
 		{
-			g_interfaces.m_cvar->console_color_print_f(c_color(49, 106, 218), _("%s\n"), logs->m_text);
+			g_interfaces->m_cvar->console_color_print_f(c_color(49, 106, 218), _("%s\n"), logs->m_text);
 			logs->m_printed = true;
 		}
 
-		g_render.text(g_render.m_fonts.m_logs, ImVec2(5.0f, spacing + 2.5f), logs->m_text, logs->m_color, false);
+		g_render->text(g_render->m_fonts.m_logs, ImVec2(5.0f, spacing + 2.5f), logs->m_text, logs->m_color, false);
 	}
 }

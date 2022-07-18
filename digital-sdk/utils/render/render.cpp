@@ -1,7 +1,7 @@
 #include "render.h"
 #include "../../dependencies/imgui/imgui_freetype.h"
 
-void c_render::init()
+void c_render::init() noexcept
 {
 	ImGui::CreateContext();
 	m_draw_list = new ImDrawList(ImGui::GetDrawListSharedData());
@@ -84,7 +84,7 @@ void c_render::rect_filled(const float x1, const float y1, const float x2, const
 void c_render::circle_2d(const vec3_t position, const int point_count, const float radius, const c_color color) const
 {
 	auto screen_position = vec3_t(0, 0, 0);
-	if (g_interfaces.m_debug_overlay->screen_position(position, screen_position))
+	if (g_interfaces->m_debug_overlay->screen_position(position, screen_position))
 		return;
 
 	m_draw_list->AddCircle(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
@@ -93,7 +93,7 @@ void c_render::circle_2d(const vec3_t position, const int point_count, const flo
 void c_render::circle_2d_filled(const vec3_t position, const int point_count, const float radius, const c_color color) const
 {
 	auto screen_position = vec3_t(0, 0, 0);
-	if (g_interfaces.m_debug_overlay->screen_position(position, screen_position))
+	if (g_interfaces->m_debug_overlay->screen_position(position, screen_position))
 		return;
 
 	m_draw_list->AddCircleFilled(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
@@ -109,8 +109,8 @@ void c_render::circle_3d(const vec3_t position, const int point_count, const flo
 			position.z);
 
 		vec3_t start_2d, end_2d;
-		if (g_interfaces.m_debug_overlay->screen_position(start, start_2d)
-			|| g_interfaces.m_debug_overlay->screen_position(end, end_2d))
+		if (g_interfaces->m_debug_overlay->screen_position(start, start_2d)
+			|| g_interfaces->m_debug_overlay->screen_position(end, end_2d))
 			return;
 
 		line(start_2d.x, start_2d.y, end_2d.x, end_2d.y, color, 1.0f);
@@ -123,7 +123,7 @@ void c_render::circle_3d_filled(const vec3_t& origin, const float radius, const 
 	static float step = 3.14159265358979323846f * 2.0f / 72.0f;
 
 	auto screen_position = vec3_t(0, 0, 0);
-	if (g_interfaces.m_debug_overlay->screen_position(origin, screen_position))
+	if (g_interfaces->m_debug_overlay->screen_position(origin, screen_position))
 		return;
 
 	for (float rotation = 0.0f; rotation <= 3.14159265358979323846f * 2.0f; rotation += step)
@@ -131,7 +131,7 @@ void c_render::circle_3d_filled(const vec3_t& origin, const float radius, const 
 		auto world_position = vec3_t(radius * cos(rotation) + origin.x,
 			radius * sin(rotation) + origin.y, origin.z);
 
-		if (g_interfaces.m_debug_overlay->screen_position(world_position, screen_position))
+		if (g_interfaces->m_debug_overlay->screen_position(world_position, screen_position))
 			continue;
 
 		line(previous_screen_pos.x, previous_screen_pos.y, screen_position.x, screen_position.y, color,

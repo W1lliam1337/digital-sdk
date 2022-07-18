@@ -34,7 +34,7 @@ public:
 	void text(const ImFont* font, ImVec2 text_position, const std::string& text, c_color color, bool centered,
 		bool outline = true,
 		bool menu = false);
-	void init();
+	void init() noexcept;
 	void begin() const;
 	void end();
 	void clear_draw_list();
@@ -46,4 +46,4 @@ public:
 	ImDrawData m_draw_data{};
 };
 
-inline c_render g_render;
+inline const auto g_render = std::make_unique<c_render>();

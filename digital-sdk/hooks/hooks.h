@@ -4,7 +4,7 @@
 #include "../../features/features.h"
 #include "../../menu/menu.h"
 
-#define HOOK(address, function, original) MH_CreateHook(address, (void*)(function), reinterpret_cast<void**>(&(original))); \
+#define HOOK(address, function, original) MH_CreateHook(address, (void*)(function), reinterpret_cast<void**>(&(original))); printf("hooked %s\n", #function);\
 
 using create_move_t = void(__stdcall*)(int, float, bool);
 using present_t = long(__stdcall*)(IDirect3DDevice9*, const RECT*, const RECT*, HWND, const RGNDATA*);
@@ -19,7 +19,6 @@ using inferno_client_think_t = void(__fastcall*)(void*, void*);
 
 class c_hooks
 {
-protected:
 	static void __stdcall hk_create_move(int sequence, float frame_time, bool is_active, bool& send_packet);
 	static void __stdcall hk_create_move_proxy(int sequence, float frame_time, bool is_active);
 	static void init_wnd_proc();
@@ -32,8 +31,8 @@ protected:
 	static void __fastcall hk_modify_eye_position(void* ecx, void* edx, vec3_t& input_eye_pos);
 	static void __fastcall hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near,
 	                                  float& z_far, float& fov);
-	static void __fastcall hk_inferno_client_think(void* ecx, void* edx);
-	static void _cdecl hk_blood_spray_callback(void* ecx, void* edx);
+	static void __fastcall hk_inferno_client_think(void* ecx, void* edx) noexcept;
+	static void _cdecl hk_blood_spray_callback(void* ecx, void* edx) noexcept;
 	static void __fastcall hk_draw_model_execute(void* ecx, void* edx, void* context, const draw_model_state_t& state,
 	                                             const model_render_info_t& info, matrix_t* custom_bone_to_world);
 	static void __fastcall hk_override_view(void* ecx, void* edx, c_view_setup* setup_view);
@@ -56,4 +55,4 @@ public:
 	static void init();
 };
 
-inline c_hooks g_hooks;
+inline const auto g_hooks = std::make_unique<c_hooks>();

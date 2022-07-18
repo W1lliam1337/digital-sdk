@@ -31,4 +31,4 @@ public:
 	fire_bullet_data_t m_fire_bullet_data{};
 };
 
-inline c_auto_wall g_auto_wall;
+inline const auto g_auto_wall = std::make_unique<c_auto_wall>();

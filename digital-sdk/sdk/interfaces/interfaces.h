@@ -60,4 +60,4 @@ public:
 	i_game_event_manager* m_event_manager{};
 };
 
-inline c_interfaces g_interfaces;
+inline const auto g_interfaces = std::make_unique<c_interfaces>();

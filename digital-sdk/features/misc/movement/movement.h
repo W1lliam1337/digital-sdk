@@ -8,4 +8,4 @@ public:
 	static void bunny_hop();
 };
 
-inline c_movement g_movement;
+inline const auto g_movement = std::make_unique<c_movement>();

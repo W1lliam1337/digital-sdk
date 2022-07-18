@@ -20,11 +20,11 @@ void c_auto_wall::scale_damage(float& damage) const
 		return false;
 	};
 
-	static auto* mp_damage_scale_ct_head = g_interfaces.m_cvar->find_var(_("mp_damage_scale_ct_head"));
-	static auto* mp_damage_scale_t_head = g_interfaces.m_cvar->find_var(_("mp_damage_scale_t_head"));
+	static auto* mp_damage_scale_ct_head = g_interfaces->m_cvar->find_var(_("mp_damage_scale_ct_head"));
+	static auto* mp_damage_scale_t_head = g_interfaces->m_cvar->find_var(_("mp_damage_scale_t_head"));
 
-	static auto* mp_damage_scale_ct_body = g_interfaces.m_cvar->find_var(_("mp_damage_scale_ct_body"));
-	static auto* mp_damage_scale_t_body = g_interfaces.m_cvar->find_var(_("mp_damage_scale_t_body"));
+	static auto* mp_damage_scale_ct_body = g_interfaces->m_cvar->find_var(_("mp_damage_scale_ct_body"));
+	static auto* mp_damage_scale_t_body = g_interfaces->m_cvar->find_var(_("mp_damage_scale_t_body"));
 
 	float head_damage_scale = m_fire_bullet_data.m_enter_trace.m_entity->get_team() == team_ct ? mp_damage_scale_ct_head->get_float() : m_fire_bullet_data.m_enter_trace.m_entity->get_team() == team_tt ? mp_damage_scale_t_head->get_float() : 1.0f;
 	const float body_damage_scale = m_fire_bullet_data.m_enter_trace.m_entity->get_team() == team_ct ? mp_damage_scale_ct_body->get_float() : m_fire_bullet_data.m_enter_trace.m_entity->get_team() == team_tt ? mp_damage_scale_t_body->get_float() : 1.0f;
@@ -92,25 +92,25 @@ bool c_auto_wall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tr
 		end = start + m_fire_bullet_data.m_direction * distance;
 		
 		if (!v13)
-			v13 = g_interfaces.m_trace->get_point_contents(end, 0x4600400B, nullptr);
+			v13 = g_interfaces->m_trace->get_point_contents(end, 0x4600400B, nullptr);
 
 		vec3_t cl_end = end - m_fire_bullet_data.m_direction * 4.0f;
 
-		const auto contents = g_interfaces.m_trace->get_point_contents(end, 0x4600400B, nullptr);
+		const auto contents = g_interfaces->m_trace->get_point_contents(end, 0x4600400B, nullptr);
 		if (contents & 0x600400B && (contents & 0x40000000 || v13 == contents))
 			continue;
 
-		static auto trace_filter_simple = c_utils::find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F0 83 EC 7C 56 52")) + 0x3D;
+		static auto trace_filter_simple = c_utils::find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F0 83 EC 7C 56 52")) + 0x3D;
 		std::uintptr_t filt[4] = {
 			*reinterpret_cast<std::uintptr_t*>(trace_filter_simple),
-			reinterpret_cast<std::uintptr_t>(g_sdk.m_local()),
+			reinterpret_cast<std::uintptr_t>(g_sdk->m_local()),
 			0,
 			0
 		};
 
-		g_interfaces.m_trace->trace_line(end, cl_end, 0x4600400B, g_sdk.m_local() /*reinterpret_cast<c_base_player*>(filt[1])*/, 0, exit_trace);
+		g_interfaces->m_trace->trace_line(end, cl_end, 0x4600400B, g_sdk->m_local() /*reinterpret_cast<c_base_player*>(filt[1])*/, 0, exit_trace);
 
-		if (static auto var = g_interfaces.m_cvar->find_var(_("sv_clip_penetration_traces_to_players"));
+		if (static auto var = g_interfaces->m_cvar->find_var(_("sv_clip_penetration_traces_to_players"));
 			var->get_bool())
 		{
 			clip_trace_to_players(end, cl_end, reinterpret_cast<c_trace_filter*>(filt), exit_trace, -60.0f);
@@ -121,7 +121,7 @@ bool c_auto_wall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tr
 			ray_t ray;
 			ray.init(end, start);
 
-			g_interfaces.m_trace->trace_ray(ray, 0x600400B, reinterpret_cast<c_trace_filter*>(filt), exit_trace);
+			g_interfaces->m_trace->trace_ray(ray, 0x600400B, reinterpret_cast<c_trace_filter*>(filt), exit_trace);
 
 			if (exit_trace->did_hit() && !exit_trace->m_start_solid)
 			{
@@ -177,16 +177,16 @@ bool c_auto_wall::handle_bullet_penetration()
 	 * module: client.dll: sig: E8 ? ? ? ? 83 C4 40 84 C0;
 	*/
 
-	static auto ff_damage_reduction = g_interfaces.m_cvar->find_var(_("ff_damage_reduction_bullets"));
+	static auto ff_damage_reduction = g_interfaces->m_cvar->find_var(_("ff_damage_reduction_bullets"));
 	static auto damage_reduction = ff_damage_reduction->get_float();
 
-	static auto ff_damage_bullet_penetration = g_interfaces.m_cvar->find_var(_("ff_damage_bullet_penetration"));
+	static auto ff_damage_bullet_penetration = g_interfaces->m_cvar->find_var(_("ff_damage_bullet_penetration"));
 	const auto damage_bullet_penetration = ff_damage_bullet_penetration->get_float();
 
 	const bool solid_surf = m_fire_bullet_data.m_enter_trace.m_contents >> 3 & contents_solid;
 	const bool light_surf = m_fire_bullet_data.m_enter_trace.m_surface.m_flags >> 7 & surf_light;
 
-	const int enter_material = g_interfaces.m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props)->m_game.m_material;
+	const int enter_material = g_interfaces->m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props)->m_game.m_material;
 
 	if (!light_surf && !solid_surf && enter_material != char_tex_grate && enter_material != char_tex_glass)
 		return false;
@@ -195,7 +195,7 @@ bool c_auto_wall::handle_bullet_penetration()
 		return false;
 
 	if (vec3_t end; !trace_to_exit(&m_fire_bullet_data.m_enter_trace, &m_fire_bullet_data.m_exit_trace, m_fire_bullet_data.m_enter_trace.m_end, end)
-		&& !(g_interfaces.m_trace->get_point_contents(end, 0x600400B) & 0x600400B))
+		&& !(g_interfaces->m_trace->get_point_contents(end, 0x600400B) & 0x600400B))
 	{
 		return false;
 	}
@@ -203,8 +203,8 @@ bool c_auto_wall::handle_bullet_penetration()
 	float dam_lost_percent;
 	float cb_penetration_modifier;
 
-	const float enter_penetration_modifier = g_interfaces.m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
-	const float exit_penetration_modifier = g_interfaces.m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_exit_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
+	const float enter_penetration_modifier = g_interfaces->m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
+	const float exit_penetration_modifier = g_interfaces->m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_exit_trace.m_surface.m_surface_props)->m_game.m_penetration_modifier;
 
 	const auto player = m_fire_bullet_data.m_enter_trace.m_entity;
 
@@ -221,7 +221,7 @@ bool c_auto_wall::handle_bullet_penetration()
 		cb_penetration_modifier = 1.f;
 		dam_lost_percent = 0.16f;
 	}
-	else if (enter_material == char_tex_flesh && player->get_team() != g_sdk.m_local()->get_team() && damage_reduction == 0.f)
+	else if (enter_material == char_tex_flesh && player->get_team() != g_sdk->m_local()->get_team() && damage_reduction == 0.f)
 	{
 		if (damage_bullet_penetration == 0.f)
 			return false;
@@ -235,7 +235,7 @@ bool c_auto_wall::handle_bullet_penetration()
 		dam_lost_percent = 0.16f;
 	}
 
-	const int exit_material = g_interfaces.m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_exit_trace.m_surface.m_surface_props)->m_game.m_material;
+	const int exit_material = g_interfaces->m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_exit_trace.m_surface.m_surface_props)->m_game.m_material;
 	if (enter_material == exit_material)
 	{
 		if (exit_material == char_tex_wood || exit_material == char_tex_cardboard)
@@ -273,7 +273,7 @@ bool c_auto_wall::simulate_fire_bullet()
 	*/
 
 	c_trace_filter filter;
-	filter.m_skip = g_sdk.m_local();
+	filter.m_skip = g_sdk->m_local();
 
 	while (m_fire_bullet_data.m_penetrate_count > 0 && m_fire_bullet_data.m_current_damage >= 1.0f)
 	{
@@ -283,9 +283,9 @@ bool c_auto_wall::simulate_fire_bullet()
 		ray_t ray;
 		ray.init(m_fire_bullet_data.m_position, end);
 
-		g_interfaces.m_trace->trace_ray(ray, mask_shot_hull | contents_hitbox, &filter, &m_fire_bullet_data.m_enter_trace);
+		g_interfaces->m_trace->trace_ray(ray, mask_shot_hull | contents_hitbox, &filter, &m_fire_bullet_data.m_enter_trace);
 
-		const auto enter_surface_data = g_interfaces.m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props);
+		const auto enter_surface_data = g_interfaces->m_physics_surface_props->get_surface_data(m_fire_bullet_data.m_enter_trace.m_surface.m_surface_props);
 
 		clip_trace_to_players(m_fire_bullet_data.m_position, end + m_fire_bullet_data.m_direction * 40.0f, &filter, &m_fire_bullet_data.m_enter_trace);
 
@@ -298,7 +298,7 @@ bool c_auto_wall::simulate_fire_bullet()
 		if (m_fire_bullet_data.m_current_distance > 3000.f || enter_surface_data->m_game.m_penetration_modifier < 0.1f)
 			break;
 
-		if (m_fire_bullet_data.m_enter_trace.m_hit_group != hitgroup_generic && m_fire_bullet_data.m_enter_trace.m_hit_group != hitgroup_gear && m_fire_bullet_data.m_enter_trace.m_entity->get_team() != g_sdk.m_local()->get_team())
+		if (m_fire_bullet_data.m_enter_trace.m_hit_group != hitgroup_generic && m_fire_bullet_data.m_enter_trace.m_hit_group != hitgroup_gear && m_fire_bullet_data.m_enter_trace.m_entity->get_team() != g_sdk->m_local()->get_team())
 		{
 			scale_damage(m_fire_bullet_data.m_current_damage);
 			return true;
@@ -317,7 +317,7 @@ void i_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int ma
 	 * module: server; sig: E8 ? ? ? ? 8B 45 2C
 	*/
 
-	static auto trace_filter_simple = c_utils::find_sig(g_modules.m_client_dll, _("55 8B EC 83 E4 F0 83 EC 7C 56 52")) + 0x3D;
+	static auto trace_filter_simple = c_utils::find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F0 83 EC 7C 56 52")) + 0x3D;
 	std::uintptr_t filt[4] = {
 		*reinterpret_cast<std::uintptr_t*>(trace_filter_simple),
 		reinterpret_cast<std::uintptr_t>(entity),
@@ -334,7 +334,7 @@ void i_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int ma
 void c_auto_wall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& abs_end, c_trace_filter* filter, c_game_trace* trace, const float min_range)
 {
 	/* @note: i don't know if signature can be used, because all sources just copy the valve code and paste it to yourself */
-	//static auto clip_trace_to_players_fn = reinterpret_cast<void(__thiscall*)(i_handle_entity*, vec3_t, vec3_t, unsigned int, i_trace_filter*, trace_t*, float)>(c_utils::find_sig(g_sdk.m_modules.m_client_dll, _("E8 ? ? ? ? 83 C4 18 8A 56 37")));
+	//static auto clip_trace_to_players_fn = reinterpret_cast<void(__thiscall*)(i_handle_entity*, vec3_t, vec3_t, unsigned int, i_trace_filter*, trace_t*, float)>(c_utils::find_sig(g_sdk->m_modules.m_client_dll, _("E8 ? ? ? ? 83 C4 18 8A 56 37")));
 	//return clip_trace_to_players_fn(entity, abs_start, abs_end, mask, filter, trace, min_range);
 
 	c_game_trace game_trace = { };
@@ -342,9 +342,9 @@ void c_auto_wall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& a
 	ray_t ray;
 	ray.init(abs_start, abs_end);
 
-	for (int i = 1; i < g_interfaces.m_globals->m_max_clients; i++)
+	for (int i = 1; i < g_interfaces->m_globals->m_max_clients; i++)
 	{
-		const auto entity = static_cast<c_base_player*>(g_interfaces.m_entity_list->get_client_entity(i));
+		const auto entity = static_cast<c_base_player*>(g_interfaces->m_entity_list->get_client_entity(i));
 
 		if (!entity || !entity->is_alive() || entity->is_dormant())
 			continue;
@@ -380,7 +380,7 @@ void c_auto_wall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& a
 		if (range < min_range || range > 60.0f)
 			continue;
 
-		g_interfaces.m_trace->clip_ray_to_entity(ray, mask_shot_hull | contents_hitbox, entity, &game_trace);
+		g_interfaces->m_trace->clip_ray_to_entity(ray, mask_shot_hull | contents_hitbox, entity, &game_trace);
 
 		if (game_trace.m_fraction > trace->m_fraction)
 			std::memcpy(trace, &game_trace, sizeof(c_game_trace));
@@ -392,16 +392,16 @@ float c_auto_wall::get_damage(const vec3_t& point)
 	vec3_t vec_direction;
 	qangle_t ang_direction;
 
-	const auto shoot_pos = g_sdk.m_local()->get_shoot_pos();
+	const auto shoot_pos = g_sdk->m_local()->get_shoot_pos();
 
-	g_math.vector_angles(point - shoot_pos, ang_direction);
-	g_math.angle_vectors(ang_direction, &vec_direction);
+	g_math->vector_angles(point - shoot_pos, ang_direction);
+	g_math->angle_vectors(ang_direction, &vec_direction);
 	vec_direction.normalize_in_place();
 
 	m_fire_bullet_data.m_position = shoot_pos;
 	m_fire_bullet_data.m_direction = vec_direction;
 
-	const auto weapon = g_sdk.m_local()->get_active_weapon();
+	const auto weapon = g_sdk->m_local()->get_active_weapon();
 	if (!weapon)
 		return 0.0f;
 

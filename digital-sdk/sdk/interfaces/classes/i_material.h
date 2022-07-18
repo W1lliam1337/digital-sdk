@@ -234,38 +234,38 @@ class i_material_var {
 	void set_vector_internal(const float x, const float y)
 	{
 		using o_fn = void(__thiscall*)(void*, float, float);
-		return g_utils.call_vfunc<o_fn>(this, 10)(this, x, y);
+		return g_utils->call_vfunc<o_fn>(this, 10)(this, x, y);
 	}
 
 public:
 	void set_float(const float val)
 	{
 		using o_fn = void(__thiscall*)(void*, float);
-		return g_utils.call_vfunc<o_fn>(this, 4)(this, val);
+		return g_utils->call_vfunc<o_fn>(this, 4)(this, val);
 	}
 
 	void set_int(const int val)
 	{
 		using o_fn = void(__thiscall*)(void*, int);
-		return g_utils.call_vfunc<o_fn>(this, 5)(this, val);
+		return g_utils->call_vfunc<o_fn>(this, 5)(this, val);
 	}
 
 	void set_string(char const* val)
 	{
 		using o_fn = void(__thiscall*)(void*, char const*);
-		return g_utils.call_vfunc<o_fn>(this, 6)(this, val);
+		return g_utils->call_vfunc<o_fn>(this, 6)(this, val);
 	}
 
 	void set_matrix(matrix_t& matrix)
 	{
 		using o_fn = void(__thiscall*)(void*, matrix_t&);
-		return g_utils.call_vfunc<o_fn>(this, 6)(this, matrix);
+		return g_utils->call_vfunc<o_fn>(this, 6)(this, matrix);
 	}
 
 	void set_vector_component(const float val, const int comp)
 	{
 		using o_fn = void(__thiscall*)(void*, float, int);
-		return g_utils.call_vfunc<o_fn>(this, 26)(this, val, comp);
+		return g_utils->call_vfunc<o_fn>(this, 26)(this, val, comp);
 	}
 
 	void set_vector(const vec2_t vector)
@@ -276,7 +276,7 @@ public:
 	void set_vector_internal(const float x, const float y, const float z)
 	{
 		using o_fn = void(__thiscall*)(void*, float, float, float);
-		return g_utils.call_vfunc<o_fn>(this, 11)(this, x, y, z);
+		return g_utils->call_vfunc<o_fn>(this, 11)(this, x, y, z);
 	}
 
 	void set_vector(const vec3_t vector)
@@ -383,27 +383,27 @@ class i_studio_render
 public:
 	void set_ambient_light_colors(vec_t* pAmbientOnlyColors)
 	{
-		g_utils.call_vfunc<void(__thiscall*)(void*, vec_t*)>(this, 20)(this, pAmbientOnlyColors);
+		g_utils->call_vfunc<void(__thiscall*)(void*, vec_t*)>(this, 20)(this, pAmbientOnlyColors);
 	}
 
 	void set_local_lights(int nLights, light_desc_t* pLights)
 	{
-		g_utils.call_vfunc<void(__thiscall*)(void*, int, light_desc_t*)>(this, 22)(this, nLights, pLights);
+		g_utils->call_vfunc<void(__thiscall*)(void*, int, light_desc_t*)>(this, 22)(this, nLights, pLights);
 	}
 
 	void set_color_modulation(float r, float g, float b)
 	{
-		g_utils.call_vfunc<void(__thiscall*)(void*, float, float, float)>(this, 27)(this, r, g, b);
+		g_utils->call_vfunc<void(__thiscall*)(void*, float, float, float)>(this, 27)(this, r, g, b);
 	}
 
 	void set_alpha_modulation(float flAlpha)
 	{
-		g_utils.call_vfunc<void(__thiscall*)(void*, float)>(this, 28)(this, flAlpha);
+		g_utils->call_vfunc<void(__thiscall*)(void*, float)>(this, 28)(this, flAlpha);
 	}
 
 	void forced_material_override(i_material* pMaterial, override_type_t nOverrideType = 0, int nOverrides = 0)
 	{
-		g_utils.call_vfunc<void(__thiscall*)(void*, i_material*, override_type_t, int)>(this, 33)(this, pMaterial, nOverrideType, nOverrides);
+		g_utils->call_vfunc<void(__thiscall*)(void*, i_material*, override_type_t, int)>(this, 33)(this, pMaterial, nOverrideType, nOverrides);
 	}
 };
 
@@ -412,31 +412,31 @@ class i_material_system
 public:
 	i_material* create_material(const char* name, void* key_values) {
 		using o_fn = i_material * (__thiscall*)(void*, const char*, void*);
-		return g_utils.call_vfunc< o_fn >(this, 83)(this, name, key_values);
+		return g_utils->call_vfunc< o_fn >(this, 83)(this, name, key_values);
 	}
 
 	i_material* find_material(const char* name, const char* group = nullptr) {
 		using o_fn = i_material * (__thiscall*)(void*, const char*, const char*);
-		return g_utils.call_vfunc< o_fn >(this, 84)(this, name, group);
+		return g_utils->call_vfunc< o_fn >(this, 84)(this, name, group);
 	}
 
 	materialhandle_t first_material() {
 		using o_fn = materialhandle_t(__thiscall*)(i_material_system*);
-		return g_utils.call_vfunc< o_fn >(this, 86)(this);
+		return g_utils->call_vfunc< o_fn >(this, 86)(this);
 	}
 
 	materialhandle_t next_material(materialhandle_t handle) {
 		using o_fn = materialhandle_t(__thiscall*)(i_material_system*, materialhandle_t);
-		return g_utils.call_vfunc< o_fn >(this, 87)(this, handle);
+		return g_utils->call_vfunc< o_fn >(this, 87)(this, handle);
 	}
 
 	materialhandle_t invalid_material_handle() {
 		using o_fn = materialhandle_t(__thiscall*)(i_material_system*);
-		return g_utils.call_vfunc< o_fn >(this, 88)(this);
+		return g_utils->call_vfunc< o_fn >(this, 88)(this);
 	}
 
 	i_material* get_material(materialhandle_t handle) {
 		using o_fn = i_material * (__thiscall*)(i_material_system*, materialhandle_t);
-		return g_utils.call_vfunc< o_fn >(this, 89)(this, handle);
+		return g_utils->call_vfunc< o_fn >(this, 89)(this, handle);
 	}
 };

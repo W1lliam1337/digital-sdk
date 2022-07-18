@@ -33,4 +33,4 @@ public:
 	static bool cant_work();
 };
 
-inline c_anti_aim g_anti_aim;
+inline const auto g_anti_aim = std::make_unique<c_anti_aim>();

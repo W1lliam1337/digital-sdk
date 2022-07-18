@@ -24,7 +24,7 @@ class c_logs
 	std::deque <logs_data_t> m_logs{};
 public:
 	void instance();
-	void push_log(const std::string& text, const std::string& icon = "", c_color color = { 255, 255 , 255 });
+	void push_log(const std::string& text, const std::string& icon = "", c_color color = { 255, 255 , 255 }) noexcept;
 };
 
-inline c_logs g_logs;
+inline const auto g_logs = std::make_unique<c_logs>();

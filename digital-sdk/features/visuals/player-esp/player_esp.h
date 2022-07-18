@@ -21,5 +21,4 @@ public:
 	void render_health_bar(RECT bbox, const c_base_player* player) const;
 };
 
-inline c_player_esp g_player_esp;
-
+inline const auto g_player_esp = std::make_unique<c_player_esp>();

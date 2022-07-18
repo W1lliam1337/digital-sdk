@@ -29,4 +29,4 @@ public:
 	void restore_netvars();
 };
 
-inline c_engine_prediction g_engine_prediction;
+inline const auto g_engine_prediction = std::make_unique<c_engine_prediction>();

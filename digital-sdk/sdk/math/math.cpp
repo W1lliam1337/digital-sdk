@@ -157,7 +157,7 @@ qangle_t c_math::angle_normalize(qangle_t &angle) const
 
 bool c_math::screen_transform(const vec3_t& in, vec3_t& out)
 {
-	static auto& w2s_matrix = g_interfaces.m_engine->world_to_screen_matrix();
+	static auto& w2s_matrix = g_interfaces->m_engine->world_to_screen_matrix();
 
 	out.x = w2s_matrix.m[0][0] * in.x + w2s_matrix.m[0][1] * in.y + w2s_matrix.m[0][2] * in.z + w2s_matrix.m[0][3];
 	out.y = w2s_matrix.m[1][0] * in.x + w2s_matrix.m[1][1] * in.y + w2s_matrix.m[1][2] * in.z + w2s_matrix.m[1][3];
@@ -175,4 +175,22 @@ bool c_math::screen_transform(const vec3_t& in, vec3_t& out)
 	out.y /= w;
 
 	return true;
+}
+
+int c_math::random_int(const int min, const int max) const noexcept
+{
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomInt")));
+	return reinterpret_cast<int(*)(int, int)>(dw_address)(min, max);
+}
+
+float c_math::random_float(const float min, const float max) const noexcept
+{
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomFloat")));
+	return reinterpret_cast<float(*)(float, float)>(dw_address)(min, max);
+}
+
+void c_math::random_seed(const int seed) const noexcept
+{
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomSeed")));
+	return reinterpret_cast<void(*)(int)>(dw_address)(seed);
 }

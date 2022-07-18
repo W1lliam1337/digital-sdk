@@ -26,4 +26,4 @@ public:
 	static void misc_tab();
 };
 
-inline c_menu g_menu;
+inline const auto g_menu = std::make_unique<c_menu>();

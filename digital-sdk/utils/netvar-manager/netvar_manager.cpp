@@ -7,12 +7,14 @@ void c_netvars::init()
 {
 	m_database.clear();
 
-	for (auto clientclass = g_interfaces.m_client->get_all_classes();
-	     clientclass != nullptr;
-	     clientclass = clientclass->m_next)
+	for (auto client_class = g_interfaces->m_client->get_all_classes();
+	     client_class;
+	     client_class = client_class->m_next)
 	{
-		if (clientclass->m_recv_table)
-			m_database.emplace_back(load_table(clientclass->m_recv_table));
+		if (!client_class->m_recv_table)
+			continue;
+
+		m_database.emplace_back(load_table(client_class->m_recv_table));
 	}
 }
 

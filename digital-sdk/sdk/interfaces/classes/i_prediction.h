@@ -41,24 +41,24 @@ public:
 	void setup_move(c_base_entity* player, c_user_cmd* ucmd, i_move_helper* move_helper, void* pMoveData)
 	{
 		using setup_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, i_move_helper*, void*);
-		return g_utils.call_vfunc<setup_move_fn>(this, 20)(this, player, ucmd, move_helper, pMoveData);
+		return g_utils->call_vfunc<setup_move_fn>(this, 20)(this, player, ucmd, move_helper, pMoveData);
 	}
 
 	void finish_move(c_base_entity* player, c_user_cmd* ucmd, void* pMoveData)
 	{
 		using finish_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, void*);
-		return g_utils.call_vfunc<finish_move_fn>(this, 21)(this, player, ucmd, pMoveData);
+		return g_utils->call_vfunc<finish_move_fn>(this, 21)(this, player, ucmd, pMoveData);
 	}
 
 	void set_local_view_angles(qangle_t& angles)
 	{
 		using set_local_view_angles_fn = void(__thiscall*)(void*, qangle_t&);
-		return g_utils.call_vfunc<set_local_view_angles_fn>(this, 13)(this, angles);
+		return g_utils->call_vfunc<set_local_view_angles_fn>(this, 13)(this, angles);
 	}
 
 	void check_moving_ground(c_base_entity* player, const double frametime)
 	{
 		using check_moving_ground_fn = void(__thiscall*)(void*, c_base_entity*, double);
-		return g_utils.call_vfunc<check_moving_ground_fn>(this, 18)(this, player, frametime);
+		return g_utils->call_vfunc<check_moving_ground_fn>(this, 18)(this, player, frametime);
 	}
 };

@@ -42,7 +42,7 @@ void c_menu::render() const
 	const auto& draw_list = ImGui::GetWindowDrawList();
 	draw_list->AddRectFilled(ImVec2{ 0.f, 0.f }, io.DisplaySize, ImColor{ 0.f, 0.f, 0.f, alpha });
 
-	if (!g_sdk.m_menu_data.m_is_menu_opened)
+	if (!g_sdk->m_menu_data.m_is_menu_opened)
 	{
 		alpha = std::fmax(alpha - io.DeltaTime * 3.0f, 0.f);
 		style.Alpha = std::fmax(style.Alpha - io.DeltaTime * 6.0f, 0.f);
@@ -117,12 +117,12 @@ void c_menu::legit_tab() const
 	ImGui::Text("Legit settings");
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Enable legitbot"), &g_cfg.m_legit.m_enabled);
-	ImGui::Checkbox(_("Auto fire"), &g_cfg.m_legit.m_auto_fire);
-	ImGui::Checkbox(_("Silent aim"), &g_cfg.m_legit.m_silent);
+	ImGui::Checkbox(_("Enable legitbot"), &g_cfg->m_legit.m_enabled);
+	ImGui::Checkbox(_("Auto fire"), &g_cfg->m_legit.m_auto_fire);
+	ImGui::Checkbox(_("Silent aim"), &g_cfg->m_legit.m_silent);
 
-	ImGui::SliderInt(_("Smooth"), &g_cfg.m_legit.m_smooth, 1, 100);
-	ImGui::SliderInt(_("FOV"), &g_cfg.m_legit.m_fov, 1, 180);
+	ImGui::SliderInt(_("Smooth"), &g_cfg->m_legit.m_smooth, 1, 100);
+	ImGui::SliderInt(_("FOV"), &g_cfg->m_legit.m_fov, 1, 180);
 }
 
 void c_menu::antiaim_tab()
@@ -140,10 +140,10 @@ void c_menu::player_esp_tab()
 	ImGui::Text("Player esp settings");
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Name"), &g_cfg.m_esp.m_player[0].m_name);
-	ImGui::Checkbox(_("Box"), &g_cfg.m_esp.m_player[0].m_box);
-	ImGui::Checkbox(_("Health bar"), &g_cfg.m_esp.m_player[0].m_health_bar);
-	ImGui::Checkbox(_("Health text"), &g_cfg.m_esp.m_player[0].m_health_text);
+	ImGui::Checkbox(_("Name"), &g_cfg->m_esp.m_player[1].m_name);
+	ImGui::Checkbox(_("Box"), &g_cfg->m_esp.m_player[1].m_box);
+	ImGui::Checkbox(_("Health bar"), &g_cfg->m_esp.m_player[1].m_health_bar);
+	ImGui::Checkbox(_("Health text"), &g_cfg->m_esp.m_player[1].m_health_text);
 
 }
 
@@ -152,11 +152,11 @@ void c_menu::misc_tab()
 	ImGui::Text(_("Misc"));
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Bunny hop"), &g_cfg.m_misc.m_bunny_hop);
-	ImGui::Checkbox(_("Remove scope"), &g_cfg.m_misc.m_no_scope);
-	ImGui::Checkbox(_("Remove molotov"), &g_cfg.m_misc.m_remove_molotov);
-	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
-	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
+	ImGui::Checkbox(_("Bunny hop"), &g_cfg->m_misc.m_bunny_hop);
+	ImGui::Checkbox(_("Remove scope"), &g_cfg->m_misc.m_no_scope);
+	ImGui::Checkbox(_("Remove molotov"), &g_cfg->m_misc.m_remove_molotov);
+	ImGui::SliderInt(_("Third person distance"), &g_cfg->m_misc.m_third_person_distance, 0, 250);
+	ImGui::Keybind(_("Third person bind"), &g_cfg->m_misc.m_third_person_bind.m_key_selected, &g_cfg->m_misc.m_third_person_bind.m_mode_selected);
 
 	ImGui::Text(_("Configs"));
 	ImGui::Separator();
@@ -167,7 +167,7 @@ void c_menu::misc_tab()
 	ImGui::Text(_("Available configs"));
 	ImGui::Separator();
 
-	//ImGui::Checkbox("test", &g_cfg.m_text.test_var);
+	//ImGui::Checkbox("test", &g_cfg->m_text.test_var);
 	if (ImGui::Button(_("Save Config"), ImVec2{ 138.f, 19.f }))
 	{
 		//c_config_manager::get()->save_config("fd");

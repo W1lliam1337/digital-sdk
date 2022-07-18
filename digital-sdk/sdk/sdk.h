@@ -46,10 +46,10 @@ public:
 
 	static __forceinline c_base_player* m_local()
 	{
-		if (!g_interfaces.m_entity_list || !g_interfaces.m_engine)
+		if (!g_interfaces->m_entity_list || !g_interfaces->m_engine)
 			return nullptr;
 
-		const auto local_player = reinterpret_cast<c_base_player*>(g_interfaces.m_entity_list->get_client_entity(g_interfaces.m_engine->get_local_player()));
+		const auto local_player = reinterpret_cast<c_base_player*>(g_interfaces->m_entity_list->get_client_entity(g_interfaces->m_engine->get_local_player()));
 		if (!local_player)
 			return nullptr;
 
@@ -57,7 +57,7 @@ public:
 	}
 };
 
-#define TIME_TO_TICKS(time_) ((int)(0.5f + (float)((time_)) / g_interfaces.m_globals->m_interval_per_tick))
-#define TICKS_TO_TIME(tick) (float)((tick) * g_interfaces.m_globals->m_interval_per_tick)
+#define TIME_TO_TICKS(time_) ((int)(0.5f + (float)((time_)) / g_interfaces->m_globals->m_interval_per_tick))
+#define TICKS_TO_TIME(tick) (float)((tick) * g_interfaces->m_globals->m_interval_per_tick)
 
-inline c_sdk g_sdk;
+inline const auto g_sdk = std::make_unique<c_sdk>();
