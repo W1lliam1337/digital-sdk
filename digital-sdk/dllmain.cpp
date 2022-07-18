@@ -56,7 +56,7 @@ BOOL APIENTRY DllMain(HMODULE hmodule,
 	/* @ref: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-disablethreadlibrarycalls */
 	DisableThreadLibraryCalls(hmodule);
 
-	std::thread([]() -> void { instance(); }).detach();
+	std::jthread([]() -> void { instance(); }).detach();
 
 	return TRUE;
 }
