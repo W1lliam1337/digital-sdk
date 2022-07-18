@@ -7,27 +7,27 @@ void c_hooks::init()
 
 	init_wnd_proc();
 
-	static const auto create_move				= reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_client))[22]);
-	static const auto paint_traverse			= reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_panel))[41]);
-	static const auto reset						= reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_direct_device))[16]);
-	static const auto present					= reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_direct_device))[17]);
-	static const auto lock_cursor				= reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_surface))[67]);
-	static const auto override_view				= static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
-	static const auto modify_eye_position		= static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
-	static const auto calculate_view			= static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
-	static const auto inferno_client_think		= static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
-	static const auto blood_callback			= static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 8B 4D 08 F3 0F 10 51 ? 8D 51 18")));
+	static const auto create_move = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_client))[22]);
+	static const auto paint_traverse = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_panel))[41]);
+	static const auto reset = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_direct_device))[16]);
+	static const auto present = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_direct_device))[17]);
+	static const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(g_interfaces->m_surface))[67]);
+	static const auto override_view = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
+	static const auto modify_eye_position = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
+	static const auto calculate_view = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
+	static const auto inferno_client_think = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
+	static const auto blood_callback = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 8B 4D 08 F3 0F 10 51 ? 8D 51 18")));
 
-	HOOK(create_move, hk_create_move_proxy, g_hooks->m_originals.m_create_move)
-	HOOK(reset, hk_reset, g_hooks->m_originals.m_reset)
-	HOOK(present, hk_present, g_hooks->m_originals.m_present)
-	HOOK(lock_cursor, hk_lock_cursor, g_hooks->m_originals.m_lock_cursor)
-	HOOK(paint_traverse, hk_paint_traverse, g_hooks->m_originals.m_paint_traverse)
-	HOOK(override_view, hk_override_view, g_hooks->m_originals.m_override_view)
-	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks->m_originals.m_modify_eye_position)
-	HOOK(calculate_view, hk_calculate_view, g_hooks->m_originals.m_calculate_view)
-	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_originals.m_inferno_client_think)
-	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_originals.m_inferno_client_think)
+	HOOK(create_move, hk_create_move_proxy, g_hooks->m_originals.m_create_move);
+	HOOK(reset, hk_reset, g_hooks->m_originals.m_reset);
+	HOOK(present, hk_present, g_hooks->m_originals.m_present);
+	HOOK(lock_cursor, hk_lock_cursor, g_hooks->m_originals.m_lock_cursor);
+	HOOK(paint_traverse, hk_paint_traverse, g_hooks->m_originals.m_paint_traverse);
+	HOOK(override_view, hk_override_view, g_hooks->m_originals.m_override_view);
+	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks->m_originals.m_modify_eye_position);
+	HOOK(calculate_view, hk_calculate_view, g_hooks->m_originals.m_calculate_view);
+	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_originals.m_inferno_client_think);
+	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_originals.m_inferno_client_think);
 
 	MH_EnableHook(nullptr);
 }
