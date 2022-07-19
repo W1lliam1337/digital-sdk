@@ -9,8 +9,8 @@ struct fire_bullet_data_t
 
 	int	m_penetrate_count{};
 
-	vec3_t m_position{};
-	vec3_t m_direction{};
+	c_vec3 m_position{};
+	c_vec3 m_direction{};
 
 	c_game_trace m_enter_trace{};
 	c_game_trace m_exit_trace{};
@@ -23,11 +23,11 @@ class c_auto_wall
 {
 public:
 	void scale_damage(float& damage) const;
-	bool trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_trace, vec3_t start, vec3_t& end);
+	bool trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_trace, c_vec3 start, c_vec3& end);
 	bool handle_bullet_penetration();
 	bool simulate_fire_bullet();
-	float get_damage(const vec3_t& point);
-	static void clip_trace_to_players(const vec3_t& abs_start, const vec3_t& abs_end, c_trace_filter* filter, c_game_trace* trace, float min_range = 0.0f);
+	float get_damage(const c_vec3& point);
+	static void clip_trace_to_players(const c_vec3& abs_start, const c_vec3& abs_end, c_trace_filter* filter, c_game_trace* trace, float min_range = 0.0f);
 	fire_bullet_data_t m_fire_bullet_data{};
 };
 

@@ -1,16 +1,16 @@
 #include "vec2.h"
 #include <cmath>
 
-vec2_t::vec2_t(void)
+c_vec2::c_vec2(void)
 {
 }
 
-vec2_t::vec2_t(vec_t X, vec_t Y)
+c_vec2::c_vec2(vec_t X, vec_t Y)
 {
 	x = X; y = Y;
 }
 
-vec2_t::vec2_t(vec_t* clr)
+c_vec2::c_vec2(vec_t* clr)
 {
 	x = clr[0]; y = clr[1];
 }
@@ -19,18 +19,18 @@ vec2_t::vec2_t(vec_t* clr)
 // initialization
 //-----------------------------------------------------------------------------
 
-void vec2_t::Init(vec_t ix, vec_t iy)
+void c_vec2::init(const vec_t ix, const vec_t iy)
 {
 	x = ix; y = iy;
 }
 
-void vec2_t::Random(float minVal, float maxVal)
+void c_vec2::random(const float min_val, const float max_val)
 {
-	x = minVal + ((float)rand() / RAND_MAX) * (maxVal - minVal);
-	y = minVal + ((float)rand() / RAND_MAX) * (maxVal - minVal);
+	x = min_val + static_cast<float>(rand()) / RAND_MAX * (max_val - min_val);
+	y = min_val + static_cast<float>(rand()) / RAND_MAX * (max_val - min_val);
 }
 
-void Vector2DClear(vec2_t& a)
+void Vector2DClear(c_vec2& a)
 {
 	a.x = a.y = 0.0f;
 }
@@ -39,9 +39,9 @@ void Vector2DClear(vec2_t& a)
 // assignment
 //-----------------------------------------------------------------------------
 
-vec2_t& vec2_t::operator=(const vec2_t& vOther)
+c_vec2& c_vec2::operator=(const c_vec2& other)
 {
-	x = vOther.x; y = vOther.y;
+	x = other.x; y = other.y;
 	return *this;
 }
 
@@ -49,12 +49,12 @@ vec2_t& vec2_t::operator=(const vec2_t& vOther)
 // Array access
 //-----------------------------------------------------------------------------
 
-vec_t& vec2_t::operator[](int i)
+vec_t& c_vec2::operator[](const int i)
 {
-	return ((vec_t*)this)[i];
+	return reinterpret_cast<vec_t*>(this)[i];
 }
 
-vec_t vec2_t::operator[](int i) const
+vec_t c_vec2::operator[](const int i) const
 {
 	return ((vec_t*)this)[i];
 }
@@ -63,21 +63,21 @@ vec_t vec2_t::operator[](int i) const
 // Base address...
 //-----------------------------------------------------------------------------
 
-vec_t* vec2_t::Base()
+vec_t* c_vec2::base()
 {
-	return (vec_t*)this;
+	return reinterpret_cast<vec_t*>(this);
 }
 
-vec_t const* vec2_t::Base() const
+vec_t const* c_vec2::base() const
 {
-	return (vec_t const*)this;
+	return reinterpret_cast<vec_t const*>(this);
 }
 
 //-----------------------------------------------------------------------------
 // IsValid?
 //-----------------------------------------------------------------------------
 
-bool vec2_t::IsValid() const
+bool c_vec2::is_valid() const
 {
 	return !isinf(x) && !isinf(y);
 }
@@ -86,14 +86,14 @@ bool vec2_t::IsValid() const
 // comparison
 //-----------------------------------------------------------------------------
 
-bool vec2_t::operator==(const vec2_t& src) const
+bool c_vec2::operator==(const c_vec2& src) const
 {
-	return (src.x == x) && (src.y == y);
+	return src.x == x && src.y == y;
 }
 
-bool vec2_t::operator!=(const vec2_t& src) const
+bool c_vec2::operator!=(const c_vec2& src) const
 {
-	return (src.x != x) || (src.y != y);
+	return src.x != x || src.y != y;
 }
 
 
@@ -101,13 +101,13 @@ bool vec2_t::operator!=(const vec2_t& src) const
 // Copy
 //-----------------------------------------------------------------------------
 
-void Vector2DCopy(const vec2_t& src, vec2_t& dst)
+void vector_2d_copy(const c_vec2& src, c_vec2& dst)
 {
 	dst.x = src.x;
 	dst.y = src.y;
 }
 
-void vec2_t::CopyToArray(float* rgfl) const
+void c_vec2::copy_to_array(float* rgfl) const
 {
 	rgfl[0] = x; rgfl[1] = y;
 }
@@ -116,64 +116,63 @@ void vec2_t::CopyToArray(float* rgfl) const
 // standard Math operations
 //-----------------------------------------------------------------------------
 
-void vec2_t::Negate()
+void c_vec2::negate()
 {
 	x = -x; y = -y;
 }
 
-void Vector2DAdd(const vec2_t& a, const vec2_t& b, vec2_t& c)
+void vector_2d_add(const c_vec2& a, const c_vec2& b, c_vec2& c)
 {
 	c.x = a.x + b.x;
 	c.y = a.y + b.y;
 }
 
-void Vector2DSubtract(const vec2_t& a, const vec2_t& b, vec2_t& c)
+void vector_2d_subtract(const c_vec2& a, const c_vec2& b, c_vec2& c)
 {
 	c.x = a.x - b.x;
 	c.y = a.y - b.y;
 }
 
-void Vector2DMultiply(const vec2_t& a, vec_t b, vec2_t& c)
+void vector_2d_multiply(const c_vec2& a, const vec_t b, c_vec2& c)
 {
 	c.x = a.x * b;
 	c.y = a.y * b;
 }
 
-void Vector2DMultiply(const vec2_t& a, const vec2_t& b, vec2_t& c)
+void vector_2d_multiply(const c_vec2& a, const c_vec2& b, c_vec2& c)
 {
 	c.x = a.x * b.x;
 	c.y = a.y * b.y;
 }
 
-
-void Vector2DDivide(const vec2_t& a, vec_t b, vec2_t& c)
+void vector_2d_divide(const c_vec2& a, const vec_t b, c_vec2& c)
 {
-	vec_t oob = 1.0f / b;
+	const vec_t oob = 1.0f / b;
 	c.x = a.x * oob;
 	c.y = a.y * oob;
 }
 
-void Vector2DDivide(const vec2_t& a, const vec2_t& b, vec2_t& c)
+void vector_2d_divide(const c_vec2& a, const c_vec2& b, c_vec2& c)
 {
 	c.x = a.x / b.x;
 	c.y = a.y / b.y;
 }
 
-void Vector2DMA(const vec2_t& start, float s, const vec2_t& dir, vec2_t& result)
+void vector_2dma(const c_vec2& start, const float s, const c_vec2& dir, c_vec2& result)
 {
 	result.x = start.x + s * dir.x;
 	result.y = start.y + s * dir.y;
 }
 
-// FIXME: Remove
+// @fix-me: Remove
 // For backwards compatability
-void vec2_t::MulAdd(const vec2_t& a, const vec2_t& b, float scalar)
+void c_vec2::mul_add(const c_vec2& a, const c_vec2& b, const float scalar)
 {
 	x = a.x + b.x * scalar;
 	y = a.y + b.y * scalar;
 }
 
-void Vector2DLerp(const vec2_t& src1, const vec2_t& src2, vec_t t, vec2_t& dest)
+void vector_2d_lerp(const c_vec2& src1, const c_vec2& src2, const vec_t t, c_vec2& dest)
 {
 	dest[0] = src1[0] + (src2[0] - src1[0]) * t;
 	dest[1] = src1[1] + (src2[1] - src1[1]) * t;
@@ -182,20 +181,20 @@ void Vector2DLerp(const vec2_t& src1, const vec2_t& src2, vec_t t, vec2_t& dest)
 //-----------------------------------------------------------------------------
 // dot, cross
 //-----------------------------------------------------------------------------
-vec_t DotProduct2D(const vec2_t& a, const vec2_t& b)
+vec_t dot_product_2d(const c_vec2& a, const c_vec2& b)
 {
-	return(a.x * b.x + a.y * b.y);
+	return a.x * b.x + a.y * b.y;
 }
 
 // for backwards compatability
-vec_t vec2_t::Dot(const vec2_t& vOther) const
+vec_t c_vec2::dot(const c_vec2& other) const
 {
-	return DotProduct2D(*this, vOther);
+	return dot_product_2d(*this, other);
 }
 
-vec_t Vector2DNormalize(vec2_t& v)
+vec_t vector_2d_normalize(c_vec2& v)
 {
-	vec_t l = v.Length();
+	const vec_t l = v.length();
 	if (l != 0.0f) {
 		v /= l;
 	}
@@ -208,59 +207,57 @@ vec_t Vector2DNormalize(vec2_t& v)
 //-----------------------------------------------------------------------------
 // length
 //-----------------------------------------------------------------------------
-vec_t Vector2DLength(const vec2_t& v)
+vec_t vector_2d_length(const c_vec2& v)
 {
-	return (vec_t)sqrt(v.x * v.x + v.y * v.y);
+	return sqrt(v.x * v.x + v.y * v.y);
 }
 
-vec_t vec2_t::NormalizeInPlace()
+vec_t c_vec2::normalize_in_place()
 {
-	return Vector2DNormalize(*this);
+	return vector_2d_normalize(*this);
 }
 
-bool vec2_t::IsLengthGreaterThan(float val) const
+bool c_vec2::is_length_greater_than(const float val) const
 {
-	return LengthSqr() > val * val;
+	return length_sqr() > val * val;
 }
 
-bool vec2_t::IsLengthLessThan(float val) const
+bool c_vec2::is_length_less_than(const float val) const
 {
-	return LengthSqr() < val * val;
+	return length_sqr() < val * val;
 }
 
-vec_t vec2_t::Length(void) const
+vec_t c_vec2::length(void) const
 {
-	return Vector2DLength(*this);
+	return vector_2d_length(*this);
 }
 
-
-void Vector2DMin(const vec2_t& a, const vec2_t& b, vec2_t& result)
+void vector_2d_min(const c_vec2& a, const c_vec2& b, c_vec2& result)
 {
-	result.x = (a.x < b.x) ? a.x : b.x;
-	result.y = (a.y < b.y) ? a.y : b.y;
+	result.x = a.x < b.x ? a.x : b.x;
+	result.y = a.y < b.y ? a.y : b.y;
 }
 
-
-void Vector2DMax(const vec2_t& a, const vec2_t& b, vec2_t& result)
+void vector_2d_max(const c_vec2& a, const c_vec2& b, c_vec2& result)
 {
-	result.x = (a.x > b.x) ? a.x : b.x;
-	result.y = (a.y > b.y) ? a.y : b.y;
+	result.x = a.x > b.x ? a.x : b.x;
+	result.y = a.y > b.y ? a.y : b.y;
 }
 
 //-----------------------------------------------------------------------------
 // Computes the closest point to vecTarget no farther than flMaxDist from vecStart
 //-----------------------------------------------------------------------------
-void ComputeClosestPoint2D(const vec2_t& vecStart, float flMaxDist, const vec2_t& vecTarget, vec2_t* pResult)
+void compute_closest_point_2d(const c_vec2& start, const float max_dist, const c_vec2& target, c_vec2* result)
 {
-	vec2_t vecDelta;
-	Vector2DSubtract(vecTarget, vecStart, vecDelta);
-	float flDistSqr = vecDelta.LengthSqr();
-	if (flDistSqr <= flMaxDist * flMaxDist) {
-		*pResult = vecTarget;
+	c_vec2 delta;
+	vector_2d_subtract(target, start, delta);
+	const float dist_sqr = delta.length_sqr();
+	if (dist_sqr <= max_dist * max_dist) {
+		*result = target;
 	}
 	else {
-		vecDelta /= sqrt(flDistSqr);
-		Vector2DMA(vecStart, flMaxDist, vecDelta, *pResult);
+		delta /= sqrt(dist_sqr);
+		vector_2dma(start, max_dist, delta, *result);
 	}
 }
 
@@ -268,69 +265,68 @@ void ComputeClosestPoint2D(const vec2_t& vecStart, float flMaxDist, const vec2_t
 // Returns a Vector2D with the min or max in X, Y, and Z.
 //-----------------------------------------------------------------------------
 
-vec2_t vec2_t::Min(const vec2_t& vOther) const
+c_vec2 c_vec2::Min(const c_vec2& other) const
 {
-	return vec2_t(x < vOther.x ? x : vOther.x, y < vOther.y ? y : vOther.y);
+	return { x < other.x ? x : other.x, y < other.y ? y : other.y };
 }
 
-vec2_t vec2_t::Max(const vec2_t& vOther) const
+c_vec2 c_vec2::Max(const c_vec2& other) const
 {
-	return vec2_t(x > vOther.x ? x : vOther.x, y > vOther.y ? y : vOther.y);
+	return { x > other.x ? x : other.x, y > other.y ? y : other.y };
 }
-
 
 //-----------------------------------------------------------------------------
 // arithmetic operations
 //-----------------------------------------------------------------------------
 
-vec2_t vec2_t::operator-(void) const
+c_vec2 c_vec2::operator-(void) const
 {
-	return vec2_t(-x, -y);
+	return { -x, -y };
 }
 
-vec2_t vec2_t::operator+(const vec2_t& v) const
+c_vec2 c_vec2::operator+(const c_vec2& v) const
 {
-	vec2_t res;
-	Vector2DAdd(*this, v, res);
+	c_vec2 res;
+	vector_2d_add(*this, v, res);
 	return res;
 }
 
-vec2_t vec2_t::operator-(const vec2_t& v) const
+c_vec2 c_vec2::operator-(const c_vec2& v) const
 {
-	vec2_t res;
-	Vector2DSubtract(*this, v, res);
+	c_vec2 res;
+	vector_2d_subtract(*this, v, res);
 	return res;
 }
 
-vec2_t vec2_t::operator*(float fl) const
+c_vec2 c_vec2::operator*(const float fl) const
 {
-	vec2_t res;
-	Vector2DMultiply(*this, fl, res);
+	c_vec2 res;
+	vector_2d_multiply(*this, fl, res);
 	return res;
 }
 
-vec2_t vec2_t::operator*(const vec2_t& v) const
+c_vec2 c_vec2::operator*(const c_vec2& v) const
 {
-	vec2_t res;
-	Vector2DMultiply(*this, v, res);
+	c_vec2 res;
+	vector_2d_multiply(*this, v, res);
 	return res;
 }
 
-vec2_t vec2_t::operator/(float fl) const
+c_vec2 c_vec2::operator/(const float fl) const
 {
-	vec2_t res;
-	Vector2DDivide(*this, fl, res);
+	c_vec2 res;
+	vector_2d_divide(*this, fl, res);
 	return res;
 }
 
-vec2_t vec2_t::operator/(const vec2_t& v) const
+c_vec2 c_vec2::operator/(const c_vec2& v) const
 {
-	vec2_t res;
-	Vector2DDivide(*this, v, res);
+	c_vec2 res;
+	vector_2d_divide(*this, v, res);
 	return res;
 }
 
-vec2_t operator*(float fl, const vec2_t& v)
+c_vec2 operator*(const float fl, const c_vec2& v)
 {
 	return v * fl;
 }

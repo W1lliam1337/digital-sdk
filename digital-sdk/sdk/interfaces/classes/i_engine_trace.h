@@ -2,9 +2,9 @@
 
 #include <cstring>
 #include "i_client_entity.h"
-#include "../math/vec4.h"
+#include "../../math/vec4.h"
 
-class vec3_t;
+class c_vec3;
 class i_handle_entity;
 struct ray_t;
 class i_collideable;
@@ -12,9 +12,9 @@ class i_trace_list_data;
 class c_phys_collide;
 struct virtualmeshlist_t;
 
-#define CAM_HULL_OFFSET ( float )14.0f
-#define CAM_HULL_MIN vec3_t( -CAM_HULL_OFFSET,-CAM_HULL_OFFSET,-CAM_HULL_OFFSET )
-#define CAM_HULL_MAX vec3_t( CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET  )
+#define CAM_HULL_OFFSET 14.0f
+#define CAM_HULL_MIN c_vec3( -CAM_HULL_OFFSET,-CAM_HULL_OFFSET,-CAM_HULL_OFFSET )
+#define CAM_HULL_MAX c_vec3( CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET  )
 
 enum e_surfaceflags {
 	dispsurf_flag_surface = (1 << 0),
@@ -128,7 +128,7 @@ class c_trace_filter : public i_trace_filter
 public:
 	bool should_hit_entity(i_handle_entity* pEntityHandle, int contents_mask) override
 	{
-		auto e_cc = static_cast<i_client_entity*>(pEntityHandle)->get_client_class();
+		const auto e_cc = static_cast<i_client_entity*>(pEntityHandle)->get_client_class();
 		if (e_cc && m_ignore != nullptr && strcmp(m_ignore, "") != 0)
 		{
 			if (e_cc->m_network_name == m_ignore)
@@ -154,18 +154,18 @@ public:
 
 struct brush_side_info_t
 {
-	Vector4D m_plane; // The plane of the brush side
-	unsigned short m_bevel; // Bevel plane?
-	unsigned short m_thin; // Thin?
+	c_vec4 m_plane; // The plane of the brush side
+	uint16_t m_bevel; // Bevel plane?
+	uint16_t m_thin; // Thin?
 };
 
 class c_phys_collide;
 
 struct vcollide_t
 {
-	unsigned short m_solid_count : 15;
-	unsigned short m_is_packed : 1;
-	unsigned short m_desc_size;
+	uint16_t m_solid_count : 15;
+	uint16_t m_is_packed : 1;
+	uint16_t m_desc_size;
 	c_phys_collide** m_solids;
 	char* m_key_values;
 	void* m_user_data;
@@ -173,8 +173,8 @@ struct vcollide_t
 
 struct cmodel_t
 {
-	vec3_t m_mins, m_maxs;
-	vec3_t m_origin; // for sounds or lights
+	c_vec3 m_mins, m_maxs;
+	c_vec3 m_origin; // for sounds or lights
 	int m_headnode;
 	vcollide_t m_vcollision_data;
 };
@@ -183,10 +183,10 @@ struct csurface_t
 {
 	const char* m_name;
 	short m_surface_props;
-	unsigned short m_flags;
+	uint16_t m_flags;
 };
 
-class __declspec(align(16)) vector_aligned : public vec3_t
+class __declspec(align(16)) vector_aligned : public c_vec3
 {
 public:
 	vector_aligned(void)
@@ -198,12 +198,12 @@ public:
 		init(X, Y, Z);
 	}
 
-	explicit vector_aligned(const vec3_t& vOther)
+	explicit vector_aligned(const c_vec3& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
 	}
 
-	vector_aligned& operator=(const vec3_t& vOther)
+	vector_aligned& operator=(const c_vec3& vOther)
 	{
 		init(vOther.x, vOther.y, vOther.z);
 		return *this;
@@ -215,7 +215,7 @@ public:
 		return *this;
 	}
 
-	float w;
+	float w{};
 };
 
 //-----------------------------------------------------------------------------
@@ -235,7 +235,7 @@ struct ray_t
 	{
 	}
 
-	void init(const vec3_t& start, const vec3_t& end)
+	void init(const c_vec3& start, const c_vec3& end)
 	{
 		m_delta = end - start;
 
@@ -251,7 +251,7 @@ struct ray_t
 		m_start = start;
 	}
 
-	void init(const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs)
+	void init(const c_vec3& start, const c_vec3& end, const c_vec3& mins, const c_vec3& maxs)
 	{
 		m_delta = end - start;
 
@@ -272,7 +272,7 @@ struct ray_t
 
 struct cplane_t
 {
-	vec3_t m_normal;
+	c_vec3 m_normal;
 	float m_dist;
 	uint8_t m_type; // for fast side tests
 	uint8_t m_signbits; // signx + (signy<<1) + (signz<<1)
@@ -292,8 +292,8 @@ public:
 		return m_fraction > 0.97f;
 	}
 
-	vec3_t			m_start;		// start position
-	vec3_t			m_end;			// final position
+	c_vec3			m_start;		// start position
+	c_vec3			m_end;			// final position
 	cplane_t		m_plane;			// surface normal at impact
 	float			m_fraction;		// time completed, 1.0 = didn't hit anything
 	int				m_contents;		// contents on other side of surface hit
@@ -311,15 +311,15 @@ public:
 class i_engine_trace
 {
 public:
-	virtual int get_point_contents(const vec3_t& abs_position, int contents_mask = mask_all,
+	virtual int get_point_contents(const c_vec3& abs_position, int contents_mask = mask_all,
 		i_handle_entity** ppEntity = nullptr) = 0;
-	virtual int get_point_contents_world_only(const vec3_t& abs_position, int contents_mask = mask_all) = 0;
-	virtual int get_point_contents_collideable(i_collideable* collide, const vec3_t& abs_position) = 0;
+	virtual int get_point_contents_world_only(const c_vec3& abs_position, int contents_mask = mask_all) = 0;
+	virtual int get_point_contents_collideable(i_collideable* collide, const c_vec3& abs_position) = 0;
 	virtual void clip_ray_to_entity(const ray_t& ray, unsigned int mask, i_handle_entity* ent, c_game_trace* trace) = 0;
 	virtual void clip_ray_to_collideable(const ray_t& ray, unsigned int mask, i_collideable* collide, c_game_trace* trace)
 		= 0;
 	virtual void trace_ray(const ray_t& ray, unsigned int mask, c_trace_filter* filter, c_game_trace* engine_trace) = 0;
 
-	void trace_line(vec3_t src, vec3_t dst, int mask, i_handle_entity* entity, int collision_group,
+	void trace_line(c_vec3 src, c_vec3 dst, int mask, i_handle_entity* entity, int collision_group,
 		c_game_trace* trace);
 };

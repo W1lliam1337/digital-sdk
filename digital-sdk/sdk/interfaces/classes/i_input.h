@@ -14,7 +14,7 @@ public:
 	char pad1[0x9A]{};
 	bool m_camera_in_third_person{};
 	char pad2[0x2]{};
-	vec3_t m_camera_offset{};
+	c_vec3 m_camera_offset{};
 	char pad3[0x38]{};
 	c_user_cmd* m_commands{};
 	c_verified_user_cmd* m_verified_commands{};

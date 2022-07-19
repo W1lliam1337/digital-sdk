@@ -99,11 +99,11 @@ struct qangle_t
 		return *this;
 	}
 
-	qangle_t& operator=(const qangle_t& vOther)
+	qangle_t& operator=(const qangle_t& other)
 	{
-		x = vOther.x;
-		y = vOther.y;
-		z = vOther.z;
+		x = other.x;
+		y = other.y;
+		z = other.z;
 		return *this;
 	}
 
@@ -122,7 +122,7 @@ struct qangle_t
 		return { x - v.x, y - v.y, z - v.z };
 	}
 
-	qangle_t operator*(float fl) const
+	qangle_t operator*(const float fl) const
 	{
 		return { x * fl, y * fl, z * fl };
 	}
@@ -205,9 +205,7 @@ struct qangle_t
 		return l;
 	}
 
-	float x;
-	float y;
-	float z;
+	float x{}, y{}, z{};
 };
 
 inline qangle_t operator*(const float lhs, const qangle_t& rhs)

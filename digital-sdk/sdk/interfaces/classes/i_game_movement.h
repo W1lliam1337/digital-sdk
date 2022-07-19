@@ -1,6 +1,6 @@
 #pragma once
 
-class vec3_t;
+class c_vec3;
 class c_move_data;
 class c_base_player;
 
@@ -18,9 +18,9 @@ public:
 	virtual void start_track_prediction_errors(c_base_player* player) = 0;
 	virtual void finish_track_prediction_errors(c_base_player* player) = 0;
 	virtual void diff_print(const char* fmt, ...) = 0;
-	virtual const vec3_t& get_player_mins(bool ducked) const = 0;
-	virtual const vec3_t& get_player_maxs(bool ducked) const = 0;
-	virtual const vec3_t& get_player_view_offset(bool ducked) const = 0;
+	virtual const c_vec3& get_player_mins(bool ducked) const = 0;
+	virtual const c_vec3& get_player_maxs(bool ducked) const = 0;
+	virtual const c_vec3& get_player_view_offset(bool ducked) const = 0;
 	virtual bool is_moving_player_stuck(void) const = 0;
 	virtual c_base_player* get_moving_player(void) const = 0;
 	virtual void unblock_pusher(c_base_player* player, c_base_player* pusher) = 0;

@@ -7,7 +7,7 @@ class c_legit_bot
 	[[nodiscard]] bool crosshair_on_enemy(const qangle_t view_angles) const
 	{
 		const auto& start_pos = g_sdk->m_local()->get_shoot_pos();
-		vec3_t direction;
+		c_vec3 direction;
 		g_math->angle_vectors(view_angles + g_sdk->m_local()->get_aim_punch_angle(), &direction);
 
 		const auto end_pos = start_pos + direction * 8096;

@@ -24,7 +24,7 @@ public:
 	void setup();
 	void begin();
 	void end() const;
-	void update();
+	static void update();
 	void store_netvars();
 	void restore_netvars();
 };

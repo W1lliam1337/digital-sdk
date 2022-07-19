@@ -213,10 +213,10 @@ struct anim_state_pose_param_cache_t
 
 struct procedural_foot_t
 {
-	vec3_t m_pos_anim{};
-	vec3_t m_pos_anim_last{};
-	vec3_t m_pos_plant{};
-	vec3_t m_plant_vel{};
+	c_vec3 m_pos_anim{};
+	c_vec3 m_pos_anim_last{};
+	c_vec3 m_pos_plant{};
+	c_vec3 m_plant_vel{};
 	float m_lock_amount{};
 	float m_last_plant_time{};
 };
@@ -246,11 +246,11 @@ public:
 	float m_duck_amount{}; //0x00A4 
 	float m_landing_duck_additive{}; //0x00A8 
 	uint8_t pad_0x00AC[0x4]{}; //0x00AC
-	vec3_t m_origin{};
-	vec3_t m_old_origin{};
-	vec3_t m_velocity{};
-	vec3_t m_velocity_normalized{};
-	vec3_t m_last_accelerating_vel{};
+	c_vec3 m_origin{};
+	c_vec3 m_old_origin{};
+	c_vec3 m_velocity{};
+	c_vec3 m_velocity_normalized{};
+	c_vec3 m_last_accelerating_vel{};
 	float m_speed2d{};
 	float m_abs_velocity{};
 	float m_speed_normalized{};

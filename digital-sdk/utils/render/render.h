@@ -4,8 +4,8 @@
 #include <mutex>
 #include "../../sdk/other/color/color.h"
 
-class vec2_t;
-class vec3_t;
+class c_vec2;
+class c_vec3;
 
 class c_render
 {
@@ -25,10 +25,10 @@ public:
 
 	void rect(float x1, float y1, float x2, float y2, c_color color, float thickness = 1.f, float rounding = 0.f) const;
 	void rect_filled(float x1, float y1, float x2, float y2, c_color color) const;
-	void circle_2d(vec3_t position, int point_count, float radius, c_color color) const;
-	void circle_2d_filled(vec3_t position, int point_count, float radius, c_color color) const;
-	void circle_3d(vec3_t position, int point_count, float radius, c_color color) const;
-	void circle_3d_filled(const vec3_t& origin, float radius, c_color color) const;
+	void circle_2d(c_vec3 position, int point_count, float radius, c_color color) const;
+	void circle_2d_filled(c_vec3 position, int point_count, float radius, c_color color) const;
+	void circle_3d(c_vec3 position, int point_count, float radius, c_color color) const;
+	void circle_3d_filled(const c_vec3& origin, float radius, c_color color) const;
 	void line(float x1, float y1, float x2, float y2, c_color color, float thickness) const;
 	void triangle(ImVec2 first, ImVec2 second, ImVec2 third, c_color color) const;
 	void text(const ImFont* font, ImVec2 text_position, const std::string& text, c_color color, bool centered,

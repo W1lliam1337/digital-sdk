@@ -62,6 +62,10 @@ void c_interfaces::init()
 	m_panel = static_cast<i_panel*>(this->get_interface(
 		g_modules->m_vgui2_dll, _("VGUI_Panel009")));
 
+	m_client_state = **reinterpret_cast<i_client_state***>(g_utils->find_sig(
+		g_modules->m_engine_dll, _("A1 ? ? ? ? 8B 80 ? ? ? ? C3")) 
+		+ 0x1);
+
 	m_input = *reinterpret_cast<i_input**>(g_utils->find_sig(
 		g_modules->m_client_dll, _("B9 ? ? ? ? F3 0F 11 04 24 FF 50 10"))
 		+ 0x1);

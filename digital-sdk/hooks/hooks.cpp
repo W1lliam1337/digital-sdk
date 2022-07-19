@@ -15,26 +15,26 @@ void c_hooks::init()
 	static const auto override_view = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
 	static const auto modify_eye_position = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
 	static const auto calculate_view = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
-	static const auto inferno_client_think = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
 	static const auto blood_callback = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 8B 4D 08 F3 0F 10 51 ? 8D 51 18")));
+	static const auto inferno_client_think = static_cast<void*>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 20 53 56 57 8B F9 8B 0D ? ? ? ? 8B 81 ? ? ? ? 89 45 EC")));
 
-	HOOK(create_move, hk_create_move_proxy, g_hooks->m_originals.m_create_move);
-	HOOK(reset, hk_reset, g_hooks->m_originals.m_reset);
-	HOOK(present, hk_present, g_hooks->m_originals.m_present);
-	HOOK(lock_cursor, hk_lock_cursor, g_hooks->m_originals.m_lock_cursor);
-	HOOK(paint_traverse, hk_paint_traverse, g_hooks->m_originals.m_paint_traverse);
-	HOOK(override_view, hk_override_view, g_hooks->m_originals.m_override_view);
-	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks->m_originals.m_modify_eye_position);
-	HOOK(calculate_view, hk_calculate_view, g_hooks->m_originals.m_calculate_view);
-	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_originals.m_inferno_client_think);
-	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_originals.m_inferno_client_think);
+	HOOK(create_move, hk_create_move_proxy, g_hooks->m_og_create_move);
+	HOOK(reset, hk_reset, g_hooks->m_og_reset);
+	HOOK(present, hk_present, g_hooks->m_og_present);
+	HOOK(lock_cursor, hk_lock_cursor, g_hooks->m_og_lock_cursor);
+	HOOK(paint_traverse, hk_paint_traverse, g_hooks->m_og_paint_traverse);
+	HOOK(override_view, hk_override_view, g_hooks->m_og_override_view);
+	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks->m_og_modify_eye_position);
+	HOOK(calculate_view, hk_calculate_view, g_hooks->m_og_calculate_view);
+	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_registers);
+	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_registers);
 
 	MH_EnableHook(nullptr);
 }
 
 void __stdcall c_hooks::hk_create_move(const int sequence, const float frame_time, const bool is_active, bool& send_packet)
 {
-	g_hooks->m_originals.m_create_move(sequence, frame_time, is_active);
+	g_hooks->m_og_create_move(sequence, frame_time, is_active);
 
 	const auto cmd = g_interfaces->m_input->get_user_cmd(sequence);
 	const auto verified_cmd = g_interfaces->m_input->get_verified_cmd(sequence);
@@ -44,6 +44,8 @@ void __stdcall c_hooks::hk_create_move(const int sequence, const float frame_tim
 
 	g_sdk->m_packet_data.m_cmd = cmd;
 	g_sdk->m_packet_data.m_send_packet = true;
+
+	g_engine_prediction->update();
 
 	g_movement->bunny_hop();
 
@@ -87,13 +89,13 @@ void c_hooks::init_wnd_proc()
 	if (!wnd)
 		return;
 
-	g_hooks->m_originals.m_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongA(wnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(hk_wnd_proc)));
+	g_hooks->m_og_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongA(wnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(hk_wnd_proc)));
 }
 
 long __stdcall c_hooks::hk_present(IDirect3DDevice9* device, const RECT* src, const RECT* dest, const HWND window_override, const RGNDATA* dirty_region) noexcept
 {
 	if (!ImGui::GetCurrentContext())
-		return g_hooks->m_originals.m_present(device, src, dest, window_override, dirty_region);
+		return g_hooks->m_og_present(device, src, dest, window_override, dirty_region);
 
 	ImGui_ImplDX9_Init(device);
 	g_menu->init_style();
@@ -136,7 +138,7 @@ long __stdcall c_hooks::hk_present(IDirect3DDevice9* device, const RECT* src, co
 	device->SetVertexDeclaration(vert_declaration);
 	device->SetVertexShader(vert_shader);
 
-	return g_hooks->m_originals.m_present(device, src, dest, window_override, dirty_region);
+	return g_hooks->m_og_present(device, src, dest, window_override, dirty_region);
 }
 
 long __stdcall c_hooks::hk_wnd_proc(const HWND window, const UINT msg, const WPARAM wparm, const LPARAM lparm)
@@ -151,13 +153,13 @@ long __stdcall c_hooks::hk_wnd_proc(const HWND window, const UINT msg, const WPA
 	if (g_sdk->m_menu_data.m_is_menu_opened && (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_MOUSEMOVE))
 		return false;
 
-	return CallWindowProcA(g_hooks->m_originals.m_wnd_proc, window, msg, wparm, lparm);
+	return CallWindowProcA(g_hooks->m_og_wnd_proc, window, msg, wparm, lparm);
 }
 
 long __stdcall c_hooks::hk_reset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params)
 {
 	ImGui_ImplDX9_InvalidateDeviceObjects();
-	const auto og = g_hooks->m_originals.m_reset(device, params);
+	const auto og = g_hooks->m_og_reset(device, params);
 	ImGui_ImplDX9_CreateDeviceObjects();
 
 	return og;
@@ -165,7 +167,7 @@ long __stdcall c_hooks::hk_reset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS
 
 void __stdcall c_hooks::hk_lock_cursor() noexcept
 {
-	return g_sdk->m_menu_data.m_is_menu_opened ? g_interfaces->m_surface->unlock_cursor() : g_hooks->m_originals.m_lock_cursor(g_interfaces->m_surface);
+	return g_sdk->m_menu_data.m_is_menu_opened ? g_interfaces->m_surface->unlock_cursor() : g_hooks->m_og_lock_cursor(g_interfaces->m_surface);
 }
 
 void __fastcall c_hooks::hk_paint_traverse(void* ecx, void* edx, const vgui::vpanel panel, const bool force_repaint, const bool allow_force)
@@ -179,7 +181,7 @@ void __fastcall c_hooks::hk_paint_traverse(void* ecx, void* edx, const vgui::vpa
 	if (hud_zoom_panel == panel && g_cfg->m_misc.m_no_scope)
 		return;
 
-	g_hooks->m_originals.m_paint_traverse(ecx, panel, force_repaint, allow_force);
+	g_hooks->m_og_paint_traverse(ecx, panel, force_repaint, allow_force);
 
 	static vgui::vpanel panel_id = 0;
 
@@ -217,14 +219,14 @@ void __fastcall c_hooks::hk_override_view(void* ecx, void* edx, c_view_setup* se
 	}
 
 	g_interfaces->m_input->m_camera_offset.z = static_cast<float>(g_cfg->m_misc.m_third_person_distance);
-	return g_hooks->m_originals.m_override_view(ecx, setup_view);
+	return g_hooks->m_og_override_view(ecx, setup_view);
 }
 
-void __fastcall c_hooks::hk_modify_eye_position(void* ecx, void* edx, vec3_t& input_eye_pos)
+void __fastcall c_hooks::hk_modify_eye_position(void* ecx, void* edx, c_vec3& input_eye_pos)
 {
 	const auto anim_state = static_cast<c_anim_state*>(ecx);
 	if (!anim_state)
-		return g_hooks->m_originals.m_modify_eye_position(ecx, edx, input_eye_pos);
+		return g_hooks->m_og_modify_eye_position(ecx, edx, input_eye_pos);
 
 	if (!anim_state->m_hit_ground && anim_state->m_duck_amount == 0.0f)
 	{
@@ -233,29 +235,26 @@ void __fastcall c_hooks::hk_modify_eye_position(void* ecx, void* edx, vec3_t& in
 		return;
 	}
 
-	using bone_lookup_fn = int(__thiscall*)(void*, const char*);
-	static auto lookup_bone = reinterpret_cast<bone_lookup_fn>(c_utils::find_sig(g_modules->m_client_dll, _("55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75 14 8B 46 04 8D 4E 04 FF 50 20 85 C0 74 07 8B CE E8 ? ? ? ? 8B 8E ? ? ? ? 85 C9 0F 84")));
+	static auto lookup_bone = reinterpret_cast<int(__thiscall*)(void*, const char*)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75 14 8B 46 04 8D 4E 04 FF 50 20 85 C0 74 07 8B CE E8 ? ? ? ? 8B 8E ? ? ? ? 85 C9 0F 84")));
+	const auto head_bone = lookup_bone(anim_state->m_player, _("head_0"));
+	if (head_bone == -1)
+		return;
 
-	auto head_pos = anim_state->m_player->get_bone_cache()[lookup_bone(anim_state->m_player, _("head_0"))].at(3);
+	auto head_pos = anim_state->m_player->get_hitbox_pos(head_bone);
 	head_pos.z += 1.7f;
 
-	if (input_eye_pos.z > head_pos.z)
-	{
-		const auto lol = abs(input_eye_pos.z - head_pos.z);
-		const auto v22 = (lol - 4.0) * 0.16666667;
-		float v23;
+	if (input_eye_pos.z <= head_pos.z)
+		return;
 
-		if (v22 >= 0.0)
-			v23 = fminf(v22, 1.0);
-		else
-			v23 = 0.0;
+	const auto lol = abs(input_eye_pos.z - head_pos.z);
+	float value = (lol - 4.0) * 0.16666667;
+	value = std::clamp(value, 0.0f, 1.0f);
 
-		input_eye_pos.z = (head_pos.z - input_eye_pos.z) * (v23 * v23 * 3.0 - v23 * v23 * 2.0 * v23) +
-			input_eye_pos.z;
-	}
+	const auto value_squared = value * value;
+	input_eye_pos.z = (head_pos.z - input_eye_pos.z) * (value_squared * 3.0 - value_squared * 2.0 * value) + input_eye_pos.z;
 }
 
-void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_origin, qangle_t& eye_angles, float& z_near, float& z_far, float& fov)
+void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, c_vec3& eye_origin, qangle_t& eye_angles, float& z_near, float& z_far, float& fov)
 {
 	/* @note: fixing weird landing animation
 	 * @ref eng: https://www.unknowncheats.me/forum/counterstrike-global-offensive/504841-fixing-weird-landing-animation.html
@@ -264,13 +263,13 @@ void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_ori
 	const auto player = static_cast<c_base_player*>(ecx);
 
 	if (!player || !g_sdk->m_local() || player != g_sdk->m_local())
-		return g_hooks->m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
+		return g_hooks->m_og_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
 
 	const auto backup_use_new_anim_state = player->should_use_new_anim_state();
 
 	player->should_use_new_anim_state() = false;
 	{
-		g_hooks->m_originals.m_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
+		g_hooks->m_og_calculate_view(ecx, edx, eye_origin, eye_angles, z_near, z_far, fov);
 	}
 	player->should_use_new_anim_state() = backup_use_new_anim_state;
 }
@@ -278,16 +277,16 @@ void __fastcall c_hooks::hk_calculate_view(void* ecx, void* edx, vec3_t& eye_ori
 /* @ ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/Effects/clientinferno.cpp#L89 */
 void __fastcall c_hooks::hk_inferno_client_think(void* ecx, void* edx) noexcept
 {
-	if (!g_cfg->m_misc.m_remove_molotov)
-		return g_hooks->m_originals.m_inferno_client_think(ecx, edx);
+	if (g_cfg->m_misc.m_remove_molotov)
+		return;
 
-	return;
+	return g_hooks->m_registers(ecx, edx);
 }
 
 /* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/fx_cs_blood.cpp#L376 */
 /* @note: way of removing blood on hit */
 void __cdecl c_hooks::hk_blood_spray_callback(void* ecx, void* edx) noexcept
 {
-	return;
+	
 }
 

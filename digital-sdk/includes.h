@@ -28,6 +28,8 @@
 #include "sdk/math/math.h"
 #include "sdk/other/studio/studio.h"
 #include "sdk/other/move_data.h"
+#include "sdk/other/utl/utl.h"
+#include "sdk/other/handle/base_handle.h"
 
 #include <MinHook.h>
 #pragma comment( lib, "MinHook.lib" )

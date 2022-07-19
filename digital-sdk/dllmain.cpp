@@ -6,7 +6,7 @@
 DWORD WINAPI instance()
 {
 	/* waiting for serverbrowser.dll module */
-	while (!GetModuleHandleA(_("serverbrowser.dll")))
+	while (!LoadLibraryA(_("serverbrowser.dll")))
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	/* open console */
@@ -33,7 +33,7 @@ DWORD WINAPI instance()
 	g_render->init();
 
 	printf(_("init netvars...\n"));
-	g_netvars->init();
+	g_net_vars->init();
 
 	printf(_("init hooks...\n"));
 	g_hooks->init();

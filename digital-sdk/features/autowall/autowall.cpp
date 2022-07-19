@@ -76,7 +76,7 @@ void c_auto_wall::scale_damage(float& damage) const
 	damage = damage_to_health;
 }
 
-bool c_auto_wall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_trace, vec3_t start, vec3_t& end)
+bool c_auto_wall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_trace, c_vec3 start, c_vec3& end)
 {
 	/* @ida: https://imgur.com/x3Qe12r
 	 * module: server.dll; sig: F3 0F 5C CE F3 0F 11 5D ?
@@ -94,7 +94,7 @@ bool c_auto_wall::trace_to_exit(c_game_trace* enter_trace, c_game_trace* exit_tr
 		if (!v13)
 			v13 = g_interfaces->m_trace->get_point_contents(end, 0x4600400B, nullptr);
 
-		vec3_t cl_end = end - m_fire_bullet_data.m_direction * 4.0f;
+		c_vec3 cl_end = end - m_fire_bullet_data.m_direction * 4.0f;
 
 		const auto contents = g_interfaces->m_trace->get_point_contents(end, 0x4600400B, nullptr);
 		if (contents & 0x600400B && (contents & 0x40000000 || v13 == contents))
@@ -194,7 +194,7 @@ bool c_auto_wall::handle_bullet_penetration()
 	if (m_fire_bullet_data.m_penetrate_count <= 0 || m_fire_bullet_data.m_weapon_info->m_penetration <= 0.0f)
 		return false;
 
-	if (vec3_t end; !trace_to_exit(&m_fire_bullet_data.m_enter_trace, &m_fire_bullet_data.m_exit_trace, m_fire_bullet_data.m_enter_trace.m_end, end)
+	if (c_vec3 end; !trace_to_exit(&m_fire_bullet_data.m_enter_trace, &m_fire_bullet_data.m_exit_trace, m_fire_bullet_data.m_enter_trace.m_end, end)
 		&& !(g_interfaces->m_trace->get_point_contents(end, 0x600400B) & 0x600400B))
 	{
 		return false;
@@ -311,7 +311,7 @@ bool c_auto_wall::simulate_fire_bullet()
 	return false;
 }
 
-void i_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int mask, i_handle_entity* entity, const int collision_group, c_game_trace* trace)
+void i_engine_trace::trace_line(const c_vec3 src, const c_vec3 dst, const int mask, i_handle_entity* entity, const int collision_group, c_game_trace* trace)
 {
 	/* @ida: https://imgur.com/62wteAl
 	 * module: server; sig: E8 ? ? ? ? 8B 45 2C
@@ -331,10 +331,10 @@ void i_engine_trace::trace_line(const vec3_t src, const vec3_t dst, const int ma
 	return trace_ray(ray, mask, reinterpret_cast<c_trace_filter*>(filt), trace);
 }
 
-void c_auto_wall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& abs_end, c_trace_filter* filter, c_game_trace* trace, const float min_range)
+void c_auto_wall::clip_trace_to_players(const c_vec3& abs_start, const c_vec3& abs_end, c_trace_filter* filter, c_game_trace* trace, const float min_range)
 {
 	/* @note: i don't know if signature can be used, because all sources just copy the valve code and paste it to yourself */
-	//static auto clip_trace_to_players_fn = reinterpret_cast<void(__thiscall*)(i_handle_entity*, vec3_t, vec3_t, unsigned int, i_trace_filter*, trace_t*, float)>(c_utils::find_sig(g_sdk->m_modules.m_client_dll, _("E8 ? ? ? ? 83 C4 18 8A 56 37")));
+	//static auto clip_trace_to_players_fn = reinterpret_cast<void(__thiscall*)(i_handle_entity*, c_vec3, c_vec3, unsigned int, i_trace_filter*, trace_t*, float)>(c_utils::find_sig(g_sdk->m_modules.m_client_dll, _("E8 ? ? ? ? 83 C4 18 8A 56 37")));
 	//return clip_trace_to_players_fn(entity, abs_start, abs_end, mask, filter, trace, min_range);
 
 	c_game_trace game_trace = { };
@@ -387,9 +387,9 @@ void c_auto_wall::clip_trace_to_players(const vec3_t& abs_start, const vec3_t& a
 	}
 }
 
-float c_auto_wall::get_damage(const vec3_t& point)
+float c_auto_wall::get_damage(const c_vec3& point)
 {
-	vec3_t vec_direction;
+	c_vec3 vec_direction;
 	qangle_t ang_direction;
 
 	const auto shoot_pos = g_sdk->m_local()->get_shoot_pos();

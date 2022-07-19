@@ -2,6 +2,9 @@
 
 void c_movement::bunny_hop()
 {
+	if (!g_sdk->m_local() || !g_sdk->m_packet_data.m_cmd)
+		return;
+
 	if (g_sdk->m_local()->get_move_type() == move_type_ladder
 		|| g_sdk->m_local()->get_move_type() == move_type_noclip)
 	{

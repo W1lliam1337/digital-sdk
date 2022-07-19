@@ -2,48 +2,48 @@
 #include <cmath>
 #include <numbers>
 
-class vec3_t
+class c_vec3
 {
 public:
-	vec3_t(const float* clr)
+	c_vec3(const float* clr)
 	{
 		x = clr[0];
 		y = clr[1];
 		z = clr[2];
 	}
 
-	vec3_t()
+	c_vec3()
 	{
 		this->x = 0;
 		this->y = 0;
 		this->z = 0;
 	};
 
-	vec3_t(float fx, float fy, float fz)
+	c_vec3(const float fx, const float fy, const float fz)
 	{
 		this->x = fx;
 		this->y = fy;
 		this->z = fz;
 	}
 
-	void init(float ix = 0.0f, float iy = 0.0f, float iz = 0.0f)
+	void init(const float ix = 0.0f, const float iy = 0.0f, const float iz = 0.0f)
 	{
 		x = ix;
 		y = iy;
 		z = iz;
 	}
 
-	vec3_t operator*(float fl)
+	c_vec3 operator*(const float fl)
 	{
 		return { x * fl, y * fl, z * fl };
 	}
 
-	vec3_t operator*(const vec3_t& v)
+	c_vec3 operator*(const c_vec3& v)
 	{
 		return { x * v.x, y * v.y, z * v.z };
 	}
 
-	__inline void mul(float scalar)
+	__inline void mul(const float scalar)
 	{
 		x *= scalar;
 		y *= scalar;
@@ -55,7 +55,7 @@ public:
 		return reinterpret_cast<float*>(this)[i];
 	}
 
-	float operator[](int i) const
+	float operator[](const int i) const
 	{
 		return ((float*)this)[i];
 	}
@@ -70,7 +70,7 @@ public:
 		return isfinite(x) && isfinite(y) && isfinite(z) && x < 9999999 && y < 9999999 && z < 9999999;
 	}
 
-	vec3_t clamp()
+	c_vec3 clamp()
 	{
 		if (x < -89.0f)
 		{
@@ -101,17 +101,17 @@ public:
 		x = y = z = 0.0f;
 	}
 
-	bool operator==(const vec3_t& src) const
+	bool operator==(const c_vec3& src) const
 	{
-		return (src.x == x) && (src.y == y) && (src.z == z);
+		return src.x == x && src.y == y && src.z == z;
 	}
 
-	bool operator!=(const vec3_t& src) const
+	bool operator!=(const c_vec3& src) const
 	{
-		return (src.x != x) || (src.y != y) || (src.z != z);
+		return src.x != x || src.y != y || src.z != z;
 	}
 
-	vec3_t& operator+=(const vec3_t& v)
+	c_vec3& operator+=(const c_vec3& v)
 	{
 		x += v.x;
 		y += v.y;
@@ -119,7 +119,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator-=(const vec3_t& v)
+	c_vec3& operator-=(const c_vec3& v)
 	{
 		x -= v.x;
 		y -= v.y;
@@ -127,7 +127,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator*=(const float fl)
+	c_vec3& operator*=(const float fl)
 	{
 		x *= fl;
 		y *= fl;
@@ -135,7 +135,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator*=(const vec3_t& v)
+	c_vec3& operator*=(const c_vec3& v)
 	{
 		x *= v.x;
 		y *= v.y;
@@ -143,7 +143,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator/=(const vec3_t& v)
+	c_vec3& operator/=(const c_vec3& v)
 	{
 		x /= v.x;
 		y /= v.y;
@@ -151,7 +151,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator+=(const float fl)
+	c_vec3& operator+=(const float fl)
 	{
 		x += fl;
 		y += fl;
@@ -159,7 +159,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator/=(const float fl)
+	c_vec3& operator/=(const float fl)
 	{
 		x /= fl;
 		y /= fl;
@@ -167,7 +167,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator-=(const float fl)
+	c_vec3& operator-=(const float fl)
 	{
 		x -= fl;
 		y -= fl;
@@ -180,9 +180,9 @@ public:
 		*this = normalized();
 	}
 
-	[[nodiscard]] vec3_t normalized() const
+	[[nodiscard]] c_vec3 normalized() const
 	{
-		vec3_t res = *this;
+		c_vec3 res = *this;
 		if (const float l = res.length(); l != 0.0f)
 		{
 			res /= l;
@@ -196,7 +196,7 @@ public:
 
 	[[nodiscard]] float normalize() const
 	{
-		vec3_t res = *this;
+		c_vec3 res = *this;
 		const float l = res.length();
 		if (l != 0.0f)
 		{
@@ -209,9 +209,9 @@ public:
 		return l;
 	}
 
-	[[nodiscard]] float dist_to(const vec3_t& v_other) const
+	[[nodiscard]] float dist_to(const c_vec3& v_other) const
 	{
-		vec3_t delta;
+		c_vec3 delta;
 
 		delta.x = x - v_other.x;
 		delta.y = y - v_other.y;
@@ -220,9 +220,9 @@ public:
 		return delta.length();
 	}
 
-	[[nodiscard]] float dist_to_sqr(const vec3_t& v_other) const
+	[[nodiscard]] float dist_to_sqr(const c_vec3& v_other) const
 	{
-		vec3_t delta;
+		c_vec3 delta;
 
 		delta.x = x - v_other.x;
 		delta.y = y - v_other.y;
@@ -231,26 +231,26 @@ public:
 		return delta.length_sqr();
 	}
 
-	[[nodiscard]] float dot(const vec3_t& vOther) const
+	[[nodiscard]] float dot(const c_vec3& other) const
 	{
-		return (x * vOther.x + y * vOther.y + z * vOther.z);
+		return x * other.x + y * other.y + z * other.z;
 	}
 
-	static void vector_cross_product(const vec3_t& a, const vec3_t& b, vec3_t& result)
+	static void vector_cross_product(const c_vec3& a, const c_vec3& b, c_vec3& result)
 	{
 		result.x = a.y * b.z - a.z * b.y;
 		result.y = a.z * b.x - a.x * b.z;
 		result.z = a.x * b.y - a.y * b.x;
 	}
 
-	[[nodiscard]] vec3_t cross(const vec3_t& v_other) const
+	[[nodiscard]] c_vec3 cross(const c_vec3& v_other) const
 	{
-		vec3_t res;
+		c_vec3 res;
 		vector_cross_product(*this, v_other, res);
 		return res;
 	}
 
-	[[nodiscard]] vec3_t to_angle() const
+	[[nodiscard]] c_vec3 to_angle() const
 	{
 		return {
 			std::atan2(-z, std::hypot(x, y)) * (180.0f / std::numbers::pi_v<float>),
@@ -266,12 +266,12 @@ public:
 
 	[[nodiscard]] float length_sqr(void) const
 	{
-		return (x * x + y * y + z * z);
+		return x * x + y * y + z * z;
 	}
 
 	[[nodiscard]] float length_2d_sqr() const
 	{
-		return (x * x + y * y);
+		return x * x + y * y;
 	}
 
 	[[nodiscard]] float length_2d() const
@@ -279,60 +279,58 @@ public:
 		return sqrt(x * x + y * y);
 	}
 
-	vec3_t& operator=(const vec3_t& vOther)
+	c_vec3& operator=(const c_vec3& other)
 	{
-		x = vOther.x;
-		y = vOther.y;
-		z = vOther.z;
+		x = other.x;
+		y = other.y;
+		z = other.z;
 		return *this;
 	}
 
-	vec3_t operator-() const
+	c_vec3 operator-() const
 	{
 		return { -x, -y, -z };
 	}
 
-	vec3_t operator+(const vec3_t& v) const
+	c_vec3 operator+(const c_vec3& v) const
 	{
 		return { x + v.x, y + v.y, z + v.z };
 	}
 
-	vec3_t operator+(float fl) const
+	c_vec3 operator+(const float fl) const
 	{
 		return { x + fl, y + fl, z + fl };
 	}
 
-	vec3_t operator-(const vec3_t& v) const
+	c_vec3 operator-(const c_vec3& v) const
 	{
 		return { x - v.x, y - v.y, z - v.z };
 	}
 
-	vec3_t operator-(float fl) const
+	c_vec3 operator-(const float fl) const
 	{
 		return { x - fl, y - fl, z - fl };
 	}
 
-	vec3_t operator*(float fl) const
+	c_vec3 operator*(const float fl) const
 	{
 		return { x * fl, y * fl, z * fl };
 	}
 
-	vec3_t operator*(const vec3_t& v) const
+	c_vec3 operator*(const c_vec3& v) const
 	{
 		return { x * v.x, y * v.y, z * v.z };
 	}
 
-	vec3_t operator/(float fl) const
+	c_vec3 operator/(const float fl) const
 	{
 		return { x / fl, y / fl, z / fl };
 	}
 
-	vec3_t operator/(const vec3_t& v) const
+	c_vec3 operator/(const c_vec3& v) const
 	{
 		return { x / v.x, y / v.y, z / v.z };
 	}
 
-	float x;
-	float y;
-	float z;
+	float x{}, y{}, z{};
 };

@@ -1,6 +1,6 @@
 #include "math.h"
 
-void c_math::vector_transform(const vec3_t& in1, const matrix_t& in2, vec3_t& out) {
+void c_math::vector_transform(const c_vec3& in1, const matrix_t& in2, c_vec3& out) {
 	out[0] = in1.dot(in2[0]) + in2[0][3];
 	out[1] = in1.dot(in2[1]) + in2[1][3];
 	out[2] = in1.dot(in2[2]) + in2[2][3];
@@ -30,28 +30,28 @@ float c_math::angle_diff(const float dest_angle, const float src_angle) {
 	return delta;
 }
 
-qangle_t c_math::calc_angle(const vec3_t& src, const vec3_t& dst) const
+qangle_t c_math::calc_angle(const c_vec3& src, const c_vec3& dst) const
 {
-	qangle_t vAngle;
-	const vec3_t delta((src.x - dst.x), (src.y - dst.y), (src.z - dst.z));
+	qangle_t angle;
+	const c_vec3 delta((src.x - dst.x), (src.y - dst.y), (src.z - dst.z));
 	const double hyp = sqrt(delta.x * delta.x + delta.y * delta.y);
 
-	vAngle.x = atanf(static_cast<float>(delta.z / hyp)) * 57.295779513082f;
-	vAngle.y = atanf(delta.y / delta.x) * 57.295779513082f;
-	vAngle.z = 0.0f;
+	angle.x = atanf(static_cast<float>(delta.z / hyp)) * 57.295779513082f;
+	angle.y = atanf(delta.y / delta.x) * 57.295779513082f;
+	angle.z = 0.0f;
 
 	if (delta.x >= 0.0)
-		vAngle.y += 180.0f;
+		angle.y += 180.0f;
 
-	return vAngle;
+	return angle;
 }
 
-vec3_t cross_product(const vec3_t& a, const vec3_t& b)
+c_vec3 cross_product(const c_vec3& a, const c_vec3& b)
 {
 	return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
-void c_math::vector_angles(const vec3_t& forward, qangle_t& view)
+void c_math::vector_angles(const c_vec3& forward, qangle_t& view)
 {
 	float pitch, yaw;
 
@@ -79,9 +79,9 @@ void c_math::vector_angles(const vec3_t& forward, qangle_t& view)
 }
 
 
-void c_math::vector_angles(const vec3_t& forward, const vec3_t& up, qangle_t& angles)
+void c_math::vector_angles(const c_vec3& forward, const c_vec3& up, qangle_t& angles)
 {
-	vec3_t left = cross_product(up, forward);
+	c_vec3 left = cross_product(up, forward);
 	left.normalize_in_place();
 
 	const float forward_dist = forward.length_2d();
@@ -91,7 +91,7 @@ void c_math::vector_angles(const vec3_t& forward, const vec3_t& up, qangle_t& an
 		angles.x = atan2f(-forward.z, forward_dist) * 180.0f / PI_F;
 		angles.y = atan2f(forward.y, forward.x) * 180.0f / PI_F;
 
-		const float up_z = (left.y * forward.x) - (left.x * forward.y);
+		const float up_z = left.y * forward.x - left.x * forward.y;
 		angles.z = atan2f(left.z, up_z) * 180.0f / PI_F;
 	}
 	else
@@ -108,7 +108,7 @@ void c_math::sin_cos(const float radians, float* sine, float* cosine) const
 	*cosine = cos(radians);
 }
 
-void c_math::angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) const
+void c_math::angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* right, c_vec3* up) const
 {
 	float sr, sp, sy, cr, cp, cy;
 
@@ -155,7 +155,7 @@ qangle_t c_math::angle_normalize(qangle_t &angle) const
 	return angle;
 }
 
-bool c_math::screen_transform(const vec3_t& in, vec3_t& out)
+bool c_math::screen_transform(const c_vec3& in, c_vec3& out)
 {
 	static auto& w2s_matrix = g_interfaces->m_engine->world_to_screen_matrix();
 

@@ -81,34 +81,34 @@ void c_render::rect_filled(const float x1, const float y1, const float x2, const
 	m_draw_list->AddRectFilled(ImVec2(x1, y1), ImVec2(x2, y2), get_u32(color), 0.0f);
 }
 
-void c_render::circle_2d(const vec3_t position, const int point_count, const float radius, const c_color color) const
+void c_render::circle_2d(const c_vec3 position, const int point_count, const float radius, const c_color color) const
 {
-	auto screen_position = vec3_t(0, 0, 0);
+	auto screen_position = c_vec3(0, 0, 0);
 	if (g_interfaces->m_debug_overlay->screen_position(position, screen_position))
 		return;
 
 	m_draw_list->AddCircle(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
 }
 
-void c_render::circle_2d_filled(const vec3_t position, const int point_count, const float radius, const c_color color) const
+void c_render::circle_2d_filled(const c_vec3 position, const int point_count, const float radius, const c_color color) const
 {
-	auto screen_position = vec3_t(0, 0, 0);
+	auto screen_position = c_vec3(0, 0, 0);
 	if (g_interfaces->m_debug_overlay->screen_position(position, screen_position))
 		return;
 
 	m_draw_list->AddCircleFilled(ImVec2(screen_position.x, screen_position.y), radius, get_u32(color), point_count);
 }
 
-void c_render::circle_3d(const vec3_t position, const int point_count, const float radius, const c_color color) const
+void c_render::circle_3d(const c_vec3 position, const int point_count, const float radius, const c_color color) const
 {
-	const float fl_step = 3.14159265358979323846f * 2.0f / static_cast<float>(point_count);
-	for (float a = 0; a < 3.14159265358979323846f * 2.0f; a += fl_step)
+	const float fl_step = PI_F * 2.0f / static_cast<float>(point_count);
+	for (float a = 0; a < PI_F * 2.0f; a += fl_step)
 	{
-		auto start = vec3_t(radius * cosf(a) + position.x, radius * sinf(a) + position.y, position.z);
-		auto end = vec3_t(radius * cosf(a + fl_step) + position.x, radius * sinf(a + fl_step) + position.y,
+		auto start = c_vec3(radius * cosf(a) + position.x, radius * sinf(a) + position.y, position.z);
+		auto end = c_vec3(radius * cosf(a + fl_step) + position.x, radius * sinf(a + fl_step) + position.y,
 			position.z);
 
-		vec3_t start_2d, end_2d;
+		c_vec3 start_2d, end_2d;
 		if (g_interfaces->m_debug_overlay->screen_position(start, start_2d)
 			|| g_interfaces->m_debug_overlay->screen_position(end, end_2d))
 			return;
@@ -117,18 +117,18 @@ void c_render::circle_3d(const vec3_t position, const int point_count, const flo
 	}
 }
 
-void c_render::circle_3d_filled(const vec3_t& origin, const float radius, const c_color color) const
+void c_render::circle_3d_filled(const c_vec3& origin, const float radius, const c_color color) const
 {
-	static auto previous_screen_pos = vec3_t(0, 0, 0);
-	static float step = 3.14159265358979323846f * 2.0f / 72.0f;
+	static auto previous_screen_pos = c_vec3(0, 0, 0);
+	static float step = PI_F * 2.0f / 72.0f;
 
-	auto screen_position = vec3_t(0, 0, 0);
+	auto screen_position = c_vec3(0, 0, 0);
 	if (g_interfaces->m_debug_overlay->screen_position(origin, screen_position))
 		return;
 
-	for (float rotation = 0.0f; rotation <= 3.14159265358979323846f * 2.0f; rotation += step)
+	for (float rotation = 0.0f; rotation <= PI_F * 2.0f; rotation += step)
 	{
-		auto world_position = vec3_t(radius * cos(rotation) + origin.x,
+		auto world_position = c_vec3(radius * cos(rotation) + origin.x,
 			radius * sin(rotation) + origin.y, origin.z);
 
 		if (g_interfaces->m_debug_overlay->screen_position(world_position, screen_position))

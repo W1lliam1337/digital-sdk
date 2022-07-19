@@ -10,24 +10,24 @@ RECT get_bounding_box(c_base_player* entity)
 	const auto& min = collideable->obb_mins();
 	const auto& max = collideable->obb_maxs();
 
-	const vec3_t points[] =
+	const c_vec3 points[] =
 	{
-		vec3_t(min.x, min.y, min.z),
-		vec3_t(min.x, max.y, min.z),
-		vec3_t(max.x, max.y, min.z),
-		vec3_t(max.x, min.y, min.z),
-		vec3_t(max.x, max.y, max.z),
-		vec3_t(min.x, max.y, max.z),
-		vec3_t(min.x, min.y, max.z),
-		vec3_t(max.x, min.y, max.z)
+		c_vec3(min.x, min.y, min.z),
+		c_vec3(min.x, max.y, min.z),
+		c_vec3(max.x, max.y, min.z),
+		c_vec3(max.x, min.y, min.z),
+		c_vec3(max.x, max.y, max.z),
+		c_vec3(min.x, max.y, max.z),
+		c_vec3(min.x, min.y, max.z),
+		c_vec3(max.x, min.y, max.z)
 	};
 
-	vec3_t points_transformed[8];
+	c_vec3 points_transformed[8];
 
 	for (auto i = 0; i < 8; i++)
 		g_math->vector_transform(points[i], coordinate_frame, points_transformed[i]);
 
-	vec3_t screen_points[8] = {};
+	c_vec3 screen_points[8] = {};
 	for (int i = 0; i < 8; i++)
 		if (g_interfaces->m_debug_overlay->screen_position(points_transformed[i], screen_points[i]))
 			return rect;

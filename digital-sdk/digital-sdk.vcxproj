@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -160,6 +160,7 @@
     <ClInclude Include="features\misc\log-system\logs.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
     <ClInclude Include="sdk\game\inferno.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_client_state.h" />
     <ClInclude Include="sdk\math\math.h" />
     <ClInclude Include="sdk\math\matrix.h" />
     <ClInclude Include="sdk\math\qangle.h" />
@@ -275,7 +276,6 @@
     <ClInclude Include="sdk\other\recv.h" />
     <ClInclude Include="sdk\interfaces\classes\i_client.h" />
     <ClInclude Include="utils\modules\modules.h" />
-    <ClInclude Include="sdk\other\crc\crc.h" />
     <ClInclude Include="sdk\other\cmd.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="sdk\interfaces\classes\i_input.h" />
@@ -292,6 +292,7 @@
     <ClCompile Include="sdk\math\math.cpp" />
     <ClCompile Include="sdk\math\vec2.cpp" />
     <ClCompile Include="sdk\math\vec4.cpp" />
+    <ClCompile Include="sdk\other\cmd.cpp" />
     <ClCompile Include="utils\config-manager\config_manager.cpp" />
     <ClCompile Include="features\visuals\player-esp\chams.cpp" />
     <ClCompile Include="features\misc\engine-prediction\engine_prediction.cpp" />
@@ -313,7 +314,6 @@
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="features\misc\movement\movement.cpp" />
     <ClCompile Include="utils\modules\modules.cpp" />
-    <ClCompile Include="sdk\other\crc\crc.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="sdk\interfaces\interfaces.cpp" />
     <ClCompile Include="utils\utils.cpp" />

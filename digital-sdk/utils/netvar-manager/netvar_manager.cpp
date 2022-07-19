@@ -1,9 +1,9 @@
 #include "netvar_manager.h"
 #include <ostream>
 
-std::vector<netvar_table> m_database;
+std::vector<net_var_table_t> m_database;
 
-void c_netvars::init()
+void c_net_vars::init()
 {
 	m_database.clear();
 
@@ -18,9 +18,9 @@ void c_netvars::init()
 	}
 }
 
-netvar_table c_netvars::load_table(const recv_table_t* recv_table)
+net_var_table_t c_net_vars::load_table(const recv_table_t* recv_table)
 {
-	auto table = netvar_table{};
+	auto table = net_var_table_t{};
 
 	table.offset = 0;
 	table.name = recv_table->m_net_table_name;
@@ -48,7 +48,7 @@ netvar_table c_netvars::load_table(const recv_table_t* recv_table)
 	return table;
 }
 
-uint32_t c_netvars::get_offset(const std::string& table_name, const std::string& prop_name)
+uint32_t c_net_vars::get_offset(const std::string& table_name, const std::string& prop_name)
 {
 	auto result = 0u;
 	for (const auto& table : m_database)
@@ -63,7 +63,7 @@ uint32_t c_netvars::get_offset(const std::string& table_name, const std::string&
 	return 0;
 }
 
-uint32_t c_netvars::get_offset(const netvar_table& table, const std::string& prop_name)
+uint32_t c_net_vars::get_offset(const net_var_table_t& table, const std::string& prop_name)
 {
 	for (const auto& prop : table.child_props)
 	{
@@ -88,20 +88,20 @@ uint32_t c_netvars::get_offset(const netvar_table& table, const std::string& pro
 	return 0;
 }
 
-recv_prop_t* c_netvars::get_netvar_prop(const std::string& table_name, const std::string& prop_name)
+recv_prop_t* c_net_vars::get_net_var_prop(const std::string& table_name, const std::string& prop_name)
 {
 	recv_prop_t* result = nullptr;
 	for (const auto& table : m_database)
 	{
 		if (table.name == table_name)
 		{
-			result = get_netvar_prop(table, prop_name);
+			result = get_net_var_prop(table, prop_name);
 		}
 	}
 	return result;
 }
 
-recv_prop_t* c_netvars::get_netvar_prop(const netvar_table& table, const std::string& prop_name)
+recv_prop_t* c_net_vars::get_net_var_prop(const net_var_table_t& table, const std::string& prop_name)
 {
 	for (const auto& prop : table.child_props)
 	{
@@ -112,7 +112,7 @@ recv_prop_t* c_netvars::get_netvar_prop(const netvar_table& table, const std::st
 	}
 	for (const auto& child : table.child_tables)
 	{
-		const auto prop = get_netvar_prop(child, prop_name);
+		const auto prop = get_net_var_prop(child, prop_name);
 		if (prop != nullptr)
 			return prop;
 	}

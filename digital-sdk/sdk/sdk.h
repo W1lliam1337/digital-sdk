@@ -4,25 +4,10 @@
 #include "game/inferno.h"
 #include "interfaces/interfaces.h"
 
-class c_hitbox_data
-{
-public:
-	int m_hitbox{};
-	vec3_t m_point{};
-};
-
 class c_sdk
 {
 public:
-	struct accuracy_data_t
-	{
-		std::array<float, 255> m_inaccuracy;
-		std::array<float, 255> m_spread;
-		std::array<float, 255> m_first_random;
-		std::array<float, 255> m_second_random;
-		bool m_has_valid_accuracy_data = false;
-	}m_accuracy_data{};
-	struct c_packet_data
+	struct packet_data_t
 	{
 		c_user_cmd* m_cmd{};
 		bool m_send_packet{};
@@ -35,14 +20,8 @@ public:
 
 	struct local_data_t
 	{
-		vec3_t m_shoot_pos{};
+		c_vec3 m_shoot_pos{};
 	}m_local_data{};
-
-	struct rage_data_t
-	{
-		c_base_player* m_target{};
-		c_hitbox_data m_hitbox_data{};
-	}m_rage_data{};
 
 	static __forceinline c_base_player* m_local()
 	{
@@ -55,9 +34,16 @@ public:
 
 		return local_player;
 	}
-};
 
-#define TIME_TO_TICKS(time_) ((int)(0.5f + (float)((time_)) / g_interfaces->m_globals->m_interval_per_tick))
-#define TICKS_TO_TIME(tick) (float)((tick) * g_interfaces->m_globals->m_interval_per_tick)
+	static int time_to_ticks(const float time)
+	{
+		return static_cast<int>(0.5f + time / g_interfaces->m_globals->m_interval_per_tick);
+	}
+
+	static float ticks_to_time(const int tick)
+	{
+		return static_cast<float>(tick) * g_interfaces->m_globals->m_interval_per_tick;
+	}
+};
 
 inline const auto g_sdk = std::make_unique<c_sdk>();

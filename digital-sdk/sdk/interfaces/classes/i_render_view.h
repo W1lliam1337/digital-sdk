@@ -16,7 +16,7 @@ public:
 	std::byte pad0[0x8F];
 	float m_fov{};
 	float m_view_model_fov{};
-	vec3_t m_origin{};
+	c_vec3 m_origin{};
 	qangle_t m_view{};
 	float m_near_z{};
 	float m_far_z{};
@@ -32,9 +32,9 @@ public:
 	float m_do_fquality{};
 	int m_motion_blur_mode{};
 	float m_shutter_time{};
-	vec3_t m_shutter_open_position{};
+	c_vec3 m_shutter_open_position{};
 	qangle_t m_shutter_open_angles{};
-	vec3_t m_shutter_close_position{};
+	c_vec3 m_shutter_close_position{};
 	qangle_t m_shutter_close_angles{};
 	float m_off_center_top{};
 	float m_off_center_bottom{};

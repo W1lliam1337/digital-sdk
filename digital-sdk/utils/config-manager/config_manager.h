@@ -24,7 +24,7 @@ public:
 		bool m_remove_molotov{};
 
 		int m_third_person_distance{};
-		key_bind_t m_third_person_bind;
+		key_bind_t m_third_person_bind = key_bind_t();
 	}m_misc{};
 
 	struct anti_aim_t
@@ -33,14 +33,14 @@ public:
 		bool m_desync{};
 		bool m_fake_lags{};
 
-		int m_desync_right_range = 58;
-		int m_desync_left_range = 58;
+		int m_desync_right_range{ 58 };
+		int m_desync_left_range{ 58 };
 
 		int m_fake_lags_factor{};
 		int m_pitch_mode{};
 		int m_desync_mode{};
 
-		key_bind_t m_inverter;
+		key_bind_t m_inverter = key_bind_t();
 	}m_anti_aim{};
 
 	struct esp_t

@@ -4,84 +4,85 @@
 
 #pragma once
 
-#include <assert.h>
+#include <cassert>
 
 template< class T, class I = int >
-class CUtlMemory
+class c_utl_memory
 {
 public:
 	// constructor, destructor
-	CUtlMemory(int nGrowSize = 0, int nInitSize = 0);
-	CUtlMemory(T* pMemory, int numElements);
-	CUtlMemory(const T* pMemory, int numElements);
-	~CUtlMemory();
+	c_utl_memory(int grow_size = 0, int init_allocation_count = 0);
+	c_utl_memory(T* memory, int num_elements);
+	c_utl_memory(const T* memory, int num_elements);
+	~c_utl_memory();
 
 	// Set the size by which the memory grows
-	void Init(int nGrowSize = 0, int nInitSize = 0);
+	void init(int grow_size = 0, int init_size = 0);
 
-	class Iterator_t
+	class iterator_t
 	{
 	public:
-		Iterator_t(I i) : index(i) {}
+		iterator_t(I i) : index(i) {}
 		I index;
 
-		bool operator==(const Iterator_t it) const { return index == it.index; }
-		bool operator!=(const Iterator_t it) const { return index != it.index; }
+		bool operator==(const iterator_t it) const { return index == it.index; }
+		bool operator!=(const iterator_t it) const { return index != it.index; }
 	};
-	Iterator_t First() const { return Iterator_t(IsIdxValid(0) ? 0 : InvalidIndex()); }
-	Iterator_t Next(const Iterator_t& it) const { return Iterator_t(IsIdxValid(it.index + 1) ? it.index + 1 : InvalidIndex()); }
-	I GetIndex(const Iterator_t& it) const { return it.index; }
-	bool IsIdxAfter(I i, const Iterator_t& it) const { return i > it.index; }
-	bool IsValidIterator(const Iterator_t& it) const { return IsIdxValid(it.index); }
-	Iterator_t InvalidIterator() const { return Iterator_t(InvalidIndex()); }
+
+	[[nodiscard]] iterator_t first() const { return iterator_t(is_idx_valid(0) ? 0 : invalid_index()); }
+	[[nodiscard]] iterator_t next(const iterator_t& it) const { return iterator_t(is_idx_valid(it.index + 1) ? it.index + 1 : invalid_index()); }
+	[[nodiscard]] I get_index(const iterator_t& it) const { return it.index; }
+	[[nodiscard]] bool is_idx_after(I i, const iterator_t& it) const { return i > it.index; }
+	[[nodiscard]] bool is_valid_iterator(const iterator_t& it) const { return is_idx_valid(it.index); }
+	[[nodiscard]] iterator_t invalid_iterator() const { return iterator_t(invalid_index()); }
 
 	// element access
 	T& operator[](I i);
 	const T& operator[](I i) const;
-	T& Element(I i);
-	const T& Element(I i) const;
+	T& element(I i);
+	[[nodiscard]] const T& element(I i) const;
 
-	bool IsIdxValid(I i) const;
+	[[nodiscard]] bool is_idx_valid(I i) const;
 
 	static const I INVALID_INDEX = (I)-1; // For use with COMPILE_TIME_ASSERT
-	static I InvalidIndex() { return INVALID_INDEX; }
+	static I invalid_index() { return INVALID_INDEX; }
 
-	T* Base();
-	const T* Base() const;
+	T* base();
+	[[nodiscard]] const T* base() const;
 
-	void SetExternalBuffer(T* pMemory, int numElements);
-	void SetExternalBuffer(const T* pMemory, int numElements);
-	void AssumeMemory(T* pMemory, int nSize);
-	T* Detach();
-	void* DetachMemory();
+	void set_external_buffer(T* memory, int num_elements);
+	void set_external_buffer(const T* memory, int num_elements);
+	void assume_memory(T* memory, int size);
+	T* detach();
+	void* detach_memory();
 
-	void Swap(CUtlMemory< T, I >& mem);
-	void ConvertToGrowableMemory(int nGrowSize);
-	int NumAllocated() const;
-	int Count() const;
-	void Grow(int num = 1);
-	void EnsureCapacity(int num);
-	void Purge();
-	void Purge(int numElements);
-	bool IsExternallyAllocated() const;
-	bool IsReadOnly() const;
-	void SetGrowSize(int size);
+	void swap(c_utl_memory< T, I >& mem) noexcept;
+	void convert_to_growable_memory(int grow_size);
+	[[nodiscard]] int num_allocated() const;
+	[[nodiscard]] int count() const;
+	void grow(int num = 1);
+	void ensure_capacity(int num);
+	void purge();
+	void purge(int num_elements);
+	[[nodiscard]] bool is_externally_allocated() const;
+	[[nodiscard]] bool is_read_only() const;
+	void set_grow_size(int size);
 
 protected:
-	void ValidateGrowSize()
+	void validate_grow_size()
 	{
 
 	}
 
 	enum
 	{
-		EXTERNAL_BUFFER_MARKER = -1,
-		EXTERNAL_CONST_BUFFER_MARKER = -2,
+		external_buffer_marker = -1,
+		external_const_buffer_marker = -2,
 	};
 
-	T* m_pMemory;
-	int m_nAllocationCount;
-	int m_nGrowSize;
+	T* m_memory;
+	int m_allocation_count_;
+	int m_grow_size;
 };
 
 //-----------------------------------------------------------------------------
@@ -89,50 +90,50 @@ protected:
 //-----------------------------------------------------------------------------
 
 template< class T, class I >
-CUtlMemory<T, I>::CUtlMemory(int nGrowSize, int nInitAllocationCount) : m_pMemory(0),
-m_nAllocationCount(nInitAllocationCount), m_nGrowSize(nGrowSize)
+c_utl_memory<T, I>::c_utl_memory(const int grow_size, const int init_allocation_count) : m_memory(nullptr),
+                                                                                         m_allocation_count_(init_allocation_count), m_grow_size(grow_size)
 {
-	ValidateGrowSize();
-	assert(nGrowSize >= 0);
-	if (m_nAllocationCount) {
-		m_pMemory = (T*)new unsigned char[m_nAllocationCount * sizeof(T)];
-		//m_pMemory = (T*)malloc(m_nAllocationCount * sizeof(T));
+	validate_grow_size();
+	assert(grow_size >= 0);
+	if (m_allocation_count_) {
+		m_memory = (T*)new unsigned char[m_allocation_count_ * sizeof(T)];
+		//m_memory = (T*)malloc(m_nAllocationcount * sizeof(T));
 	}
 }
 
 template< class T, class I >
-CUtlMemory<T, I>::CUtlMemory(T* pMemory, int numElements) : m_pMemory(pMemory),
-m_nAllocationCount(numElements)
+c_utl_memory<T, I>::c_utl_memory(T* memory, int num_elements) : m_memory(memory),
+m_allocation_count_(num_elements)
 {
 	// Special marker indicating externally supplied modifyable memory
-	m_nGrowSize = EXTERNAL_BUFFER_MARKER;
+	m_grow_size = external_buffer_marker;
 }
 
 template< class T, class I >
-CUtlMemory<T, I>::CUtlMemory(const T* pMemory, int numElements) : m_pMemory((T*)pMemory),
-m_nAllocationCount(numElements)
+c_utl_memory<T, I>::c_utl_memory(const T* memory, int num_elements) : m_memory((T*)memory),
+m_allocation_count_(num_elements)
 {
 	// Special marker indicating externally supplied modifyable memory
-	m_nGrowSize = EXTERNAL_CONST_BUFFER_MARKER;
+	m_grow_size = external_const_buffer_marker;
 }
 
 template< class T, class I >
-CUtlMemory<T, I>::~CUtlMemory()
+c_utl_memory<T, I>::~c_utl_memory()
 {
-	Purge();
+	purge();
 }
 
 template< class T, class I >
-void CUtlMemory<T, I>::Init(int nGrowSize /*= 0*/, int nInitSize /*= 0*/)
+void c_utl_memory<T, I>::init(int grow_size /*= 0*/, int init_size /*= 0*/)
 {
-	Purge();
+	purge();
 
-	m_nGrowSize = nGrowSize;
-	m_nAllocationCount = nInitSize;
-	ValidateGrowSize();
-	assert(nGrowSize >= 0);
-	if (m_nAllocationCount) {
-		m_pMemory = (T*)malloc(m_nAllocationCount * sizeof(T));
+	m_grow_size = grow_size;
+	m_allocation_count_ = init_size;
+	validate_grow_size();
+	assert(grow_size >= 0);
+	if (m_allocation_count_) {
+		m_memory = (T*)malloc(m_allocation_count_ * sizeof(T));
 	}
 }
 
@@ -140,11 +141,11 @@ void CUtlMemory<T, I>::Init(int nGrowSize /*= 0*/, int nInitSize /*= 0*/)
 // Fast swap
 //-----------------------------------------------------------------------------
 template< class T, class I >
-void CUtlMemory<T, I>::Swap(CUtlMemory<T, I>& mem)
+void c_utl_memory<T, I>::swap(c_utl_memory<T, I>& mem) noexcept
 {
-	V_swap(m_nGrowSize, mem.m_nGrowSize);
-	V_swap(m_pMemory, mem.m_pMemory);
-	V_swap(m_nAllocationCount, mem.m_nAllocationCount);
+	V_swap(m_grow_size, mem.m_grow_size);
+	V_swap(m_memory, mem.m_memory);
+	V_swap(m_allocation_count_, mem.m_allocation_count_);
 }
 
 
@@ -152,20 +153,20 @@ void CUtlMemory<T, I>::Swap(CUtlMemory<T, I>& mem)
 // Switches the buffer from an external memory buffer to a reallocatable buffer
 //-----------------------------------------------------------------------------
 template< class T, class I >
-void CUtlMemory<T, I>::ConvertToGrowableMemory(int nGrowSize)
+void c_utl_memory<T, I>::convert_to_growable_memory(const int grow_size)
 {
-	if (!IsExternallyAllocated())
+	if (!is_externally_allocated())
 		return;
 
-	m_nGrowSize = nGrowSize;
-	if (m_nAllocationCount) {
-		int nNumBytes = m_nAllocationCount * sizeof(T);
-		T* pMemory = (T*)malloc(nNumBytes);
-		memcpy(pMemory, m_pMemory, nNumBytes);
-		m_pMemory = pMemory;
+	m_grow_size = grow_size;
+	if (m_allocation_count_) {
+		const int nNumBytes = m_allocation_count_ * sizeof(T);
+		T* memory = (T*)malloc(nNumBytes);
+		memcpy(memory, m_memory, nNumBytes);
+		m_memory = memory;
 	}
 	else {
-		m_pMemory = NULL;
+		m_memory = NULL;
 	}
 }
 
@@ -174,58 +175,58 @@ void CUtlMemory<T, I>::ConvertToGrowableMemory(int nGrowSize)
 // Attaches the buffer to external memory....
 //-----------------------------------------------------------------------------
 template< class T, class I >
-void CUtlMemory<T, I>::SetExternalBuffer(T* pMemory, int numElements)
+void c_utl_memory<T, I>::set_external_buffer(T* memory, const int num_elements)
 {
 	// Blow away any existing allocated memory
-	Purge();
+	purge();
 
-	m_pMemory = pMemory;
-	m_nAllocationCount = numElements;
+	m_memory = memory;
+	m_allocation_count_ = num_elements;
 
 	// Indicate that we don't own the memory
-	m_nGrowSize = EXTERNAL_BUFFER_MARKER;
+	m_grow_size = external_buffer_marker;
 }
 
 template< class T, class I >
-void CUtlMemory<T, I>::SetExternalBuffer(const T* pMemory, int numElements)
+void c_utl_memory<T, I>::set_external_buffer(const T* memory, int num_elements)
 {
 	// Blow away any existing allocated memory
-	Purge();
+	purge();
 
-	m_pMemory = const_cast<T*>(pMemory);
-	m_nAllocationCount = numElements;
+	m_memory = const_cast<T*>(memory);
+	m_allocation_count_ = num_elements;
 
 	// Indicate that we don't own the memory
-	m_nGrowSize = EXTERNAL_CONST_BUFFER_MARKER;
+	m_grow_size = external_const_buffer_marker;
 }
 
 template< class T, class I >
-void CUtlMemory<T, I>::AssumeMemory(T* pMemory, int numElements)
+void c_utl_memory<T, I>::assume_memory(T* memory, int num_elements)
 {
 	// Blow away any existing allocated memory
-	Purge();
+	purge();
 
 	// Simply take the pointer but don't mark us as external
-	m_pMemory = pMemory;
-	m_nAllocationCount = numElements;
+	m_memory = memory;
+	m_allocation_count_ = num_elements;
 }
 
 template< class T, class I >
-void* CUtlMemory<T, I>::DetachMemory()
+void* c_utl_memory<T, I>::detach_memory()
 {
-	if (IsExternallyAllocated())
-		return NULL;
+	if (is_externally_allocated())
+		return nullptr;
 
-	void* pMemory = m_pMemory;
-	m_pMemory = 0;
-	m_nAllocationCount = 0;
-	return pMemory;
+	void* memory = m_memory;
+	m_memory = 0;
+	m_allocation_count_ = 0;
+	return memory;
 }
 
 template< class T, class I >
-inline T* CUtlMemory<T, I>::Detach()
+T* c_utl_memory<T, I>::detach()
 {
-	return (T*)DetachMemory();
+	return (T*)detach_memory();
 }
 
 
@@ -233,33 +234,33 @@ inline T* CUtlMemory<T, I>::Detach()
 // element access
 //-----------------------------------------------------------------------------
 template< class T, class I >
-inline T& CUtlMemory<T, I>::operator[](I i)
+T& c_utl_memory<T, I>::operator[](I i)
 {
-	assert(!IsReadOnly());
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(!is_read_only());
+	assert(is_idx_valid(i));
+	return m_memory[i];
 }
 
 template< class T, class I >
-inline const T& CUtlMemory<T, I>::operator[](I i) const
+const T& c_utl_memory<T, I>::operator[](I i) const
 {
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(is_idx_valid(i));
+	return m_memory[i];
 }
 
 template< class T, class I >
-inline T& CUtlMemory<T, I>::Element(I i)
+T& c_utl_memory<T, I>::element(I i)
 {
-	assert(!IsReadOnly());
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(!is_read_only());
+	assert(is_idx_valid(i));
+	return m_memory[i];
 }
 
 template< class T, class I >
-inline const T& CUtlMemory<T, I>::Element(I i) const
+const T& c_utl_memory<T, I>::element(I i) const
 {
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(is_idx_valid(i));
+	return m_memory[i];
 }
 
 
@@ -267,9 +268,9 @@ inline const T& CUtlMemory<T, I>::Element(I i) const
 // is the memory externally allocated?
 //-----------------------------------------------------------------------------
 template< class T, class I >
-bool CUtlMemory<T, I>::IsExternallyAllocated() const
+bool c_utl_memory<T, I>::is_externally_allocated() const
 {
-	return (m_nGrowSize < 0);
+	return (m_grow_size < 0);
 }
 
 
@@ -277,19 +278,19 @@ bool CUtlMemory<T, I>::IsExternallyAllocated() const
 // is the memory read only?
 //-----------------------------------------------------------------------------
 template< class T, class I >
-bool CUtlMemory<T, I>::IsReadOnly() const
+bool c_utl_memory<T, I>::is_read_only() const
 {
-	return (m_nGrowSize == EXTERNAL_CONST_BUFFER_MARKER);
+	return (m_grow_size == external_const_buffer_marker);
 }
 
 
 template< class T, class I >
-void CUtlMemory<T, I>::SetGrowSize(int nSize)
+void c_utl_memory<T, I>::set_grow_size(const int size)
 {
-	assert(!IsExternallyAllocated());
-	assert(nSize >= 0);
-	m_nGrowSize = nSize;
-	ValidateGrowSize();
+	assert(!is_externally_allocated());
+	assert(size >= 0);
+	m_grow_size = size;
+	validate_grow_size();
 }
 
 
@@ -297,16 +298,16 @@ void CUtlMemory<T, I>::SetGrowSize(int nSize)
 // Gets the base address (can change when adding elements!)
 //-----------------------------------------------------------------------------
 template< class T, class I >
-inline T* CUtlMemory<T, I>::Base()
+T* c_utl_memory<T, I>::base()
 {
-	assert(!IsReadOnly());
-	return m_pMemory;
+	assert(!is_read_only());
+	return m_memory;
 }
 
 template< class T, class I >
-inline const T* CUtlMemory<T, I>::Base() const
+const T* c_utl_memory<T, I>::base() const
 {
-	return m_pMemory;
+	return m_memory;
 }
 
 
@@ -314,15 +315,15 @@ inline const T* CUtlMemory<T, I>::Base() const
 // Size
 //-----------------------------------------------------------------------------
 template< class T, class I >
-inline int CUtlMemory<T, I>::NumAllocated() const
+int c_utl_memory<T, I>::num_allocated() const
 {
-	return m_nAllocationCount;
+	return m_allocation_count_;
 }
 
 template< class T, class I >
-inline int CUtlMemory<T, I>::Count() const
+int c_utl_memory<T, I>::count() const
 {
-	return m_nAllocationCount;
+	return m_allocation_count_;
 }
 
 
@@ -330,90 +331,90 @@ inline int CUtlMemory<T, I>::Count() const
 // Is element index valid?
 //-----------------------------------------------------------------------------
 template< class T, class I >
-inline bool CUtlMemory<T, I>::IsIdxValid(I i) const
+bool c_utl_memory<T, I>::is_idx_valid(I i) const
 {
 	// GCC warns if I is an unsigned type and we do a ">= 0" against it (since the comparison is always 0).
 	// We Get the warning even if we cast inside the expression. It only goes away if we assign to another variable.
-	long x = i;
-	return (x >= 0) && (x < m_nAllocationCount);
+	const long x = i;
+	return (x >= 0) && (x < m_allocation_count_);
 }
 
 //-----------------------------------------------------------------------------
 // Grows the memory
 //-----------------------------------------------------------------------------
-inline int UtlMemory_CalcNewAllocationCount(int nAllocationCount, int nGrowSize, int nNewSize, int nBytesItem)
+inline int utl_memory_calc_new_allocation_count(int allocation_count, const int grow_size, const int new_size, const int bytes_item)
 {
-	if (nGrowSize) {
-		nAllocationCount = ((1 + ((nNewSize - 1) / nGrowSize)) * nGrowSize);
+	if (grow_size) {
+		allocation_count = ((1 + ((new_size - 1) / grow_size)) * grow_size);
 	}
 	else {
-		if (!nAllocationCount) {
+		if (!allocation_count) {
 			// Compute an allocation which is at least as big as a cache line...
-			nAllocationCount = (31 + nBytesItem) / nBytesItem;
+			allocation_count = (31 + bytes_item) / bytes_item;
 		}
 
-		while (nAllocationCount < nNewSize) {
+		while (allocation_count < new_size) {
 #ifndef _X360
-			nAllocationCount *= 2;
+			allocation_count *= 2;
 #else
-			int nNewAllocationCount = (nAllocationCount * 9) / 8; // 12.5 %
-			if (nNewAllocationCount > nAllocationCount)
-				nAllocationCount = nNewAllocationCount;
+			int nNewAllocationcount = (nAllocationcount * 9) / 8; // 12.5 %
+			if (nNewAllocationcount > nAllocationcount)
+				nAllocationcount = nNewAllocationcount;
 			else
-				nAllocationCount *= 2;
+				nAllocationcount *= 2;
 #endif
 		}
 	}
 
-	return nAllocationCount;
+	return allocation_count;
 }
 
 template< class T, class I >
-void CUtlMemory<T, I>::Grow(int num)
+void c_utl_memory<T, I>::grow(int num)
 {
 	assert(num > 0);
 
-	if (IsExternallyAllocated()) {
+	if (is_externally_allocated()) {
 		// Can't grow a buffer whose memory was externally allocated 
 		assert(0);
 		return;
 	}
 
 
-	auto oldAllocationCount = m_nAllocationCount;
+	auto old_allocation_count = m_allocation_count_;
 	// Make sure we have at least numallocated + num allocations.
-	// Use the grow rules specified for this memory (in m_nGrowSize)
-	int nAllocationRequested = m_nAllocationCount + num;
+	// Use the grow rules specified for this memory (in m_grow_size)
+	int allocation_requested = m_allocation_count_ + num;
 
-	int nNewAllocationCount = UtlMemory_CalcNewAllocationCount(m_nAllocationCount, m_nGrowSize, nAllocationRequested, sizeof(T));
+	int new_allocation_count = utl_memory_calc_new_allocation_count(m_allocation_count_, m_grow_size, allocation_requested, sizeof(T));
 
 	// if m_nAllocationRequested wraps index type I, recalculate
-	if ((int)(I)nNewAllocationCount < nAllocationRequested) {
-		if ((int)(I)nNewAllocationCount == 0 && (int)(I)(nNewAllocationCount - 1) >= nAllocationRequested) {
-			--nNewAllocationCount; // deal w/ the common case of m_nAllocationCount == MAX_USHORT + 1
+	if ((int)(I)new_allocation_count < allocation_requested) {
+		if ((int)(I)new_allocation_count == 0 && (int)(I)(new_allocation_count - 1) >= allocation_requested) {
+			--new_allocation_count; // deal w/ the common case of m_nAllocationcount == MAX_USHORT + 1
 		}
 		else {
-			if ((int)(I)nAllocationRequested != nAllocationRequested) {
+			if ((int)(I)allocation_requested != allocation_requested) {
 				// we've been asked to grow memory to a size s.t. the index type can't address the requested amount of memory
 				assert(0);
 				return;
 			}
-			while ((int)(I)nNewAllocationCount < nAllocationRequested) {
-				nNewAllocationCount = (nNewAllocationCount + nAllocationRequested) / 2;
+			while ((int)(I)new_allocation_count < allocation_requested) {
+				new_allocation_count = (new_allocation_count + allocation_requested) / 2;
 			}
 		}
 	}
 
-	m_nAllocationCount = nNewAllocationCount;
+	m_allocation_count_ = new_allocation_count;
 
-	if (m_pMemory) {
-		auto ptr = new unsigned char[m_nAllocationCount * sizeof(T)];
+	if (m_memory) {
+		auto ptr = new unsigned char[m_allocation_count_ * sizeof(T)];
 
-		memcpy(ptr, m_pMemory, oldAllocationCount * sizeof(T));
-		m_pMemory = (T*)ptr;
+		memcpy(ptr, m_memory, old_allocation_count * sizeof(T));
+		m_memory = (T*)ptr;
 	}
 	else {
-		m_pMemory = (T*)new unsigned char[m_nAllocationCount * sizeof(T)];
+		m_memory = (T*)new unsigned char[m_allocation_count_ * sizeof(T)];
 	}
 }
 
@@ -422,23 +423,23 @@ void CUtlMemory<T, I>::Grow(int num)
 // Makes sure we've got at least this much memory
 //-----------------------------------------------------------------------------
 template< class T, class I >
-inline void CUtlMemory<T, I>::EnsureCapacity(int num)
+void c_utl_memory<T, I>::ensure_capacity(int num)
 {
-	if (m_nAllocationCount >= num)
+	if (m_allocation_count_ >= num)
 		return;
 
-	if (IsExternallyAllocated()) {
+	if (is_externally_allocated()) {
 		// Can't grow a buffer whose memory was externally allocated 
 		assert(0);
 		return;
 	}
-	m_nAllocationCount = num;
+	m_allocation_count_ = num;
 
-	if (m_pMemory) {
-		m_pMemory = (T*)realloc(m_pMemory, m_nAllocationCount * sizeof(T));
+	if (m_memory) {
+		m_memory = (T*)realloc(m_memory, m_allocation_count_ * sizeof(T));
 	}
 	else {
-		m_pMemory = (T*)malloc(m_nAllocationCount * sizeof(T));
+		m_memory = (T*)malloc(m_allocation_count_ * sizeof(T));
 	}
 }
 
@@ -447,52 +448,52 @@ inline void CUtlMemory<T, I>::EnsureCapacity(int num)
 // Memory deallocation
 //-----------------------------------------------------------------------------
 template< class T, class I >
-void CUtlMemory<T, I>::Purge()
+void c_utl_memory<T, I>::purge()
 {
-	if (!IsExternallyAllocated()) {
-		if (m_pMemory) {
-			free((void*)m_pMemory);
-			m_pMemory = 0;
+	if (!is_externally_allocated()) {
+		if (m_memory) {
+			free((void*)m_memory);
+			m_memory = 0;
 		}
-		m_nAllocationCount = 0;
+		m_allocation_count_ = 0;
 	}
 }
 
 template< class T, class I >
-void CUtlMemory<T, I>::Purge(int numElements)
+void c_utl_memory<T, I>::purge(int num_elements)
 {
-	assert(numElements >= 0);
+	assert(num_elements >= 0);
 
-	if (numElements > m_nAllocationCount) {
+	if (num_elements > m_allocation_count_) {
 		// Ensure this isn't a grow request in disguise.
-		assert(numElements <= m_nAllocationCount);
+		assert(num_elements <= m_allocation_count_);
 		return;
 	}
 
 	// If we have zero elements, simply do a purge:
-	if (numElements == 0) {
-		Purge();
+	if (num_elements == 0) {
+		purge();
 		return;
 	}
 
-	if (IsExternallyAllocated()) {
+	if (is_externally_allocated()) {
 		// Can't shrink a buffer whose memory was externally allocated, fail silently like purge 
 		return;
 	}
 
 	// If the number of elements is the same as the allocation count, we are done.
-	if (numElements == m_nAllocationCount) {
+	if (num_elements == m_allocation_count_) {
 		return;
 	}
 
 
-	if (!m_pMemory) {
+	if (!m_memory) {
 		// Allocation count is non zero, but memory is null.
-		assert(m_pMemory);
+		assert(m_memory);
 		return;
 	}
-	m_nAllocationCount = numElements;
-	m_pMemory = (T*)realloc(m_pMemory, m_nAllocationCount * sizeof(T));
+	m_allocation_count_ = num_elements;
+	m_memory = (T*)realloc(m_memory, m_allocation_count_ * sizeof(T));
 }
 
 //-----------------------------------------------------------------------------
@@ -500,33 +501,33 @@ void CUtlMemory<T, I>::Purge(int numElements)
 // A growable memory class which doubles in size by default.
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-class CUtlMemoryAligned : public CUtlMemory<T>
+class c_utl_memory_aligned : public c_utl_memory<T>
 {
 public:
 	// constructor, destructor
-	CUtlMemoryAligned(int nGrowSize = 0, int nInitSize = 0);
-	CUtlMemoryAligned(T* pMemory, int numElements);
-	CUtlMemoryAligned(const T* pMemory, int numElements);
-	~CUtlMemoryAligned();
+	c_utl_memory_aligned(int grow_size = 0, int nInitSize = 0);
+	c_utl_memory_aligned(T* memory, int num_elements);
+	c_utl_memory_aligned(const T* memory, int num_elements);
+	~c_utl_memory_aligned();
 
 	// Attaches the buffer to external memory....
-	void SetExternalBuffer(T* pMemory, int numElements);
-	void SetExternalBuffer(const T* pMemory, int numElements);
+	void set_external_buffer(T* memory, int num_elements);
+	void set_external_buffer(const T* memory, int num_elements);
 
 	// Grows the memory, so that at least allocated + num elements are allocated
-	void Grow(int num = 1);
+	void grow(int num = 1);
 
 	// Makes sure we've got at least this much memory
-	void EnsureCapacity(int num);
+	void ensure_capacity(int num);
 
 	// Memory deallocation
-	void Purge();
+	void purge();
 
 	// Purge all but the given number of elements (NOT IMPLEMENTED IN CUtlMemoryAligned)
-	void Purge(int numElements) { assert(0); }
+	static void purge(int num_elements) { assert(0); }
 
 private:
-	void* Align(const void* pAddr);
+	static void* align(const void* pAddr);
 };
 
 
@@ -534,10 +535,10 @@ private:
 // Aligns a pointer
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-void* CUtlMemoryAligned<T, nAlignment>::Align(const void* pAddr)
+void* c_utl_memory_aligned<T, nAlignment>::align(const void* pAddr)
 {
-	size_t nAlignmentMask = nAlignment - 1;
-	return (void*)(((size_t)pAddr + nAlignmentMask) & (~nAlignmentMask));
+	const size_t alignment_mask = nAlignment - 1;
+	return reinterpret_cast<void*>((reinterpret_cast<size_t>(pAddr) + alignment_mask) & (~alignment_mask));
 }
 
 
@@ -545,45 +546,45 @@ void* CUtlMemoryAligned<T, nAlignment>::Align(const void* pAddr)
 // constructor, destructor
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-CUtlMemoryAligned<T, nAlignment>::CUtlMemoryAligned(int nGrowSize, int nInitAllocationCount)
+c_utl_memory_aligned<T, nAlignment>::c_utl_memory_aligned(int grow_size, int nInitAllocationcount)
 {
-	CUtlMemory<T>::m_pMemory = 0;
-	CUtlMemory<T>::m_nAllocationCount = nInitAllocationCount;
-	CUtlMemory<T>::m_nGrowSize = nGrowSize;
+	c_utl_memory<T>::m_memory = 0;
+	c_utl_memory<T>::m_nAllocationcount = nInitAllocationcount;
+	c_utl_memory<T>::m_grow_size = grow_size;
 	this->ValidateGrowSize();
 
 	// Alignment must be a power of two
 	COMPILE_TIME_ASSERT((nAlignment & (nAlignment - 1)) == 0);
-	assert((nGrowSize >= 0) && (nGrowSize != CUtlMemory<T>::EXTERNAL_BUFFER_MARKER));
-	if (CUtlMemory<T>::m_nAllocationCount) {
-		CUtlMemory<T>::m_pMemory = (T*)_aligned_malloc(nInitAllocationCount * sizeof(T), nAlignment);
+	assert((grow_size >= 0) && (grow_size != CUtlMemory<T>::EXTERNAL_BUFFER_MARKER));
+	if (c_utl_memory<T>::m_nAllocationcount) {
+		c_utl_memory<T>::m_memory = (T*)_aligned_malloc(nInitAllocationcount * sizeof(T), nAlignment);
 	}
 }
 
 template< class T, int nAlignment >
-CUtlMemoryAligned<T, nAlignment>::CUtlMemoryAligned(T* pMemory, int numElements)
+c_utl_memory_aligned<T, nAlignment>::c_utl_memory_aligned(T* memory, int num_elements)
 {
 	// Special marker indicating externally supplied memory
-	CUtlMemory<T>::m_nGrowSize = CUtlMemory<T>::EXTERNAL_BUFFER_MARKER;
+	c_utl_memory<T>::m_grow_size = c_utl_memory<T>::EXTERNAL_BUFFER_MARKER;
 
-	CUtlMemory<T>::m_pMemory = (T*)Align(pMemory);
-	CUtlMemory<T>::m_nAllocationCount = ((int)(pMemory + numElements) - (int)CUtlMemory<T>::m_pMemory) / sizeof(T);
+	c_utl_memory<T>::m_memory = (T*)align(memory);
+	c_utl_memory<T>::m_nAllocationcount = ((int)(memory + num_elements) - (int)c_utl_memory<T>::m_memory) / sizeof(T);
 }
 
 template< class T, int nAlignment >
-CUtlMemoryAligned<T, nAlignment>::CUtlMemoryAligned(const T* pMemory, int numElements)
+c_utl_memory_aligned<T, nAlignment>::c_utl_memory_aligned(const T* memory, int num_elements)
 {
 	// Special marker indicating externally supplied memory
-	CUtlMemory<T>::m_nGrowSize = CUtlMemory<T>::EXTERNAL_CONST_BUFFER_MARKER;
+	c_utl_memory<T>::m_grow_size = c_utl_memory<T>::EXTERNAL_CONST_BUFFER_MARKER;
 
-	CUtlMemory<T>::m_pMemory = (T*)Align(pMemory);
-	CUtlMemory<T>::m_nAllocationCount = ((int)(pMemory + numElements) - (int)CUtlMemory<T>::m_pMemory) / sizeof(T);
+	c_utl_memory<T>::m_memory = (T*)align(memory);
+	c_utl_memory<T>::m_nAllocationcount = ((int)(memory + num_elements) - (int)c_utl_memory<T>::m_memory) / sizeof(T);
 }
 
 template< class T, int nAlignment >
-CUtlMemoryAligned<T, nAlignment>::~CUtlMemoryAligned()
+c_utl_memory_aligned<T, nAlignment>::~c_utl_memory_aligned()
 {
-	Purge();
+	purge();
 }
 
 
@@ -591,29 +592,29 @@ CUtlMemoryAligned<T, nAlignment>::~CUtlMemoryAligned()
 // Attaches the buffer to external memory....
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-void CUtlMemoryAligned<T, nAlignment>::SetExternalBuffer(T* pMemory, int numElements)
+void c_utl_memory_aligned<T, nAlignment>::set_external_buffer(T* memory, int num_elements)
 {
 	// Blow away any existing allocated memory
-	Purge();
+	purge();
 
-	CUtlMemory<T>::m_pMemory = (T*)Align(pMemory);
-	CUtlMemory<T>::m_nAllocationCount = ((int)(pMemory + numElements) - (int)CUtlMemory<T>::m_pMemory) / sizeof(T);
+	c_utl_memory<T>::m_memory = (T*)align(memory);
+	c_utl_memory<T>::m_nAllocationcount = ((int)(memory + num_elements) - (int)c_utl_memory<T>::m_memory) / sizeof(T);
 
 	// Indicate that we don't own the memory
-	CUtlMemory<T>::m_nGrowSize = CUtlMemory<T>::EXTERNAL_BUFFER_MARKER;
+	c_utl_memory<T>::m_grow_size = c_utl_memory<T>::EXTERNAL_BUFFER_MARKER;
 }
 
 template< class T, int nAlignment >
-void CUtlMemoryAligned<T, nAlignment>::SetExternalBuffer(const T* pMemory, int numElements)
+void c_utl_memory_aligned<T, nAlignment>::set_external_buffer(const T* memory, int num_elements)
 {
 	// Blow away any existing allocated memory
-	Purge();
+	purge();
 
-	CUtlMemory<T>::m_pMemory = (T*)Align(pMemory);
-	CUtlMemory<T>::m_nAllocationCount = ((int)(pMemory + numElements) - (int)CUtlMemory<T>::m_pMemory) / sizeof(T);
+	c_utl_memory<T>::m_memory = (T*)align(memory);
+	c_utl_memory<T>::m_nAllocationcount = ((int)(memory + num_elements) - (int)c_utl_memory<T>::m_memory) / sizeof(T);
 
 	// Indicate that we don't own the memory
-	CUtlMemory<T>::m_nGrowSize = CUtlMemory<T>::EXTERNAL_CONST_BUFFER_MARKER;
+	c_utl_memory<T>::m_grow_size = c_utl_memory<T>::EXTERNAL_CONST_BUFFER_MARKER;
 }
 
 
@@ -621,7 +622,7 @@ void CUtlMemoryAligned<T, nAlignment>::SetExternalBuffer(const T* pMemory, int n
 // Grows the memory
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-void CUtlMemoryAligned<T, nAlignment>::Grow(int num)
+void c_utl_memory_aligned<T, nAlignment>::grow(int num)
 {
 	assert(num > 0);
 
@@ -632,18 +633,18 @@ void CUtlMemoryAligned<T, nAlignment>::Grow(int num)
 	}
 
 	// Make sure we have at least numallocated + num allocations.
-	// Use the grow rules specified for this memory (in m_nGrowSize)
-	int nAllocationRequested = CUtlMemory<T>::m_nAllocationCount + num;
+	// Use the grow rules specified for this memory (in m_grow_size)
+	const int allocation_requested = c_utl_memory<T>::m_nAllocationcount + num;
 
-	CUtlMemory<T>::m_nAllocationCount = UtlMemory_CalcNewAllocationCount(CUtlMemory<T>::m_nAllocationCount, CUtlMemory<T>::m_nGrowSize, nAllocationRequested, sizeof(T));
+	c_utl_memory<T>::m_nAllocationcount = utl_memory_calc_new_allocation_count(c_utl_memory<T>::m_nAllocationcount, c_utl_memory<T>::m_grow_size, allocation_requested, sizeof(T));
 
-	if (CUtlMemory<T>::m_pMemory) {
-		CUtlMemory<T>::m_pMemory = (T*)MemAlloc_ReallocAligned(CUtlMemory<T>::m_pMemory, CUtlMemory<T>::m_nAllocationCount * sizeof(T), nAlignment);
-		assert(CUtlMemory<T>::m_pMemory);
+	if (c_utl_memory<T>::m_memory) {
+		c_utl_memory<T>::m_memory = (T*)MemAlloc_ReallocAligned(c_utl_memory<T>::m_memory, c_utl_memory<T>::m_nAllocationcount * sizeof(T), nAlignment);
+		assert(CUtlMemory<T>::m_memory);
 	}
 	else {
-		CUtlMemory<T>::m_pMemory = (T*)MemAlloc_AllocAligned(CUtlMemory<T>::m_nAllocationCount * sizeof(T), nAlignment);
-		assert(CUtlMemory<T>::m_pMemory);
+		c_utl_memory<T>::m_memory = (T*)MemAlloc_AllocAligned(c_utl_memory<T>::m_nAllocationcount * sizeof(T), nAlignment);
+		assert(CUtlMemory<T>::m_memory);
 	}
 }
 
@@ -652,9 +653,9 @@ void CUtlMemoryAligned<T, nAlignment>::Grow(int num)
 // Makes sure we've got at least this much memory
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-inline void CUtlMemoryAligned<T, nAlignment>::EnsureCapacity(int num)
+void c_utl_memory_aligned<T, nAlignment>::ensure_capacity(int num)
 {
-	if (CUtlMemory<T>::m_nAllocationCount >= num)
+	if (c_utl_memory<T>::m_nAllocationcount >= num)
 		return;
 
 	if (this->IsExternallyAllocated()) {
@@ -663,13 +664,13 @@ inline void CUtlMemoryAligned<T, nAlignment>::EnsureCapacity(int num)
 		return;
 	}
 
-	CUtlMemory<T>::m_nAllocationCount = num;
+	c_utl_memory<T>::m_nAllocationcount = num;
 
-	if (CUtlMemory<T>::m_pMemory) {
-		CUtlMemory<T>::m_pMemory = (T*)MemAlloc_ReallocAligned(CUtlMemory<T>::m_pMemory, CUtlMemory<T>::m_nAllocationCount * sizeof(T), nAlignment);
+	if (c_utl_memory<T>::m_memory) {
+		c_utl_memory<T>::m_memory = (T*)MemAlloc_ReallocAligned(c_utl_memory<T>::m_memory, c_utl_memory<T>::m_nAllocationcount * sizeof(T), nAlignment);
 	}
 	else {
-		CUtlMemory<T>::m_pMemory = (T*)MemAlloc_AllocAligned(CUtlMemory<T>::m_nAllocationCount * sizeof(T), nAlignment);
+		c_utl_memory<T>::m_memory = (T*)MemAlloc_AllocAligned(c_utl_memory<T>::m_nAllocationcount * sizeof(T), nAlignment);
 	}
 }
 
@@ -678,131 +679,131 @@ inline void CUtlMemoryAligned<T, nAlignment>::EnsureCapacity(int num)
 // Memory deallocation
 //-----------------------------------------------------------------------------
 template< class T, int nAlignment >
-void CUtlMemoryAligned<T, nAlignment>::Purge()
+void c_utl_memory_aligned<T, nAlignment>::purge()
 {
 	if (!this->IsExternallyAllocated()) {
-		if (CUtlMemory<T>::m_pMemory) {
-			MemAlloc_FreeAligned(CUtlMemory<T>::m_pMemory);
-			CUtlMemory<T>::m_pMemory = 0;
+		if (c_utl_memory<T>::m_memory) {
+			MemAlloc_FreeAligned(c_utl_memory<T>::m_memory);
+			c_utl_memory<T>::m_memory = 0;
 		}
-		CUtlMemory<T>::m_nAllocationCount = 0;
+		c_utl_memory<T>::m_nAllocationcount = 0;
 	}
 }
-template< class T, class A = CUtlMemory<T> >
-class CUtlVector
+template< class T, class A = c_utl_memory<T> >
+class c_utl_vector
 {
 	typedef T* iterator;
 	typedef const T* const_iterator;
-	typedef A CAllocator;
+	typedef A c_allocator;
 public:
-	typedef T ElemType_t;
+	typedef T elem_type_t;
 
 	// constructor, destructor
-	CUtlVector(int growSize = 0, int initSize = 0);
-	CUtlVector(T* pMemory, int allocationCount, int numElements = 0);
-	~CUtlVector();
+	c_utl_vector(int grow_size = 0, int init_size = 0);
+	c_utl_vector(T* memory, int allocation_count, int num_elements = 0);
+	~c_utl_vector();
 
 	// Copy the array.
-	CUtlVector<T, A>& operator=(const CUtlVector<T, A>& other);
+	c_utl_vector<T, A>& operator=(const c_utl_vector<T, A>& other);
 
 	// element access
 	T& operator[](int i);
 	const T& operator[](int i) const;
-	T& Element(int i);
-	const T& Element(int i) const;
-	T& Head();
-	const T& Head() const;
-	T& Tail();
-	const T& Tail() const;
+	T& element(int i);
+	[[nodiscard]] const T& element(int i) const;
+	T& head();
+	[[nodiscard]] const T& head() const;
+	T& tail();
+	[[nodiscard]] const T& tail() const;
 
 	// Gets the base address (can change when adding elements!)
-	T* Base() { return m_Memory.Base(); }
-	const T* Base() const { return m_Memory.Base(); }
+	T* base() { return m_memory.base(); }
+	[[nodiscard]] const T* base() const { return m_memory.base(); }
 	// Returns the number of elements in the vector
-	int Count() const;
+	[[nodiscard]] int count() const;
 	// Is element index valid?
-	bool IsValidIndex(int i) const;
-	static int InvalidIndex();
+	[[nodiscard]] bool is_valid_index(int i) const;
+	static int invalid_index();
 	// Adds an element, uses default constructor
-	int AddToHead();
-	int AddToTail();
-	int InsertBefore(int elem);
-	int InsertAfter(int elem);
+	int add_to_head();
+	int add_to_tail();
+	int insert_before(int elem);
+	int insert_after(int elem);
 	// Adds an element, uses copy constructor
-	int AddToHead(const T& src);
-	int AddToTail(const T& src);
-	int InsertBefore(int elem, const T& src);
-	int InsertAfter(int elem, const T& src);
+	int add_to_head(const T& src);
+	int add_to_tail(const T& src);
+	int insert_before(int elem, const T& src);
+	int insert_after(int elem, const T& src);
 	// Adds multiple elements, uses default constructor
-	int AddMultipleToHead(int num);
-	int AddMultipleToTail(int num);
-	int AddMultipleToTail(int num, const T* pToCopy);
-	int InsertMultipleBefore(int elem, int num);
-	int InsertMultipleBefore(int elem, int num, const T* pToCopy);
-	int InsertMultipleAfter(int elem, int num);
+	int add_multiple_to_head(int num);
+	int add_multiple_to_tail(int num);
+	int add_multiple_to_tail(int num, const T* pToCopy);
+	int insert_multiple_before(int elem, int num);
+	int insert_multiple_before(int elem, int num, const T* pToCopy);
+	int insert_multiple_after(int elem, int num);
 	// Calls RemoveAll() then AddMultipleToTail.
-	void SetSize(int size);
-	void SetCount(int count);
-	void SetCountNonDestructively(int count); //sets count by adding or removing elements to tail TODO: This should probably be the default behavior for SetCount
-	void CopyArray(const T* pArray, int size); //Calls SetSize and copies each element.
+	void set_size(int size);
+	void set_count(int count);
+	void set_count_non_destructively(int count); //sets count by adding or removing elements to tail TODO: This should probably be the default behavior for Setcount
+	void copy_array(const T* pArray, int size); //Calls SetSize and copies each element.
 											   // Fast swap
-	void Swap(CUtlVector< T, A >& vec);
+	void swap(c_utl_vector< T, A >& vec) noexcept;
 	// Add the specified array to the tail.
-	int AddVectorToTail(CUtlVector<T, A> const& src);
+	int add_vector_to_tail(c_utl_vector<T, A> const& src);
 	// Finds an element (element needs operator== defined)
-	int GetOffset(const T& src) const;
-	void FillWithValue(const T& src);
-	bool HasElement(const T& src) const;
+	[[nodiscard]] int get_offset(const T& src) const;
+	void fill_with_value(const T& src);
+	[[nodiscard]] bool has_element(const T& src) const;
 	// Makes sure we have enough memory allocated to store a requested # of elements
-	void EnsureCapacity(int num);
+	void ensure_capacity(int num);
 	// Makes sure we have at least this many elements
-	void EnsureCount(int num);
-	// Element removal
-	void FastRemove(int elem);    // doesn't preserve order
-	void Remove(int elem);        // preserves order, shifts elements
-	bool FindAndRemove(const T& src);    // removes first occurrence of src, preserves order, shifts elements
-	bool FindAndFastRemove(const T& src);    // removes first occurrence of src, doesn't preserve order
-	void RemoveMultiple(int elem, int num);    // preserves order, shifts elements
-	void RemoveMultipleFromHead(int num); // removes num elements from tail
-	void RemoveMultipleFromTail(int num); // removes num elements from tail
-	void RemoveAll();                // doesn't deallocate memory
-	void Purge(); // Memory deallocation
+	void ensure_count(int num);
+	// element removal
+	void fast_remove(int elem);    // doesn't preserve order
+	void remove(int elem);        // preserves order, shifts elements
+	bool find_and_remove(const T& src);    // removes first occurrence of src, preserves order, shifts elements
+	bool find_and_fast_remove(const T& src);    // removes first occurrence of src, doesn't preserve order
+	void remove_multiple(int elem, int num);    // preserves order, shifts elements
+	void remove_multiple_from_head(int num); // removes num elements from tail
+	void remove_multiple_from_tail(int num); // removes num elements from tail
+	void remove_all();                // doesn't deallocate memory
+	void purge(); // Memory deallocation
 				  // Purges the list and calls delete on each element in it.
-	void PurgeAndDeleteElements();
+	void purge_and_delete_elements();
 	// Compacts the vector to the number of elements actually in use 
-	void Compact();
+	void compact();
 	// Set the size by which it grows when it needs to allocate more memory.
-	void SetGrowSize(int size) { m_Memory.SetGrowSize(size); }
-	int NumAllocated() const;    // Only use this if you really know what you're doing!
-	void Sort(int(__cdecl* pfnCompare)(const T*, const T*));
+	void set_grow_size(int size) { m_memory.SetGrowSize(size); }
+	[[nodiscard]] int num_allocated() const;    // Only use this if you really know what you're doing!
+	void sort(int(__cdecl* pfn_compare)(const T*, const T*));
 
-	iterator begin() { return Base(); }
-	const_iterator begin() const { return Base(); }
-	iterator end() { return Base() + Count(); }
-	const_iterator end() const { return Base() + Count(); }
+	iterator begin() { return base(); }
+	[[nodiscard]] const_iterator begin() const { return base(); }
+	iterator end() { return base() + count(); }
+	[[nodiscard]] const_iterator end() const { return base() + count(); }
 
 protected:
 	// Can't copy this unless we explicitly do it!
-	CUtlVector(CUtlVector const& vec) { assert(0); }
+	c_utl_vector(c_utl_vector const& vec) { assert(0); }
 
 	// Grows the vector
-	void GrowVector(int num = 1);
+	void grow_vector(int num = 1);
 
 	// Shifts elements....
-	void ShiftElementsRight(int elem, int num = 1);
-	void ShiftElementsLeft(int elem, int num = 1);
+	void shift_elements_right(int elem, int num = 1);
+	void shift_elements_left(int elem, int num = 1);
 
 public:
-	CAllocator m_Memory;
-	int m_Size;
+	c_allocator m_memory;
+	int m_size;
 
 	// For easier access to the elements through the debugger
 	// it's in release builds so this can be used in libraries correctly
-	T* m_pElements;
+	T* m_elements;
 
-	inline void ResetDbgInfo()
+	void reset_dbg_info()
 	{
-		m_pElements = Base();
+		m_elements = base();
 	}
 };
 
@@ -811,31 +812,31 @@ public:
 // constructor, destructor
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline CUtlVector<T, A>::CUtlVector(int growSize, int initSize) :
-	m_Memory(growSize, initSize), m_Size(0)
+c_utl_vector<T, A>::c_utl_vector(int grow_size, int init_size) :
+	m_memory(grow_size, init_size), m_size(0)
 {
-	ResetDbgInfo();
+	reset_dbg_info();
 }
 
 template< typename T, class A >
-inline CUtlVector<T, A>::CUtlVector(T* pMemory, int allocationCount, int numElements) :
-	m_Memory(pMemory, allocationCount), m_Size(numElements)
+c_utl_vector<T, A>::c_utl_vector(T* memory, int allocation_count, const int num_elements) :
+	m_memory(memory, allocation_count), m_size(num_elements)
 {
-	ResetDbgInfo();
+	reset_dbg_info();
 }
 
 template< typename T, class A >
-inline CUtlVector<T, A>::~CUtlVector()
+c_utl_vector<T, A>::~c_utl_vector()
 {
-	Purge();
+	purge();
 }
 
 template< typename T, class A >
-inline CUtlVector<T, A>& CUtlVector<T, A>::operator=(const CUtlVector<T, A>& other)
+c_utl_vector<T, A>& c_utl_vector<T, A>::operator=(const c_utl_vector<T, A>& other)
 {
-	int nCount = other.Count();
-	SetSize(nCount);
-	for (int i = 0; i < nCount; i++) {
+	const int ncount = other.count();
+	set_size(ncount);
+	for (int i = 0; i < ncount; i++) {
 		(*this)[i] = other[i];
 	}
 	return *this;
@@ -846,69 +847,69 @@ inline CUtlVector<T, A>& CUtlVector<T, A>::operator=(const CUtlVector<T, A>& oth
 // element access
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline T& CUtlVector<T, A>::operator[](int i)
+T& c_utl_vector<T, A>::operator[](int i)
 {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < m_size);
+	return m_memory[i];
 }
 
 template< typename T, class A >
-inline const T& CUtlVector<T, A>::operator[](int i) const
+const T& c_utl_vector<T, A>::operator[](int i) const
 {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < m_size);
+	return m_memory[i];
 }
 
 template< typename T, class A >
-inline T& CUtlVector<T, A>::Element(int i)
+T& c_utl_vector<T, A>::element(int i)
 {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < m_size);
+	return m_memory[i];
 }
 
 template< typename T, class A >
-inline const T& CUtlVector<T, A>::Element(int i) const
+const T& c_utl_vector<T, A>::element(int i) const
 {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < m_size);
+	return m_memory[i];
 }
 
 template< typename T, class A >
-inline T& CUtlVector<T, A>::Head()
+T& c_utl_vector<T, A>::head()
 {
-	assert(m_Size > 0);
-	return m_Memory[0];
+	assert(m_size > 0);
+	return m_memory[0];
 }
 
 template< typename T, class A >
-inline const T& CUtlVector<T, A>::Head() const
+const T& c_utl_vector<T, A>::head() const
 {
-	assert(m_Size > 0);
-	return m_Memory[0];
+	assert(m_size > 0);
+	return m_memory[0];
 }
 
 template< typename T, class A >
-inline T& CUtlVector<T, A>::Tail()
+T& c_utl_vector<T, A>::tail()
 {
-	assert(m_Size > 0);
-	return m_Memory[m_Size - 1];
+	assert(m_size > 0);
+	return m_memory[m_size - 1];
 }
 
 template< typename T, class A >
-inline const T& CUtlVector<T, A>::Tail() const
+const T& c_utl_vector<T, A>::tail() const
 {
-	assert(m_Size > 0);
-	return m_Memory[m_Size - 1];
+	assert(m_size > 0);
+	return m_memory[m_size - 1];
 }
 
 
 //-----------------------------------------------------------------------------
-// Count
+// count
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline int CUtlVector<T, A>::Count() const
+int c_utl_vector<T, A>::count() const
 {
-	return m_Size;
+	return m_size;
 }
 
 
@@ -916,9 +917,9 @@ inline int CUtlVector<T, A>::Count() const
 // Is element index valid?
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline bool CUtlVector<T, A>::IsValidIndex(int i) const
+bool c_utl_vector<T, A>::is_valid_index(int i) const
 {
-	return (i >= 0) && (i < m_Size);
+	return (i >= 0) && (i < m_size);
 }
 
 
@@ -926,7 +927,7 @@ inline bool CUtlVector<T, A>::IsValidIndex(int i) const
 // Returns in invalid index
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline int CUtlVector<T, A>::InvalidIndex()
+int c_utl_vector<T, A>::invalid_index()
 {
 	return -1;
 }
@@ -936,14 +937,14 @@ inline int CUtlVector<T, A>::InvalidIndex()
 // Grows the vector
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::GrowVector(int num)
+void c_utl_vector<T, A>::grow_vector(int num)
 {
-	if (m_Size + num > m_Memory.NumAllocated()) {
-		m_Memory.Grow(m_Size + num - m_Memory.NumAllocated());
+	if (m_size + num > m_memory.NumAllocated()) {
+		m_memory.Grow(m_size + num - m_memory.NumAllocated());
 	}
 
-	m_Size += num;
-	ResetDbgInfo();
+	m_size += num;
+	reset_dbg_info();
 }
 
 
@@ -951,14 +952,14 @@ void CUtlVector<T, A>::GrowVector(int num)
 // Sorts the vector
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::Sort(int(__cdecl* pfnCompare)(const T*, const T*))
+void c_utl_vector<T, A>::sort(int(__cdecl* pfn_compare)(const T*, const T*))
 {
-	typedef int(__cdecl* QSortCompareFunc_t)(const void*, const void*);
-	if (Count() <= 1)
+	typedef int(__cdecl* q_sort_compare_func_t)(const void*, const void*);
+	if (count() <= 1)
 		return;
 
-	if (Base()) {
-		qsort(Base(), Count(), sizeof(T), (QSortCompareFunc_t)(pfnCompare));
+	if (base()) {
+		qsort(base(), count(), sizeof(T), (q_sort_compare_func_t)(pfn_compare));
 	}
 	else {
 		assert(0);
@@ -967,10 +968,10 @@ void CUtlVector<T, A>::Sort(int(__cdecl* pfnCompare)(const T*, const T*))
 		// you'll probably want to patch in a quicksort algorithm here
 		// I just threw in this bubble sort to have something just in case...
 
-		for (int i = m_Size - 1; i >= 0; --i) {
+		for (int i = m_size - 1; i >= 0; --i) {
 			for (int j = 1; j <= i; ++j) {
-				if (pfnCompare(&Element(j - 1), &Element(j)) < 0) {
-					V_swap(Element(j - 1), Element(j));
+				if (pfn_compare(&element(j - 1), &element(j)) < 0) {
+					V_swap(element(j - 1), element(j));
 				}
 			}
 		}
@@ -981,10 +982,10 @@ void CUtlVector<T, A>::Sort(int(__cdecl* pfnCompare)(const T*, const T*))
 // Makes sure we have enough memory allocated to store a requested # of elements
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::EnsureCapacity(int num)
+void c_utl_vector<T, A>::ensure_capacity(int num)
 {
-	m_Memory.EnsureCapacity(num);
-	ResetDbgInfo();
+	m_memory.EnsureCapacity(num);
+	reset_dbg_info();
 }
 
 
@@ -992,10 +993,10 @@ void CUtlVector<T, A>::EnsureCapacity(int num)
 // Makes sure we have at least this many elements
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::EnsureCount(int num)
+void c_utl_vector<T, A>::ensure_count(const int num)
 {
-	if (Count() < num) {
-		AddMultipleToTail(num - Count());
+	if (count() < num) {
+		add_multiple_to_tail(num - count());
 	}
 }
 
@@ -1004,24 +1005,24 @@ void CUtlVector<T, A>::EnsureCount(int num)
 // Shifts elements
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::ShiftElementsRight(int elem, int num)
+void c_utl_vector<T, A>::shift_elements_right(const int elem, const int num)
 {
-	assert(IsValidIndex(elem) || (m_Size == 0) || (num == 0));
-	int numToMove = m_Size - elem - num;
-	if ((numToMove > 0) && (num > 0))
-		memmove(&Element(elem + num), &Element(elem), numToMove * sizeof(T));
+	assert(is_valid_index(elem) || (m_size == 0) || (num == 0));
+	const int num_to_move = m_size - elem - num;
+	if ((num_to_move > 0) && (num > 0))
+		memmove(&element(elem + num), &element(elem), num_to_move * sizeof(T));
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::ShiftElementsLeft(int elem, int num)
+void c_utl_vector<T, A>::shift_elements_left(const int elem, int num)
 {
-	assert(IsValidIndex(elem) || (m_Size == 0) || (num == 0));
-	int numToMove = m_Size - elem - num;
-	if ((numToMove > 0) && (num > 0)) {
-		memmove(&Element(elem), &Element(elem + num), numToMove * sizeof(T));
+	assert(is_valid_index(elem) || (m_size == 0) || (num == 0));
+	const int num_to_move = m_size - elem - num;
+	if ((num_to_move > 0) && (num > 0)) {
+		memmove(&element(elem), &element(elem + num), num_to_move * sizeof(T));
 
 #ifdef _DEBUG
-		memset(&Element(m_Size - num), 0xDD, num * sizeof(T));
+		memset(&element(m_size - num), 0xDD, num * sizeof(T));
 #endif
 	}
 }
@@ -1031,32 +1032,32 @@ void CUtlVector<T, A>::ShiftElementsLeft(int elem, int num)
 // Adds an element, uses default constructor
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddToHead()
+int c_utl_vector<T, A>::add_to_head()
 {
-	return InsertBefore(0);
+	return insert_before(0);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddToTail()
+int c_utl_vector<T, A>::add_to_tail()
 {
-	return InsertBefore(m_Size);
+	return insert_before(m_size);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::InsertAfter(int elem)
+int c_utl_vector<T, A>::insert_after(const int elem)
 {
-	return InsertBefore(elem + 1);
+	return insert_before(elem + 1);
 }
 
 template< typename T, class A >
-int CUtlVector<T, A>::InsertBefore(int elem)
+int c_utl_vector<T, A>::insert_before(const int elem)
 {
 	// Can insert at the end
-	assert((elem == Count()) || IsValidIndex(elem));
+	assert((elem == count()) || is_valid_index(elem));
 
-	GrowVector();
-	ShiftElementsRight(elem);
-	Construct(&Element(elem));
+	grow_vector();
+	shift_elements_right(elem);
+	Construct(&element(elem));
 	return elem;
 }
 
@@ -1065,163 +1066,163 @@ int CUtlVector<T, A>::InsertBefore(int elem)
 // Adds an element, uses copy constructor
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddToHead(const T& src)
+int c_utl_vector<T, A>::add_to_head(const T& src)
 {
 	// Can't insert something that's in the list... reallocation may hose us
-	assert((Base() == NULL) || (&src < Base()) || (&src >= (Base() + Count())));
-	return InsertBefore(0, src);
+	assert((base() == NULL) || (&src < base()) || (&src >= (base() + count())));
+	return insert_before(0, src);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddToTail(const T& src)
+int c_utl_vector<T, A>::add_to_tail(const T& src)
 {
 	// Can't insert something that's in the list... reallocation may hose us
-	assert((Base() == NULL) || (&src < Base()) || (&src >= (Base() + Count())));
-	return InsertBefore(m_Size, src);
+	assert((base() == NULL) || (&src < base()) || (&src >= (base() + count())));
+	return insert_before(m_size, src);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::InsertAfter(int elem, const T& src)
+int c_utl_vector<T, A>::insert_after(const int elem, const T& src)
 {
 	// Can't insert something that's in the list... reallocation may hose us
-	assert((Base() == NULL) || (&src < Base()) || (&src >= (Base() + Count())));
-	return InsertBefore(elem + 1, src);
+	assert((base() == NULL) || (&src < base()) || (&src >= (base() + count())));
+	return insert_before(elem + 1, src);
 }
 
 //-----------------------------------------------------------------------------
 // Adds multiple elements, uses default constructor
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddMultipleToHead(int num)
+int c_utl_vector<T, A>::add_multiple_to_head(const int num)
 {
-	return InsertMultipleBefore(0, num);
+	return insert_multiple_before(0, num);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddMultipleToTail(int num)
+int c_utl_vector<T, A>::add_multiple_to_tail(const int num)
 {
-	return InsertMultipleBefore(m_Size, num);
+	return insert_multiple_before(m_size, num);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::AddMultipleToTail(int num, const T* pToCopy)
+int c_utl_vector<T, A>::add_multiple_to_tail(const int num, const T* pToCopy)
 {
 	// Can't insert something that's in the list... reallocation may hose us
-	assert((Base() == NULL) || !pToCopy || (pToCopy + num <= Base()) || (pToCopy >= (Base() + Count())));
+	assert((base() == NULL) || !pToCopy || (pToCopy + num <= base()) || (pToCopy >= (base() + count())));
 
-	return InsertMultipleBefore(m_Size, num, pToCopy);
+	return insert_multiple_before(m_size, num, pToCopy);
 }
 
 template< typename T, class A >
-int CUtlVector<T, A>::InsertMultipleAfter(int elem, int num)
+int c_utl_vector<T, A>::insert_multiple_after(const int elem, const int num)
 {
-	return InsertMultipleBefore(elem + 1, num);
+	return insert_multiple_before(elem + 1, num);
 }
 
 
 template< typename T, class A >
-void CUtlVector<T, A>::SetCount(int count)
+void c_utl_vector<T, A>::set_count(int count)
 {
-	RemoveAll();
-	AddMultipleToTail(count);
+	remove_all();
+	add_multiple_to_tail(count);
 }
 
 template< typename T, class A >
-inline void CUtlVector<T, A>::SetSize(int size)
+void c_utl_vector<T, A>::set_size(int size)
 {
-	SetCount(size);
+	set_count(size);
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::SetCountNonDestructively(int count)
+void c_utl_vector<T, A>::set_count_non_destructively(int count)
 {
-	int delta = count - m_Size;
-	if (delta > 0) AddMultipleToTail(delta);
-	else if (delta < 0) RemoveMultipleFromTail(-delta);
+	const int delta = count - m_size;
+	if (delta > 0) add_multiple_to_tail(delta);
+	else if (delta < 0) remove_multiple_from_tail(-delta);
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::CopyArray(const T* pArray, int size)
+void c_utl_vector<T, A>::copy_array(const T* pArray, int size)
 {
 	// Can't insert something that's in the list... reallocation may hose us
-	assert((Base() == NULL) || !pArray || (Base() >= (pArray + size)) || (pArray >= (Base() + Count())));
+	assert((base() == NULL) || !pArray || (base() >= (pArray + size)) || (pArray >= (base() + count())));
 
-	SetSize(size);
+	set_size(size);
 	for (int i = 0; i < size; i++) {
 		(*this)[i] = pArray[i];
 	}
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::Swap(CUtlVector< T, A >& vec)
+void c_utl_vector<T, A>::swap(c_utl_vector< T, A >& vec) noexcept
 {
-	m_Memory.Swap(vec.m_Memory);
-	V_swap(m_Size, vec.m_Size);
+	m_memory.Swap(vec.m_memory);
+	V_swap(m_size, vec.m_size);
 #ifndef _X360
-	V_swap(m_pElements, vec.m_pElements);
+	V_swap(m_elements, vec.m_elements);
 #endif
 }
 
 template< typename T, class A >
-int CUtlVector<T, A>::AddVectorToTail(CUtlVector const& src)
+int c_utl_vector<T, A>::add_vector_to_tail(c_utl_vector const& src)
 {
 	assert(&src != this);
 
-	int base = Count();
+	const int base = count();
 
 	// Make space.
-	int nSrcCount = src.Count();
-	EnsureCapacity(base + nSrcCount);
+	const int src_count = src.count();
+	ensure_capacity(base + src_count);
 
 	// Copy the elements.	
-	m_Size += nSrcCount;
-	for (int i = 0; i < nSrcCount; i++) {
-		CopyConstruct(&Element(base + i), src[i]);
+	m_size += src_count;
+	for (int i = 0; i < src_count; i++) {
+		CopyConstruct(&element(base + i), src[i]);
 	}
 	return base;
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::InsertMultipleBefore(int elem, int num)
+int c_utl_vector<T, A>::insert_multiple_before(const int elem, int num)
 {
 	if (num == 0)
 		return elem;
 
 	// Can insert at the end
-	assert((elem == Count()) || IsValidIndex(elem));
+	assert((elem == count()) || is_valid_index(elem));
 
-	GrowVector(num);
-	ShiftElementsRight(elem, num);
+	grow_vector(num);
+	shift_elements_right(elem, num);
 
 	// Invoke default constructors
 	for (int i = 0; i < num; ++i) {
-		Construct(&Element(elem + i));
+		Construct(&element(elem + i));
 	}
 
 	return elem;
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::InsertMultipleBefore(int elem, int num, const T* pToInsert)
+int c_utl_vector<T, A>::insert_multiple_before(int elem, int num, const T* pToInsert)
 {
 	if (num == 0)
 		return elem;
 
 	// Can insert at the end
-	assert((elem == Count()) || IsValidIndex(elem));
+	assert((elem == count()) || is_valid_index(elem));
 
-	GrowVector(num);
-	ShiftElementsRight(elem, num);
+	grow_vector(num);
+	shift_elements_right(elem, num);
 
 	// Invoke default constructors
 	if (!pToInsert) {
 		for (int i = 0; i < num; ++i) {
-			Construct(&Element(elem + i));
+			Construct(&element(elem + i));
 		}
 	}
 	else {
 		for (int i = 0; i < num; i++) {
-			CopyConstruct(&Element(elem + i), pToInsert[i]);
+			CopyConstruct(&element(elem + i), pToInsert[i]);
 		}
 	}
 
@@ -1233,110 +1234,110 @@ inline int CUtlVector<T, A>::InsertMultipleBefore(int elem, int num, const T* pT
 // Finds an element (element needs operator== defined)
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-int CUtlVector<T, A>::GetOffset(const T& src) const
+int c_utl_vector<T, A>::get_offset(const T& src) const
 {
-	for (int i = 0; i < Count(); ++i) {
-		if (Element(i) == src)
+	for (int i = 0; i < count(); ++i) {
+		if (element(i) == src)
 			return i;
 	}
 	return -1;
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::FillWithValue(const T& src)
+void c_utl_vector<T, A>::fill_with_value(const T& src)
 {
-	for (int i = 0; i < Count(); i++) {
-		Element(i) = src;
+	for (int i = 0; i < count(); i++) {
+		element(i) = src;
 	}
 }
 
 template< typename T, class A >
-bool CUtlVector<T, A>::HasElement(const T& src) const
+bool c_utl_vector<T, A>::has_element(const T& src) const
 {
-	return (GetOffset(src) >= 0);
+	return (get_offset(src) >= 0);
 }
 
 
 //-----------------------------------------------------------------------------
-// Element removal
+// element removal
 //-----------------------------------------------------------------------------
 template< typename T, class A >
-void CUtlVector<T, A>::FastRemove(int elem)
+void c_utl_vector<T, A>::fast_remove(int elem)
 {
-	assert(IsValidIndex(elem));
+	assert(is_valid_index(elem));
 
-	Destruct(&Element(elem));
-	if (m_Size > 0) {
-		if (elem != m_Size - 1)
-			memcpy(&Element(elem), &Element(m_Size - 1), sizeof(T));
-		--m_Size;
+	Destruct(&element(elem));
+	if (m_size > 0) {
+		if (elem != m_size - 1)
+			memcpy(&element(elem), &element(m_size - 1), sizeof(T));
+		--m_size;
 	}
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::Remove(int elem)
+void c_utl_vector<T, A>::remove(int elem)
 {
-	Destruct(&Element(elem));
-	ShiftElementsLeft(elem);
-	--m_Size;
+	Destruct(&element(elem));
+	shift_elements_left(elem);
+	--m_size;
 }
 
 template< typename T, class A >
-bool CUtlVector<T, A>::FindAndRemove(const T& src)
+bool c_utl_vector<T, A>::find_and_remove(const T& src)
 {
-	int elem = GetOffset(src);
+	const int elem = get_offset(src);
 	if (elem != -1) {
-		Remove(elem);
+		remove(elem);
 		return true;
 	}
 	return false;
 }
 
 template< typename T, class A >
-bool CUtlVector<T, A>::FindAndFastRemove(const T& src)
+bool c_utl_vector<T, A>::find_and_fast_remove(const T& src)
 {
-	int elem = GetOffset(src);
+	const int elem = get_offset(src);
 	if (elem != -1) {
-		FastRemove(elem);
+		fast_remove(elem);
 		return true;
 	}
 	return false;
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::RemoveMultiple(int elem, int num)
+void c_utl_vector<T, A>::remove_multiple(const int elem, const int num)
 {
 	assert(elem >= 0);
-	assert(elem + num <= Count());
+	assert(elem + num <= count());
 
 	for (int i = elem + num; --i >= elem; )
-		Destruct(&Element(i));
+		Destruct(&element(i));
 
-	ShiftElementsLeft(elem, num);
-	m_Size -= num;
+	shift_elements_left(elem, num);
+	m_size -= num;
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::RemoveMultipleFromHead(int num)
+void c_utl_vector<T, A>::remove_multiple_from_head(const int num)
 {
-	assert(num <= Count());
+	assert(num <= count());
 
 	for (int i = num; --i >= 0; )
-		Destruct(&Element(i));
+		Destruct(&element(i));
 
-	ShiftElementsLeft(0, num);
-	m_Size -= num;
+	shift_elements_left(0, num);
+	m_size -= num;
 }
 
 template< typename T, class A >
-void CUtlVector<T, A>::RemoveMultipleFromTail(int num)
+void c_utl_vector<T, A>::remove_multiple_from_tail(const int num)
 {
-	assert(num <= Count());
+	assert(num <= count());
 
-	for (int i = m_Size - num; i < m_Size; i++)
-		Destruct(&Element(i));
+	for (int i = m_size - num; i < m_size; i++)
+		Destruct(&element(i));
 
-	m_Size -= num;
+	m_size -= num;
 }
 
 //===== Copyright � 1996-2005, Valve Corporation, All rights reserved. ======//
@@ -1349,11 +1350,11 @@ void CUtlVector<T, A>::RemoveMultipleFromTail(int num)
 #pragma once
 
 #include <malloc.h>
-#include <limits.h>
-#include <float.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include <climits>
+#include <cfloat>
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
 #include <new.h>
 
 #define COMPILER_MSVC
@@ -1547,7 +1548,7 @@ void CUtlVector<T, A>::RemoveMultipleFromTail(int num)
 //#define offsetof( type, var ) __builtin_offsetof( type, var ) 
 #define offsetof(s,m)	(size_t)&(((s *)0)->m)
 #else
-#include <stddef.h>
+#include <cstddef>
 #undef offsetof
 #define offsetof(s,m)	(size_t)&(((s *)0)->m)
 #endif
@@ -1784,7 +1785,7 @@ void CUtlVector<T, A>::RemoveMultipleFromTail(int num)
 #pragma warning(disable : 4702) // warning C4702: unreachable code
 #pragma warning(disable : 4505) // unreferenced local function has been removed
 #pragma warning(disable : 4239) // nonstandard extension used : 'argument' ( conversion from class Vector to class Vector& )
-#pragma warning(disable : 4097) // typedef-name 'BaseClass' used as synonym for class-name 'CFlexCycler::CBaseFlex'
+#pragma warning(disable : 4097) // typedef-name 'baseClass' used as synonym for class-name 'CFlexCycler::CbaseFlex'
 #pragma warning(disable : 4324) // Padding was added at the end of a structure
 #pragma warning(disable : 4244) // type conversion warning.
 #pragma warning(disable : 4305)	// truncation from 'const double ' to 'float '
@@ -2045,22 +2046,18 @@ inline void SetupFPUControlWord()
 //-------------------------------------
 
 template <typename T>
-inline T WordSwapC(T w)
+T WordSwapC(T w)
 {
-	uint16_t temp;
-
-	temp = ((*((uint16_t*)&w) & 0xff00) >> 8);
+	uint16_t temp = ((*((uint16_t*)&w) & 0xff00) >> 8);
 	temp |= ((*((uint16_t*)&w) & 0x00ff) << 8);
 
 	return *((T*)&temp);
 }
 
 template <typename T>
-inline T DWordSwapC(T dw)
+T DWordSwapC(T dw)
 {
-	uint32_t temp;
-
-	temp = *((uint32_t*)&dw) >> 24;
+	uint32_t temp = *((uint32_t*)&dw) >> 24;
 	temp |= ((*((uint32_t*)&dw) & 0x00FF0000) >> 8);
 	temp |= ((*((uint32_t*)&dw) & 0x0000FF00) << 8);
 	temp |= ((*((uint32_t*)&dw) & 0x000000FF) << 24);
@@ -2209,12 +2206,12 @@ inline void SwapFloat(float* pOut, const float* pIn) { SafeSwapFloat(pOut, pIn);
 
 #endif
 
-inline uint32_t LoadLittleDWord(uint32_t* base, unsigned int dwordIndex)
+inline uint32_t load_little_dword(uint32_t* base, unsigned int dwordIndex)
 {
 	return LittleDWord(base[dwordIndex]);
 }
 
-inline void StoreLittleDWord(uint32_t* base, unsigned int dwordIndex, uint32_t dword)
+inline void store_little_dword(uint32_t* base, unsigned int dwordIndex, uint32_t dword)
 {
 	base[dwordIndex] = LittleDWord(dword);
 }
@@ -2310,54 +2307,54 @@ inline const char* GetPlatformExt(void)
 //-----------------------------------------------------------------------------
 
 template <class T>
-inline T* Construct(T* pMemory)
+T* construct(T* memory)
 {
-	return ::new(pMemory) T;
+	return ::new(memory) T;
 }
 
 template <class T, typename ARG1>
-inline T* Construct(T* pMemory, ARG1 a1)
+T* construct(T* memory, ARG1 a1)
 {
-	return ::new(pMemory) T(a1);
+	return ::new(memory) T(a1);
 }
 
 template <class T, typename ARG1, typename ARG2>
-inline T* Construct(T* pMemory, ARG1 a1, ARG2 a2)
+T* construct(T* memory, ARG1 a1, ARG2 a2)
 {
-	return ::new(pMemory) T(a1, a2);
+	return ::new(memory) T(a1, a2);
 }
 
 template <class T, typename ARG1, typename ARG2, typename ARG3>
-inline T* Construct(T* pMemory, ARG1 a1, ARG2 a2, ARG3 a3)
+T* construct(T* memory, ARG1 a1, ARG2 a2, ARG3 a3)
 {
-	return ::new(pMemory) T(a1, a2, a3);
+	return ::new(memory) T(a1, a2, a3);
 }
 
 template <class T, typename ARG1, typename ARG2, typename ARG3, typename ARG4>
-inline T* Construct(T* pMemory, ARG1 a1, ARG2 a2, ARG3 a3, ARG4 a4)
+T* construct(T* memory, ARG1 a1, ARG2 a2, ARG3 a3, ARG4 a4)
 {
-	return ::new(pMemory) T(a1, a2, a3, a4);
+	return ::new(memory) T(a1, a2, a3, a4);
 }
 
 template <class T, typename ARG1, typename ARG2, typename ARG3, typename ARG4, typename ARG5>
-inline T* Construct(T* pMemory, ARG1 a1, ARG2 a2, ARG3 a3, ARG4 a4, ARG5 a5)
+T* construct(T* memory, ARG1 a1, ARG2 a2, ARG3 a3, ARG4 a4, ARG5 a5)
 {
-	return ::new(pMemory) T(a1, a2, a3, a4, a5);
+	return ::new(memory) T(a1, a2, a3, a4, a5);
 }
 
 template <class T>
-inline T* CopyConstruct(T* pMemory, T const& src)
+T* copy_construct(T* memory, T const& src)
 {
-	return ::new(pMemory) T(src);
+	return ::new(memory) T(src);
 }
 
 template <class T>
-inline void Destruct(T* pMemory)
+void destruct(T* memory)
 {
-	pMemory->~T();
+	memory->~T();
 
 #ifdef _DEBUG
-	memset(pMemory, 0xDD, sizeof(T));
+	memset(memory, 0xDD, sizeof(T));
 #endif
 }
 
@@ -2448,7 +2445,7 @@ FunctionWrapper<9>::Function
 PLATFORM_INTERFACE bool vtune(bool resume);
 
 
-#define TEMPLATE_FUNCTION_TABLE(RETURN_TYPE, NAME, ARGS, COUNT)			  \
+#define TEMPLATE_FUNCTION_TABLE(RETURN_TYPE, NAME, ARGS, count)			  \
                                                                       \
 typedef RETURN_TYPE (FASTCALL *__Type_##NAME) ARGS;						        \
 																		                                  \
@@ -2475,12 +2472,12 @@ struct __MetaLooper_##NAME<0>											                    \
 class NAME																                            \
 {																		                                  \
 private:																                              \
-    static const __MetaLooper_##NAME<COUNT> m;							          \
+    static const __MetaLooper_##NAME<count> m;							          \
 public:																	                              \
-	enum { count = COUNT };												                      \
+	enum { count = count };												                      \
 	static const __Type_##NAME* functions;								              \
 };																		                                \
-const __MetaLooper_##NAME<COUNT> NAME::m;								              \
+const __MetaLooper_##NAME<count> NAME::m;								              \
 const __Type_##NAME* NAME::functions = (__Type_##NAME*)&m;				    \
 template<const int nArgument>													                \
 RETURN_TYPE FASTCALL __Function_##NAME<nArgument>::Run ARGS
@@ -2496,32 +2493,32 @@ RETURN_TYPE FASTCALL __Function_##NAME<nArgument>::Run ARGS
 	}
 
 #ifdef COMPILER_MSVC
-FORCEINLINE uint32_t RotateBitsLeft32(uint32_t nValue, int nRotateBits)
+FORCEINLINE uint32_t rotate_bits_left32(uint32_t nValue, int nRotateBits)
 {
 	return _rotl(nValue, nRotateBits);
 }
-FORCEINLINE uint64_t RotateBitsLeft64(uint64_t nValue, int nRotateBits)
+FORCEINLINE uint64_t rotate_bits_left64(uint64_t nValue, int nRotateBits)
 {
 	return _rotl64(nValue, nRotateBits);
 }
-FORCEINLINE uint32_t RotateBitsRight32(uint32_t nValue, int nRotateBits)
+FORCEINLINE uint32_t rotate_bits_right32(uint32_t nValue, int nRotateBits)
 {
 	return _rotr(nValue, nRotateBits);
 }
-FORCEINLINE uint64_t RotateBitsRight64(uint64_t nValue, int nRotateBits)
+FORCEINLINE uint64_t rotate_bits_right64(uint64_t nValue, int nRotateBits)
 {
 	return _rotr64(nValue, nRotateBits);
 }
 #endif
 
 template< typename T, class A >
-void CUtlVector<T, A>::RemoveAll()
+void c_utl_vector<T, A>::remove_all()
 {
-	for (int i = m_Size; --i >= 0; ) {
-		Destruct(&Element(i));
+	for (int i = m_size; --i >= 0; ) {
+		destruct(&element(i));
 	}
 
-	m_Size = 0;
+	m_size = 0;
 }
 
 
@@ -2530,33 +2527,33 @@ void CUtlVector<T, A>::RemoveAll()
 //-----------------------------------------------------------------------------
 
 template< typename T, class A >
-inline void CUtlVector<T, A>::Purge()
+void c_utl_vector<T, A>::purge()
 {
-	RemoveAll();
-	m_Memory.Purge();
-	ResetDbgInfo();
+	remove_all();
+	m_memory.Purge();
+	reset_dbg_info();
 }
 
 
 template< typename T, class A >
-inline void CUtlVector<T, A>::PurgeAndDeleteElements()
+void c_utl_vector<T, A>::purge_and_delete_elements()
 {
-	for (int i = 0; i < m_Size; i++) {
-		delete Element(i);
+	for (int i = 0; i < m_size; i++) {
+		delete element(i);
 	}
-	Purge();
+	purge();
 }
 
 template< typename T, class A >
-inline void CUtlVector<T, A>::Compact()
+void c_utl_vector<T, A>::compact()
 {
-	m_Memory.Purge(m_Size);
+	m_memory.Purge(m_size);
 }
 
 template< typename T, class A >
-inline int CUtlVector<T, A>::NumAllocated() const
+int c_utl_vector<T, A>::num_allocated() const
 {
-	return m_Memory.NumAllocated();
+	return m_memory.NumAllocated();
 }
 
 
@@ -2577,28 +2574,28 @@ void CUtlVector<T, A>::Validate(CValidator& validator, char* pchName)
 
 // A vector class for storing pointers, so that the elements pointed to by the pointers are deleted
 // on exit.
-template<class T> class CUtlVectorAutoPurge : public CUtlVector< T, CUtlMemory< T, int> >
+template<class T> class c_utl_vector_auto_purge : public c_utl_vector< T, c_utl_memory< T, int> >
 {
 public:
-	~CUtlVectorAutoPurge(void)
+	~c_utl_vector_auto_purge(void)
 	{
-		this->PurgeAndDeleteElements();
+		this->PurgeAndDeleteelements();
 	}
 };
 
 // easy string list class with dynamically allocated strings. For use with V_SplitString, etc.
 // Frees the dynamic strings in destructor.
-class CUtlStringList : public CUtlVectorAutoPurge< char*>
+class c_utl_string_list : public c_utl_vector_auto_purge< char*>
 {
 public:
-	void CopyAndAddToTail(char const* pString)			// clone the string and add to the end
+	void copy_and_add_to_tail(char const* pString)			// clone the string and add to the end
 	{
-		char* pNewStr = new char[1 + strlen(pString)];
-		strcpy_s(pNewStr, 1 + strlen(pString), pString);
-		AddToTail(pNewStr);
+		const auto new_str = new char[1 + strlen(pString)];
+		strcpy_s(new_str, 1 + strlen(pString), pString);
+		add_to_tail(new_str);
 	}
 
-	static int __cdecl SortFunc(char* const* sz1, char* const* sz2)
+	static int __cdecl sort_func(char* const* sz1, char* const* sz2)
 	{
 		return strcmp(*sz1, *sz2);
 	}

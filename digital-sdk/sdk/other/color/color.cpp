@@ -8,55 +8,55 @@ c_color c_color::blue(0, 0, 255, 255);
 
 c_color::c_color()
 {
-    *((int*)this) = 0;
+    *reinterpret_cast<int*>(this) = 0;
 }
-c_color::c_color(int _r, int _g, int _b)
+c_color::c_color(const int _r, const int _g, const int _b)
 {
     set_color(_r, _g, _b, 255);
 }
-c_color::c_color(int _r, int _g, int _b, int _a)
+c_color::c_color(const int _r, const int _g, const int _b, const int _a)
 {
     set_color(_r, _g, _b, _a);
 }
-void c_color::set_raw_color(int color32)
+void c_color::set_raw_color(const int color32)
 {
     *reinterpret_cast<int*>(this) = color32;
 }
 int c_color::get_raw_color() const
 {
-    return *((int*)this);
+    return *(int*)this;
 }
 
-void c_color::set_alpha(int alpha) { _CColor[3] = alpha; }
+void c_color::set_alpha(const int alpha) { c_color_[3] = alpha; }
 
-void c_color::set_color(int _r, int _g, int _b, int _a)
+void c_color::set_color(const int _r, const int _g, const int _b, const int _a)
 {
-    _CColor[0] = static_cast<unsigned char>(_r);
-    _CColor[1] = static_cast<unsigned char>(_g);
-    _CColor[2] = static_cast<unsigned char>(_b);
-    _CColor[3] = static_cast<unsigned char>(_a);
+    c_color_[0] = static_cast<unsigned char>(_r);
+    c_color_[1] = static_cast<unsigned char>(_g);
+    c_color_[2] = static_cast<unsigned char>(_b);
+    c_color_[3] = static_cast<unsigned char>(_a);
 }
 void c_color::set_color(float _r, float _g, float _b, float _a)
 {
-    _CColor[0] = static_cast<unsigned char>(_r * 255.0f);
-    _CColor[1] = static_cast<unsigned char>(_g * 255.0f);
-    _CColor[2] = static_cast<unsigned char>(_b * 255.0f);
-    _CColor[3] = static_cast<unsigned char>(_a * 255.0f);
+    c_color_[0] = static_cast<unsigned char>(_r * 255.0f);
+    c_color_[1] = static_cast<unsigned char>(_g * 255.0f);
+    c_color_[2] = static_cast<unsigned char>(_b * 255.0f);
+    c_color_[3] = static_cast<unsigned char>(_a * 255.0f);
 }
-void c_color::get_color(int& _r, int& _g, int& _b, int& _a) const
+void c_color::get_color(int& r, int& g, int& b, int& a) const
 {
-    _r = _CColor[0];
-    _g = _CColor[1];
-    _b = _CColor[2];
-    _a = _CColor[3];
+    r = c_color_[0];
+    g = c_color_[1];
+    b = c_color_[2];
+    a = c_color_[3];
 }
 bool c_color::operator== (const c_color& rhs) const
 {
-    return (*((int*)this) == *((int*)&rhs));
+    return *(int*)this == *(int*)&rhs;
 }
 bool c_color::operator!= (const c_color& rhs) const
 {
-    return !(operator==(rhs));
+    return !operator==(rhs);
 }
 c_color& c_color::operator=(const c_color& rhs)
 {

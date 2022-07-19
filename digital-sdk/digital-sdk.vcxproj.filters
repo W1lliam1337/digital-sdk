@@ -30,9 +30,6 @@
     <ClInclude Include="includes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\crc\crc.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="sdk\sdk.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -405,6 +402,9 @@
     <ClInclude Include="sdk\game\inferno.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_client_state.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -414,9 +414,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\utils.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="sdk\other\crc\crc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\modules\modules.cpp">
@@ -498,6 +495,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="sdk\math\vec4.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\other\cmd.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

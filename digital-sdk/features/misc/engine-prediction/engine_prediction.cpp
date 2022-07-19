@@ -20,6 +20,24 @@ void c_engine_prediction::setup()
 	m_backup_data.m_is_first_time_predicted = g_interfaces->m_prediction->m_first_time_predicted;
 }
 
+/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/prediction.cpp#L1948 */
+void c_engine_prediction::update()
+{
+	if (g_interfaces->m_client_state->m_delta_tick < 0)
+		return;
+
+	if (g_interfaces->m_client_state->m_signon_state != 6)
+		return;
+
+	return g_interfaces->m_prediction->update
+	(
+		g_interfaces->m_client_state->m_delta_tick,
+		true, // g_interfaces->m_client_state->m_delta_tick > 0
+		g_interfaces->m_client_state->m_last_command_ack,
+		g_interfaces->m_client_state->m_choked_commands + g_interfaces->m_client_state->m_last_outgoing_command
+	);
+}
+
 void c_engine_prediction::begin()
 {
 	/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/prediction.cpp#L899 */
@@ -34,7 +52,7 @@ void c_engine_prediction::begin()
 	*reinterpret_cast<int*>(m_prediction_seed) = g_sdk->m_packet_data.m_cmd ? g_sdk->m_packet_data.m_cmd->m_random_seed : -1;
 
 	/* fix times */
-	g_interfaces->m_globals->m_current_time = TICKS_TO_TIME(g_sdk->m_local()->get_tick_base());
+	g_interfaces->m_globals->m_current_time = g_sdk->ticks_to_time(g_sdk->m_local()->get_tick_base());
 	g_interfaces->m_globals->m_frame_time = g_interfaces->m_prediction->m_engine_paused
 		? 0.0f
 		: g_interfaces->m_globals->m_interval_per_tick;

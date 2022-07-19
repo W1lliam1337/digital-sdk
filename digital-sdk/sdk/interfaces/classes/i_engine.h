@@ -2,7 +2,7 @@
 #include <functional>
 #include "../../../utils/utils.h"
 
-class VMatrix;
+class v_matrix;
 
 struct player_info_t
 {
@@ -88,8 +88,8 @@ public:
 		return g_utils->call_vfunc< void(__thiscall*)(void*, const char*) >(this, 108)(this, cmd_string);
 	}
 
-	const VMatrix& world_to_screen_matrix() {
-		return g_utils->call_vfunc<const VMatrix& (__thiscall*)(void*)>(this, 37)(this);
+	const v_matrix& world_to_screen_matrix() {
+		return g_utils->call_vfunc<const v_matrix& (__thiscall*)(void*)>(this, 37)(this);
 	}
 
 	void get_screen_size(int& width, int& height)

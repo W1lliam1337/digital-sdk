@@ -3,7 +3,7 @@
 struct recv_table_t;
 struct recv_prop_t;
 
-enum send_prop_type
+enum e_send_prop_type
 {
 	dpt_int = 0,
 	dpt_float,
@@ -23,13 +23,13 @@ struct d_variant_t
 		void* m_data;
 		float m_vector[3];
 		long long m_int_64;
-
 	};
 
-	send_prop_type m_type;
+	e_send_prop_type m_type;
 };
 
-struct recv_proxy_data_t {
+struct recv_proxy_data_t
+{
 	const recv_prop_t* m_recv_prop{};
 	d_variant_t m_value{};
 	int m_element{};
@@ -58,9 +58,9 @@ struct recv_prop_t
 	int m_elements{};
 	const char* m_parent_array_prop_name{};
 
-	recv_var_proxy_fn get_proxy_fn() const;
+	[[nodiscard]] recv_var_proxy_fn get_proxy_fn() const;
 	void set_proxy_fn(recv_var_proxy_fn fn);
-	data_table_recv_var_proxy_fn get_data_table_proxy_fn() const;
+	[[nodiscard]] data_table_recv_var_proxy_fn get_data_table_proxy_fn() const;
 	void set_data_table_proxy_fn(data_table_recv_var_proxy_fn fn);
 };
 

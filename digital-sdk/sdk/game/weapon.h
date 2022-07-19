@@ -61,42 +61,27 @@ public:
 
 	std::string get_name()
 	{
-		if (this->get_weapon_data())
-			return _("invalid");
-
 		return { this->get_weapon_data()->m_weapon_name };
 	}
 
 	int get_weapon_type()
 	{
-		if (!this->get_weapon_data())
-			return 0;
-
-		return get_weapon_data()->m_weapon_type;
+		return this->get_weapon_data()->m_weapon_type;
 	}
 
 	bool is_smg()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_submachinegun;
+		return this->get_weapon_type() == weapon_type_submachinegun;
 	}
 
 	bool is_grenade()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_grenade;
+		return this->get_weapon_type() == weapon_type_grenade;
 	}
 
 	bool is_gun()
 	{
-		if (!this)
-			return false;
-
-		switch (get_weapon_type())
+		switch (this->get_weapon_type())
 		{
 		case weapon_type_grenade:
 			return false;
@@ -111,33 +96,21 @@ public:
 
 	bool is_knife()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_knife;
+		return this->get_weapon_type() == weapon_type_knife;
 	}
 
 	bool is_rifle()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_rifle;
+		return this->get_weapon_type() == weapon_type_rifle;
 	}
 
 	bool is_sniper()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_sniper_rifle;
+		return this->get_weapon_type() == weapon_type_sniper_rifle;
 	}
 
 	bool is_bomb()
 	{
-		if (!this)
-			return false;
-
-		return get_weapon_type() == weapon_type_c4;
+		return this->get_weapon_type() == weapon_type_c4;
 	}
 };

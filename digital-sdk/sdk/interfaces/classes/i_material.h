@@ -268,7 +268,7 @@ public:
 		return g_utils->call_vfunc<o_fn>(this, 26)(this, val, comp);
 	}
 
-	void set_vector(const vec2_t vector)
+	void set_vector(const c_vec2 vector)
 	{
 		set_vector_internal(vector.x, vector.y);
 	}
@@ -279,7 +279,7 @@ public:
 		return g_utils->call_vfunc<o_fn>(this, 11)(this, x, y, z);
 	}
 
-	void set_vector(const vec3_t vector)
+	void set_vector(const c_vec3 vector)
 	{
 		set_vector_internal(vector.x, vector.y, vector.z);
 	}
@@ -322,7 +322,7 @@ public:
 	virtual void color_modulate(float r, float g, float b) = 0;
 	virtual void set_material_var_flag(material_var_flags_t flag, bool on) = 0;
 	virtual bool get_material_var_flag(material_var_flags_t flag) const = 0;
-	virtual void get_reflectivity(vec3_t& reflect) = 0;
+	virtual void get_reflectivity(c_vec3& reflect) = 0;
 	virtual bool get_property_flag(material_property_types_t  type) = 0;
 	virtual bool is_two_sided() = 0;
 	virtual void set_shader(const char* pShaderName) = 0;
@@ -361,9 +361,9 @@ class light_desc_t
 {
 public:
 	light_type_t m_type;                 //0x0000
-	vec3_t m_color{};                     //0x0004
-	vec3_t m_position{};                  //0x0010
-	vec3_t m_direction{};                 //0x001C
+	c_vec3 m_color{};                     //0x0004
+	c_vec3 m_position{};                  //0x0010
+	c_vec3 m_direction{};                 //0x001C
 	float m_range{};                      //0x0028
 	float m_falloff{};                    //0x002C
 	float m_attenuation0{};               //0x0030

@@ -22,6 +22,7 @@
 #include "classes/i_material.h"
 #include "classes/i_render_view.h"
 #include "classes/i_event_manager.h"
+#include "classes/i_client_state.h"
 #include "../../includes.h"
 
 #include <d3d9.h>
@@ -58,6 +59,7 @@ public:
 	i_model_render* m_model_render{};
 	i_render_view* m_render_view{};
 	i_game_event_manager* m_event_manager{};
+	i_client_state* m_client_state{};
 };
 
 inline const auto g_interfaces = std::make_unique<c_interfaces>();
