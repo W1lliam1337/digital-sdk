@@ -22,9 +22,9 @@ public:
 	void angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* right = nullptr, c_vec3* up = nullptr) const;
 	qangle_t angle_normalize(qangle_t& angle) const;
 	static bool screen_transform(const c_vec3& in, c_vec3& out);
-	[[nodiscard]] int random_int(int min, int max) const noexcept;
-	[[nodiscard]] float random_float(float min, float max) const noexcept;
-	void random_seed(int seed) const noexcept;
+	int random_int(int min, int max) const;
+	float random_float(float min, float max) const;
+	void random_seed(int seed) const;
 };
 
 inline const auto g_math = std::make_unique<c_math>();

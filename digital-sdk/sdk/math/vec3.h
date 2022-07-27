@@ -175,9 +175,16 @@ public:
 		return *this;
 	}
 
-	void normalize_in_place()
+	float normalize_in_place()
 	{
-		*this = normalized();
+		const float length = this->length();
+		const float radius = 1.0f / (length + std::numeric_limits<float>::epsilon());
+
+		this->x *= radius;
+		this->y *= radius;
+		this->z *= radius;
+
+		return length;
 	}
 
 	[[nodiscard]] c_vec3 normalized() const

@@ -20,10 +20,32 @@ public:
 	GET_NETVAR(qangle_t, get_aim_punch_angle, _("DT_BasePlayer"), _("m_aimPunchAngle"));
 	GET_NETVAR(c_handle < c_weapon >, get_active_weapon_handle, _("DT_BaseCombatCharacter"), _("m_hActiveWeapon"));
 	GET_NETVAR(bool, is_defusing, _("DT_BasePlayer"), _("m_bIsDefusing"));
+	GET_NETVAR(bool, is_scoped, _("DT_CSPlayer"), _("m_bIsScoped"));
+	GET_NETVAR(c_vec3, get_velocity, _("DT_BasePlayer"), _("m_vecVelocity[0]"));
+	GET_NETVAR(bool, get_client_side_animation, _("DT_BaseAnimating"), _("m_bClientSideAnimation"));
+	GET_NETVAR(float, get_lby, _("DT_CSPlayer"), _("m_flLowerBodyYawTarget"));
+	GET_NETVAR(float, get_duck_amount, _("DT_BasePlayer"), _("m_flDuckAmount"));
+	GET_NETVAR(float, get_duck_speed, _("DT_BasePlayer"), _("m_flDuckSpeed"));
+	GET_NETVAR(float, get_sim_time, _("DT_CSPlayer"), _("m_flSimulationTime"));
+
+	GET_NETVAR_OFFSET(float, get_old_sim_time, _("DT_CSPlayer"), _("m_flSimulationTime"), 0x4);
+
+	GET_OFFSET(int, get_occlusion_frame, 0xA30);
+	GET_OFFSET(int, get_occlusion_mask, 0xA28);
+	GET_OFFSET(int, get_client_effects, 0x68);
+	GET_OFFSET(int, get_last_skip_framecount, 0xA68);
+	GET_OFFSET(int, get_most_recent_model_bone_counter, 2690);
+	GET_OFFSET(bool, get_maintain_sequence_transition, 0x9F0);
+	GET_OFFSET(bool, get_jiggle_bones, 0x2930);
+	GET_OFFSET(c_vec3, get_abs_velocity, 0x94);
+	GET_OFFSET(int, get_eflags, 0xE8);
 	GET_OFFSET(int, get_take_damage, 0x280);
 	GET_OFFSET(c_bone_accressor, get_bone_accessor, 0x26A8);
 	GET_OFFSET(c_utl_vector<matrix_t>, get_bone_cache, 0x2914);
 	GET_OFFSET(bool, should_use_new_anim_state, 0x9B14);
+	GET_OFFSET(studiohdr_t*, get_model_ptr, 0x2950);
+	GET_OFFSET(anim_layer_t*, get_anim_layers, 0x2990);
+
 	GET_VFUNC(bool(__thiscall*)(void*), is_player(), 158);
 	GET_VFUNC(int(__thiscall*)(void*), is_max_health(), 122);
 	GET_VFUNC(const char* (__thiscall*)(void*), get_classname(), 59);
@@ -33,6 +55,81 @@ public:
 	GET_VFUNC(void(__thiscall*)(void*), studio_frame_advance(), 220);
 	GET_VFUNC(void(__thiscall*)(void*), update_collistion_bounds(), 340);
 	GET_VFUNC(void(__thiscall*)(void*), update_client_side_animations(), 224);
+
+	void set_abs_angles(const c_vec3 angles)
+	{
+		if (!this)
+			return;
+
+		static const auto set_angles_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8")));
+		set_angles_fn(this, angles);
+	}
+
+	void set_abs_origin(const c_vec3 position)
+	{
+		if (!this)
+			return;
+
+		static const auto set_pos_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8")));
+		set_pos_fn(this, position);
+	}
+
+	int sequence_activity(const int sequence)
+	{
+		const auto hdr = g_interfaces->m_model_info->get_studio_model(this->get_model());
+
+		if (!hdr)
+			return 0;
+
+		static const auto sequence_activity_fn = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 53 8B 5D 08 56 8B F1 83")));
+		return sequence_activity_fn(this, hdr, sequence);
+	}
+
+	void setup_bones_attachment_helper()
+	{
+		static const auto sig_fn = reinterpret_cast<void(__thiscall*)(void*, void*)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 48 53 8B 5D 08 89 4D F4")));
+		return sig_fn(this, this->get_model_ptr());
+	}
+
+	void invalidate_bone_cache()
+	{
+		static const auto invalidate_bone_cache_fn = reinterpret_cast<std::uintptr_t>(c_utils::find_sig(g_modules->m_client_dll,
+			_("80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81")) + 10);
+
+		*reinterpret_cast<std::uint32_t*>(reinterpret_cast<std::uintptr_t>(this) + 0x2924) = 0xFF7FFFFF;
+		*reinterpret_cast<std::uint32_t*>(reinterpret_cast<std::uintptr_t>(this) + 0x2690) = **reinterpret_cast<std::uintptr_t**>(invalidate_bone_cache_fn) - 1;
+	}
+
+	bool is_armored(const int hit_group) const
+	{
+		bool is_armored = false;
+
+		if (this->get_armour_value() > 0)
+		{
+			switch (hit_group)
+			{
+			case hitgroup_generic:
+			case hitgroup_chest:
+			case hitgroup_stomach:
+			case hitgroup_leftarm:
+			case hitgroup_rightarm:
+			case hitgroup_neck:
+				is_armored = true;
+				break;
+			case hitgroup_head:
+				if (this->has_helmet())
+					is_armored = true;
+			case hitgroup_leftleg:
+			case hitgroup_rightleg:
+				if (this->has_heavy_armor())
+					is_armored = true;
+				break;
+			default: break;
+			}
+		}
+
+		return is_armored;
+	}
 
 	void set_sequence(const int flag)
 	{
@@ -49,8 +146,8 @@ public:
 			{
 				c_vec3 min, max;
 
-				c_math::vector_transform(hitbox->m_mins, get_bone_cache()[hitbox->m_bone], min);
-				c_math::vector_transform(hitbox->m_maxs, get_bone_cache()[hitbox->m_bone], max);
+				g_math->vector_transform(hitbox->m_mins, get_bone_cache()[hitbox->m_bone], min);
+				g_math->vector_transform(hitbox->m_maxs, get_bone_cache()[hitbox->m_bone], max);
 
 				return (min + max) / 2.0f;
 			}
@@ -159,56 +256,27 @@ public:
 		 * module: client.dll; sig: 55 8B EC 51 56 8B F1 85 F6 74 68
 		*/
 
-		if (this->get_health() < 0 && this->is_max_health() > 0)
-			return true;
+		/* @ida: https://prnt.sc/fpPs3Y6VwsYP */
+		static auto is_breakable = g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 51 56 8B F1 85 F6 74 68"));
 
-		if (this->get_take_damage() != 2)
-		{
-			if (this->get_client_class()->m_class_id != class_id_func_brush)
-				return false;
-		}
+		const auto take_damage = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(is_breakable) + 0x26);
+		const auto backup = *reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage);
 
-		if (this->get_collision_group() != collision_group_pushaway && this->get_collision_group() !=
-			collision_group_breakable_glass
-			&& this->get_collision_group() != collision_group_none)
-			return false;
+		const auto client_class = this->get_client_class();
+		const auto network_name = client_class->m_network_name;
 
-		if (this->get_health() > 200)
-			return false;
+		if (!strcmp(network_name, "CBreakableSurface"))
+			*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage) = 2;
+		else if (!strcmp(network_name, "CBaseDoor") || !strcmp(network_name, "CDynamicProp"))
+			*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage) = 0;
 
-		const auto physics_interface = dynamic_cast<i_multiplayer_physics*>(this);
+		const auto result = reinterpret_cast<bool(__thiscall*)(void*)>(is_breakable)(this);
+		*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage) = backup;
+		return result;
+	}
 
-		if (physics_interface != nullptr)
-		{
-			if (physics_interface->get_multiplayer_physics_mode() != 1)
-				return false;
-		}
-		else
-		{
-			const char* class_name = this->get_classname();
-			if (!strcmp(class_name, _("func_breakable")) || !strcmp(class_name, _("func_breakable_surf")))
-			{
-				if (!strcmp(class_name, _("func_breakable_surf")))
-				{
-					const auto surface = reinterpret_cast<c_breakable_surface*>(this);
-
-					if (surface->is_broken())
-						return false;
-				}
-			}
-			else if (physics_solid_mask_for_entity() & contents_playerclip)
-			{
-				return false;
-			}
-		}
-
-		const auto breakable_interface = dynamic_cast<i_breakable_with_prop_data*>(this);
-		if (breakable_interface)
-		{
-			if (breakable_interface->get_dmg_mod_bullet() <= 0.0f)
-				return false;
-		}
-
-		return true;
+	c_anim_state* get_anim_state()
+	{
+		return *static_cast<c_anim_state**>(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this) + 0x9960));
 	}
 };

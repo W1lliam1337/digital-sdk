@@ -33,7 +33,7 @@ float c_math::angle_diff(const float dest_angle, const float src_angle) {
 qangle_t c_math::calc_angle(const c_vec3& src, const c_vec3& dst) const
 {
 	qangle_t angle;
-	const c_vec3 delta((src.x - dst.x), (src.y - dst.y), (src.z - dst.z));
+	const c_vec3 delta(src.x - dst.x, src.y - dst.y, src.z - dst.z);
 	const double hyp = sqrt(delta.x * delta.x + delta.y * delta.y);
 
 	angle.x = atanf(static_cast<float>(delta.z / hyp)) * 57.295779513082f;
@@ -57,7 +57,7 @@ void c_math::vector_angles(const c_vec3& forward, qangle_t& view)
 
 	if (forward.x == 0.f && forward.y == 0.f)
 	{
-		pitch = (forward.z > 0.f) ? 270.f : 90.f;
+		pitch = forward.z > 0.f ? 270.f : 90.f;
 		yaw = 0.f;
 	}
 	else
@@ -123,14 +123,14 @@ void c_math::angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* righ
 	}
 
 	if (right) {
-		right->x = (-1 * sr * sp * cy + -1 * cr * -sy);
-		right->y = (-1 * sr * sp * sy + -1 * cr * cy);
+		right->x = -1 * sr * sp * cy + -1 * cr * -sy;
+		right->y = -1 * sr * sp * sy + -1 * cr * cy;
 		right->z = -1 * sr * cp;
 	}
 
 	if (up) {
-		up->x = (cr * sp * cy + -sr * -sy);
-		up->y = (cr * sp * sy + -sr * cy);
+		up->x = cr * sp * cy + -sr * -sy;
+		up->y = cr * sp * sy + -sr * cy;
 		up->z = cr * cp;
 	}
 }
@@ -177,19 +177,19 @@ bool c_math::screen_transform(const c_vec3& in, c_vec3& out)
 	return true;
 }
 
-int c_math::random_int(const int min, const int max) const noexcept
+int c_math::random_int(const int min, const int max) const
 {
 	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomInt")));
 	return reinterpret_cast<int(*)(int, int)>(dw_address)(min, max);
 }
 
-float c_math::random_float(const float min, const float max) const noexcept
+float c_math::random_float(const float min, const float max) const
 {
 	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomFloat")));
 	return reinterpret_cast<float(*)(float, float)>(dw_address)(min, max);
 }
 
-void c_math::random_seed(const int seed) const noexcept
+void c_math::random_seed(const int seed) const
 {
 	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomSeed")));
 	return reinterpret_cast<void(*)(int)>(dw_address)(seed);

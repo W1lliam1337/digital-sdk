@@ -47,7 +47,7 @@ class c_hooks
 	override_view_t m_og_override_view{};
 	modify_eye_position_t m_og_modify_eye_position{};
 	calculate_view_t m_og_calculate_view{};
-	registers_t m_registers{};
+	registers_t m_og_registers{};
 
 public:
 	static void init();

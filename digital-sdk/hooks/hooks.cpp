@@ -26,8 +26,8 @@ void c_hooks::init()
 	HOOK(override_view, hk_override_view, g_hooks->m_og_override_view);
 	HOOK(modify_eye_position, hk_modify_eye_position, g_hooks->m_og_modify_eye_position);
 	HOOK(calculate_view, hk_calculate_view, g_hooks->m_og_calculate_view);
-	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_registers);
-	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_registers);
+	HOOK(blood_callback, hk_blood_spray_callback, g_hooks->m_og_registers);
+	HOOK(inferno_client_think, hk_inferno_client_think, g_hooks->m_og_registers);
 
 	MH_EnableHook(nullptr);
 }
@@ -280,7 +280,7 @@ void __fastcall c_hooks::hk_inferno_client_think(void* ecx, void* edx) noexcept
 	if (g_cfg->m_misc.m_remove_molotov)
 		return;
 
-	return g_hooks->m_registers(ecx, edx);
+	return g_hooks->m_og_registers(ecx, edx);
 }
 
 /* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/fx_cs_blood.cpp#L376 */
