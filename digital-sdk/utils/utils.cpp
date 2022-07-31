@@ -2,7 +2,7 @@
 #include "../sdk/interfaces/interfaces.h"
 #include "../sdk/sdk.h"
 
-uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
+uint8_t* utils::sig(const HMODULE module, const std::string& byte_array)
 {
 	if (!module)
 		return nullptr;
@@ -40,16 +40,16 @@ uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
 	const auto pattern_bytes = pattern_to_byte(byte_array.c_str());
 	const auto scan_bytes = reinterpret_cast<std::uint8_t*>(module);
 
-	const auto s = pattern_bytes.size();
-	const auto d = pattern_bytes.data();
+	const auto pattern_size = pattern_bytes.size();
+	const auto pattern_data = pattern_bytes.data();
 
-	for (auto i = 0ul; i < size_of_image - s; ++i)
+	for (auto i = 0ul; i < size_of_image - pattern_size; ++i)
 	{
 		bool found = true;
 
-		for (auto j = 0ul; j < s; ++j)
+		for (auto j = 0ul; j < pattern_size; ++j)
 		{
-			if (scan_bytes[i + j] != d[j] && d[j] != -1)
+			if (scan_bytes[i + j] != pattern_data[j] && pattern_data[j] != -1)
 			{
 				found = false;
 				break;
@@ -62,7 +62,7 @@ uint8_t* c_utils::find_sig(const HMODULE module, const std::string& byte_array)
 	return nullptr;
 }
 
-bool c_utils::is_bind_active(const key_bind_t key_bind) const noexcept
+bool utils::is_bind_active(const key_bind_t key_bind) noexcept
 {
 	if (key_bind.m_key_selected <= 0)
 		return false;
@@ -79,12 +79,12 @@ bool c_utils::is_bind_active(const key_bind_t key_bind) const noexcept
 	return false;
 }
 
-void c_utils::init_key_sys(const UINT msg, const WPARAM wParam)
+void utils::init_key_sys(const UINT msg, const WPARAM wParam)
 {
 	bool is_handle_possible = true;
-	if (g_interfaces->m_engine->is_connected() && g_interfaces->m_engine->is_in_game())
+	if (interfaces::m_engine->is_connected() && interfaces::m_engine->is_in_game())
 	{
-		if (g_interfaces->m_engine->con_is_visible())
+		if (interfaces::m_engine->con_is_visible())
 		{
 			is_handle_possible = false;
 			if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP || msg ==
@@ -164,7 +164,7 @@ void c_utils::init_key_sys(const UINT msg, const WPARAM wParam)
 		}
 	}
 
-	if (!g_sdk->m_local())
+	if (!ctx::local())
 	{
 		for (int i = 0; i < 256; i++)
 		{

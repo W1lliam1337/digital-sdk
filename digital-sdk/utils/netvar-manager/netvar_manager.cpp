@@ -3,11 +3,11 @@
 
 std::vector<net_var_table_t> m_database;
 
-void c_net_vars::init()
+void net_vars::init()
 {
 	m_database.clear();
 
-	for (auto client_class = g_interfaces->m_client->get_all_classes();
+	for (auto client_class = interfaces::m_client->get_all_classes();
 	     client_class;
 	     client_class = client_class->m_next)
 	{
@@ -18,7 +18,7 @@ void c_net_vars::init()
 	}
 }
 
-net_var_table_t c_net_vars::load_table(const recv_table_t* recv_table)
+net_var_table_t net_vars::load_table(const recv_table_t* recv_table)
 {
 	auto table = net_var_table_t{};
 
@@ -48,7 +48,7 @@ net_var_table_t c_net_vars::load_table(const recv_table_t* recv_table)
 	return table;
 }
 
-uint32_t c_net_vars::get_offset(const std::string& table_name, const std::string& prop_name)
+uint32_t net_vars::get_offset(const std::string& table_name, const std::string& prop_name)
 {
 	auto result = 0u;
 	for (const auto& table : m_database)
@@ -63,7 +63,7 @@ uint32_t c_net_vars::get_offset(const std::string& table_name, const std::string
 	return 0;
 }
 
-uint32_t c_net_vars::get_offset(const net_var_table_t& table, const std::string& prop_name)
+uint32_t net_vars::get_offset(const net_var_table_t& table, const std::string& prop_name)
 {
 	for (const auto& prop : table.child_props)
 	{
@@ -88,7 +88,7 @@ uint32_t c_net_vars::get_offset(const net_var_table_t& table, const std::string&
 	return 0;
 }
 
-recv_prop_t* c_net_vars::get_net_var_prop(const std::string& table_name, const std::string& prop_name)
+recv_prop_t* net_vars::get_net_var_prop(const std::string& table_name, const std::string& prop_name)
 {
 	recv_prop_t* result = nullptr;
 	for (const auto& table : m_database)
@@ -101,7 +101,7 @@ recv_prop_t* c_net_vars::get_net_var_prop(const std::string& table_name, const s
 	return result;
 }
 
-recv_prop_t* c_net_vars::get_net_var_prop(const net_var_table_t& table, const std::string& prop_name)
+recv_prop_t* net_vars::get_net_var_prop(const net_var_table_t& table, const std::string& prop_name)
 {
 	for (const auto& prop : table.child_props)
 	{

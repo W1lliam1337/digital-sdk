@@ -1,49 +1,48 @@
 #pragma once
 #include "../utils.h"
-class c_config_manager
+namespace cfg
 {
-public:
-	struct legit_t
+	namespace legit
 	{
-		bool m_enabled{};
-		bool m_auto_fire{};
-		bool m_auto_scope{};
-		bool m_silent{};
+		inline bool m_enabled{};
+		inline bool m_auto_fire{};
+		inline bool m_auto_scope{};
+		inline bool m_silent{};
 
-		int m_fov{};
-		int m_smooth{ 1 };
-		int m_rcs_x{};
-		int m_rcs_y{};
-	}m_legit{};
+		inline int m_fov{};
+		inline int m_smooth{ 1 };
+		inline int m_rcs_x{};
+		inline int m_rcs_y{};
+	}
 
-	struct misc_t
+	namespace misc
 	{
-		bool m_bunny_hop{};
-		bool m_no_scope{};
-		bool m_infinity_duck{};
-		bool m_remove_molotov{};
+		inline bool m_bunny_hop{};
+		inline bool m_no_scope{};
+		inline bool m_infinity_duck{};
+		inline bool m_remove_molotov{};
 
-		int m_third_person_distance{};
-		key_bind_t m_third_person_bind = key_bind_t();
-	}m_misc{};
+		inline int m_third_person_distance{};
+		inline key_bind_t m_third_person_bind = key_bind_t();
+	}
 
-	struct anti_aim_t
+	namespace anti_aim
 	{
-		bool m_enabled{};
-		bool m_desync{};
-		bool m_fake_lags{};
+		inline bool m_enabled{};
+		inline bool m_desync{};
+		inline bool m_fake_lags{};
 
-		int m_desync_right_range{ 58 };
-		int m_desync_left_range{ 58 };
+		inline int m_desync_right_range{ 58 };
+		inline int m_desync_left_range{ 58 };
 
-		int m_fake_lags_factor{};
-		int m_pitch_mode{};
-		int m_desync_mode{};
+		inline int m_fake_lags_factor{};
+		inline int m_pitch_mode{};
+		inline int m_desync_mode{};
 
-		key_bind_t m_inverter = key_bind_t();
-	}m_anti_aim{};
+		inline key_bind_t m_inverter = key_bind_t();
+	}
 
-	struct esp_t
+	namespace esp
 	{
 		struct player_t
 		{
@@ -51,8 +50,6 @@ public:
 			bool m_box{};
 			bool m_health_bar{};
 			bool m_health_text{};
-		}m_player[4]{};
-	}m_esp{};
-};
-
-inline const auto g_cfg = std::make_unique<c_config_manager>();
+		}inline m_player[4]{};
+	}
+}

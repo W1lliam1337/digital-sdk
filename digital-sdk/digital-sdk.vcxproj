@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)\digital-sdk\dependencies\freetype\headers\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)\digital-sdk\dependencies\minhook\headers\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\digital-sdk\dependencies\freetype\lib\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\digital-sdk\dependencies\minhook\libs\;$(LibraryPath)</LibraryPath>
-    <TargetName>CSGOHack</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
     <OutDir>../dll/debug/</OutDir>
     <IntDir>../log/debug/</IntDir>
   </PropertyGroup>
@@ -155,9 +155,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\json\json.h" />
-    <ClInclude Include="features\anti-aim\anti_aim.h" />
-    <ClInclude Include="features\misc\events\events.h" />
-    <ClInclude Include="features\misc\log-system\logs.h" />
+    <ClInclude Include="cheat\features\anti-aim\anti_aim.h" />
+    <ClInclude Include="cheat\features\misc\events\events.h" />
+    <ClInclude Include="cheat\features\misc\log-system\logs.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
     <ClInclude Include="sdk\game\inferno.h" />
     <ClInclude Include="sdk\interfaces\classes\i_client_state.h" />
@@ -168,12 +168,10 @@
     <ClInclude Include="sdk\math\vec3.h" />
     <ClInclude Include="sdk\math\vec4.h" />
     <ClInclude Include="utils\config-manager\config_manager.h" />
-    <ClInclude Include="features\visuals\player-esp\chams.h" />
-    <ClInclude Include="features\misc\engine-prediction\engine_prediction.h" />
-    <ClInclude Include="features\ragebot\ragebot.h" />
-    <ClInclude Include="features\legitbot\legitbot.h" />
+    <ClInclude Include="cheat\features\misc\engine-prediction\engine_prediction.h" />
+    <ClInclude Include="cheat\features\legitbot\legitbot.h" />
     <ClInclude Include="sdk\game\classes.h" />
-    <ClInclude Include="features\autowall\autowall.h" />
+    <ClInclude Include="cheat\features\autowall\autowall.h" />
     <ClInclude Include="dependencies\freetype\freetype\config\ftconfig.h" />
     <ClInclude Include="dependencies\freetype\freetype\config\ftheader.h" />
     <ClInclude Include="dependencies\freetype\freetype\config\ftmodule.h" />
@@ -232,7 +230,7 @@
     <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
-    <ClInclude Include="features\features.h" />
+    <ClInclude Include="cheat\features\features.h" />
     <ClInclude Include="sdk\game\entity.h" />
     <ClInclude Include="sdk\interfaces\classes\i_app_sys.h" />
     <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h" />
@@ -250,11 +248,12 @@
     <ClInclude Include="sdk\interfaces\classes\i_prediction.h" />
     <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h" />
     <ClInclude Include="sdk\interfaces\classes\i_render_view.h" />
-    <ClInclude Include="menu\menu.h" />
-    <ClInclude Include="features\visuals\player-esp\player_esp.h" />
+    <ClInclude Include="cheat\menu\menu.h" />
+    <ClInclude Include="cheat\features\visuals\player-esp\player_esp.h" />
     <ClInclude Include="sdk\other\move_data.h" />
     <ClInclude Include="sdk\other\studio\studio.h" />
     <ClInclude Include="sdk\other\utl\utl.h" />
+    <ClInclude Include="utils\crypt\xor.h" />
     <ClInclude Include="utils\render\fonts\roboto_medium.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="sdk\game\enums.h" />
@@ -268,10 +267,10 @@
     <ClInclude Include="sdk\interfaces\classes\i_model_render.h" />
     <ClInclude Include="sdk\other\bfread\bfread.h" />
     <ClInclude Include="sdk\other\handle\base_handle.h" />
-    <ClInclude Include="hooks\hooks.h" />
+    <ClInclude Include="cheat\hooks\hooks.h" />
     <ClInclude Include="sdk\interfaces\classes\i_client_entity_list.h" />
     <ClInclude Include="sdk\interfaces\classes\i_globals.h" />
-    <ClInclude Include="features\misc\movement\movement.h" />
+    <ClInclude Include="cheat\features\misc\movement\movement.h" />
     <ClInclude Include="sdk\other\handle\i_handle_entity.h" />
     <ClInclude Include="sdk\other\recv.h" />
     <ClInclude Include="sdk\interfaces\classes\i_client.h" />
@@ -281,38 +280,45 @@
     <ClInclude Include="sdk\interfaces\classes\i_input.h" />
     <ClInclude Include="sdk\interfaces\interfaces.h" />
     <ClInclude Include="sdk\sdk.h" />
-    <ClInclude Include="utils\crypt\xor.h" />
+    <ClInclude Include="utils\xor.h" />
     <ClInclude Include="utils\utils.h" />
     <ClInclude Include="sdk\game\weapon.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="features\anti-aim\anti_aim.cpp" />
-    <ClCompile Include="features\misc\events\events.cpp" />
-    <ClCompile Include="features\misc\log-system\logs.cpp" />
+    <ClCompile Include="cheat\features\anti-aim\anti_aim.cpp" />
+    <ClCompile Include="cheat\features\misc\events\events.cpp" />
+    <ClCompile Include="cheat\features\misc\log-system\logs.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\anim_state.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\client.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\client_mode.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\base_player.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\direct_device.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\engine.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\panel.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\surface.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\wnd_proc.cpp" />
     <ClCompile Include="sdk\math\math.cpp" />
     <ClCompile Include="sdk\math\vec2.cpp" />
     <ClCompile Include="sdk\math\vec4.cpp" />
     <ClCompile Include="sdk\other\cmd.cpp" />
     <ClCompile Include="utils\config-manager\config_manager.cpp" />
-    <ClCompile Include="features\visuals\player-esp\chams.cpp" />
-    <ClCompile Include="features\misc\engine-prediction\engine_prediction.cpp" />
-    <ClCompile Include="features\autowall\autowall.cpp" />
+    <ClCompile Include="cheat\features\misc\engine-prediction\engine_prediction.cpp" />
+    <ClCompile Include="cheat\features\autowall\autowall.cpp" />
     <ClCompile Include="dependencies\imgui\imgui.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_freetype.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="features\ragebot\ragebot.cpp" />
-    <ClCompile Include="features\legitbot\legitbot.cpp" />
-    <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="features\visuals\player-esp\player_esp.cpp" />
+    <ClCompile Include="cheat\features\legitbot\legitbot.cpp" />
+    <ClCompile Include="cheat\menu\menu.cpp" />
+    <ClCompile Include="cheat\features\visuals\player-esp\player_esp.cpp" />
     <ClCompile Include="sdk\other\color\color.cpp" />
     <ClCompile Include="sdk\other\handle\base_handle.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
     <ClCompile Include="utils\netvar-manager\netvar_manager.cpp" />
-    <ClCompile Include="hooks\hooks.cpp" />
-    <ClCompile Include="features\misc\movement\movement.cpp" />
+    <ClCompile Include="cheat\hooks\hooks.cpp" />
+    <ClCompile Include="cheat\features\misc\movement\movement.cpp" />
     <ClCompile Include="utils\modules\modules.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="sdk\interfaces\interfaces.cpp" />
@@ -320,6 +326,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\freetype\lib\freetype.lib" />
+    <Library Include="dependencies\minhook\libs\MinHook.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

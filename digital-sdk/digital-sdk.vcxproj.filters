@@ -33,7 +33,7 @@
     <ClInclude Include="sdk\sdk.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\crypt\xor.h">
+    <ClInclude Include="utils\xor.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\modules\modules.h">
@@ -48,10 +48,10 @@
     <ClInclude Include="sdk\interfaces\classes\i_globals.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="hooks\hooks.h">
+    <ClInclude Include="cheat\hooks\hooks.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\misc\movement\movement.h">
+    <ClInclude Include="cheat\features\misc\movement\movement.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_client_entity_list.h">
@@ -87,7 +87,7 @@
     <ClInclude Include="sdk\game\enums.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\features.h">
+    <ClInclude Include="cheat\features\features.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\imgui\imconfig.h">
@@ -126,7 +126,7 @@
     <ClInclude Include="sdk\interfaces\classes\i_debug_overlay.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="menu\menu.h">
+    <ClInclude Include="cheat\menu\menu.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\render\render.h">
@@ -135,7 +135,7 @@
     <ClInclude Include="utils\render\fonts\roboto_medium.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\visuals\player-esp\player_esp.h">
+    <ClInclude Include="cheat\features\visuals\player-esp\player_esp.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_panel.h">
@@ -288,7 +288,7 @@
     <ClInclude Include="dependencies\freetype\freetype\tttags.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\autowall\autowall.h">
+    <ClInclude Include="cheat\features\autowall\autowall.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_engine_trace.h">
@@ -339,10 +339,7 @@
     <ClInclude Include="sdk\other\move_data.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\misc\engine-prediction\engine_prediction.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="features\ragebot\ragebot.h">
+    <ClInclude Include="cheat\features\misc\engine-prediction\engine_prediction.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_model_info.h">
@@ -351,10 +348,7 @@
     <ClInclude Include="sdk\game\entity.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\legitbot\legitbot.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="features\visuals\player-esp\chams.h">
+    <ClInclude Include="cheat\features\legitbot\legitbot.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="sdk\interfaces\classes\i_material.h">
@@ -366,13 +360,13 @@
     <ClInclude Include="utils\config-manager\config_manager.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\misc\log-system\logs.h">
+    <ClInclude Include="cheat\features\misc\log-system\logs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\misc\events\events.h">
+    <ClInclude Include="cheat\features\misc\events\events.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="features\anti-aim\anti_aim.h">
+    <ClInclude Include="cheat\features\anti-aim\anti_aim.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\json\json.h">
@@ -405,6 +399,9 @@
     <ClInclude Include="sdk\interfaces\classes\i_client_state.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="utils\crypt\xor.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -419,10 +416,10 @@
     <ClCompile Include="utils\modules\modules.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="hooks\hooks.cpp">
+    <ClCompile Include="cheat\hooks\hooks.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\misc\movement\movement.cpp">
+    <ClCompile Include="cheat\features\misc\movement\movement.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\netvar-manager\netvar_manager.cpp">
@@ -446,46 +443,40 @@
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="menu\menu.cpp">
+    <ClCompile Include="cheat\menu\menu.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\render\render.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\visuals\player-esp\player_esp.cpp">
+    <ClCompile Include="cheat\features\visuals\player-esp\player_esp.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="sdk\other\color\color.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\autowall\autowall.cpp">
+    <ClCompile Include="cheat\features\autowall\autowall.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\misc\engine-prediction\engine_prediction.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="features\ragebot\ragebot.cpp">
+    <ClCompile Include="cheat\features\misc\engine-prediction\engine_prediction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="sdk\other\handle\base_handle.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\legitbot\legitbot.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="features\visuals\player-esp\chams.cpp">
+    <ClCompile Include="cheat\features\legitbot\legitbot.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\config-manager\config_manager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\misc\log-system\logs.cpp">
+    <ClCompile Include="cheat\features\misc\log-system\logs.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\misc\events\events.cpp">
+    <ClCompile Include="cheat\features\misc\events\events.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="features\anti-aim\anti_aim.cpp">
+    <ClCompile Include="cheat\features\anti-aim\anti_aim.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="sdk\math\math.cpp">
@@ -500,8 +491,36 @@
     <ClCompile Include="sdk\other\cmd.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\client.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\surface.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\panel.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\engine.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\direct_device.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\wnd_proc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\base_player.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\anim_state.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\client_mode.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\freetype\lib\freetype.lib" />
+    <Library Include="dependencies\minhook\libs\MinHook.lib" />
   </ItemGroup>
 </Project>

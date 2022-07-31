@@ -1,12 +1,12 @@
 #include "math.h"
 
-void c_math::vector_transform(const c_vec3& in1, const matrix_t& in2, c_vec3& out) {
+void math::vector_transform(const c_vec3& in1, const matrix_t& in2, c_vec3& out) {
 	out[0] = in1.dot(in2[0]) + in2[0][3];
 	out[1] = in1.dot(in2[1]) + in2[1][3];
 	out[2] = in1.dot(in2[2]) + in2[2][3];
 }
 
-float c_math::normalize_yaw(float yaw)
+float math::normalize_yaw(float yaw)
 {
 	while (yaw > 180)
 		yaw -= 360.f;
@@ -17,7 +17,7 @@ float c_math::normalize_yaw(float yaw)
 	return yaw;
 }
 
-float c_math::angle_diff(const float dest_angle, const float src_angle) {
+float math::angle_diff(const float dest_angle, const float src_angle) {
 	float delta = fmodf(dest_angle - src_angle, 360.0f);
 	if (dest_angle > src_angle) {
 		if (delta >= 180)
@@ -30,8 +30,7 @@ float c_math::angle_diff(const float dest_angle, const float src_angle) {
 	return delta;
 }
 
-qangle_t c_math::calc_angle(const c_vec3& src, const c_vec3& dst) const
-{
+qangle_t math::calc_angle(const c_vec3& src, const c_vec3& dst) {
 	qangle_t angle;
 	const c_vec3 delta(src.x - dst.x, src.y - dst.y, src.z - dst.z);
 	const double hyp = sqrt(delta.x * delta.x + delta.y * delta.y);
@@ -51,7 +50,7 @@ c_vec3 cross_product(const c_vec3& a, const c_vec3& b)
 	return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
-void c_math::vector_angles(const c_vec3& forward, qangle_t& view)
+void math::vector_angles(const c_vec3& forward, qangle_t& view)
 {
 	float pitch, yaw;
 
@@ -79,7 +78,7 @@ void c_math::vector_angles(const c_vec3& forward, qangle_t& view)
 }
 
 
-void c_math::vector_angles(const c_vec3& forward, const c_vec3& up, qangle_t& angles)
+void math::vector_angles(const c_vec3& forward, const c_vec3& up, qangle_t& angles)
 {
 	c_vec3 left = cross_product(up, forward);
 	left.normalize_in_place();
@@ -102,13 +101,13 @@ void c_math::vector_angles(const c_vec3& forward, const c_vec3& up, qangle_t& an
 	}
 }
 
-void c_math::sin_cos(const float radians, float* sine, float* cosine) const
+void math::sin_cos(const float radians, float* sine, float* cosine)
 {
 	*sine = sin(radians);
 	*cosine = cos(radians);
 }
 
-void c_math::angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* right, c_vec3* up) const
+void math::angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* right, c_vec3* up)
 {
 	float sr, sp, sy, cr, cp, cy;
 
@@ -135,7 +134,7 @@ void c_math::angle_vectors(const qangle_t& angles, c_vec3* forward, c_vec3* righ
 	}
 }
 
-qangle_t c_math::angle_normalize(qangle_t &angle) const
+qangle_t math::angle_normalize(qangle_t &angle)
 {
 	while (angle.x > 89.f) {
 		angle.x -= 180.f;
@@ -155,9 +154,9 @@ qangle_t c_math::angle_normalize(qangle_t &angle) const
 	return angle;
 }
 
-bool c_math::screen_transform(const c_vec3& in, c_vec3& out)
+bool math::screen_transform(const c_vec3& in, c_vec3& out)
 {
-	static auto& w2s_matrix = g_interfaces->m_engine->world_to_screen_matrix();
+	static auto& w2s_matrix = interfaces::m_engine->world_to_screen_matrix();
 
 	out.x = w2s_matrix.m[0][0] * in.x + w2s_matrix.m[0][1] * in.y + w2s_matrix.m[0][2] * in.z + w2s_matrix.m[0][3];
 	out.y = w2s_matrix.m[1][0] * in.x + w2s_matrix.m[1][1] * in.y + w2s_matrix.m[1][2] * in.z + w2s_matrix.m[1][3];
@@ -177,20 +176,20 @@ bool c_math::screen_transform(const c_vec3& in, c_vec3& out)
 	return true;
 }
 
-int c_math::random_int(const int min, const int max) const
+int math::random_int(const int min, const int max)
 {
-	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomInt")));
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(modules::m_vstd_dll, _("RandomInt")));
 	return reinterpret_cast<int(*)(int, int)>(dw_address)(min, max);
 }
 
-float c_math::random_float(const float min, const float max) const
+float math::random_float(const float min, const float max)
 {
-	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomFloat")));
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(modules::m_vstd_dll, _("RandomFloat")));
 	return reinterpret_cast<float(*)(float, float)>(dw_address)(min, max);
 }
 
-void c_math::random_seed(const int seed) const
+void math::random_seed(const int seed)
 {
-	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(g_modules->m_vstd_dll, _("RandomSeed")));
+	static auto dw_address = reinterpret_cast<DWORD>(GetProcAddress(modules::m_vstd_dll, _("RandomSeed")));
 	return reinterpret_cast<void(*)(int)>(dw_address)(seed);
 }

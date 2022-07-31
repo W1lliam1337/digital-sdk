@@ -1,15 +1,13 @@
 ﻿#include "includes.h"
 #include "utils/netvar-manager/netvar_manager.h"
-#include "hooks/hooks.h"
-#include "features/misc/events/events.h"
+#include "cheat/hooks/hooks.h"
+#include "cheat/features/misc/events/events.h"
 
 DWORD WINAPI instance()
 {
-	/* waiting for serverbrowser.dll module */
 	while (!LoadLibraryA(_("serverbrowser.dll")))
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 
-	/* open console */
 	AllocConsole();
 	if (!freopen(_("CONOUT$"), _("w"), stdout))
 	{
@@ -17,29 +15,28 @@ DWORD WINAPI instance()
 		return EXIT_SUCCESS;
 	}
 
-	/* set title */
 	SetConsoleTitleA(_("csgo-sdk console\n"));
 
 	printf(_(
 		"Hello, World! Credits to sdk:\n @tg: https://t.me/kernel_mode2\n @ds: william_coder#8276\n @github: https://github.com/W1lliam1337\n"));
 
-	printf(_("init module list...\n"));
-	g_modules->init();
+	modules::init();
+	printf(_("module list initialization was successful\n"));
 
-	printf(_("init interfaces...\n"));
-	g_interfaces->init();
+	interfaces::init();
+	printf(_("interfaces initialization was successful\n"));
 
-	printf(_("init render...\n"));
-	g_render->init();
+	render::init();
+	printf(_("render initialization was successful\n"));
 
-	printf(_("init netvars...\n"));
-	g_net_vars->init();
+	net_vars::init();
+	printf(_("netvars initialization was successful\n"));
 
-	printf(_("init hooks...\n"));
-	g_hooks->init();
+	hooks::init();
+	printf(_("hooks initialization was successful\n"));
 
-	printf(_("init events...\n"));
 	g_events->init();
+	printf(_("events initialization was successful\n"));
 
 	FreeConsole();
 	return EXIT_SUCCESS;
@@ -53,7 +50,7 @@ BOOL APIENTRY DllMain(HMODULE hmodule,
 	if (reason_for_call != DLL_PROCESS_ATTACH)
 		return TRUE;
 
-	/* @ref: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-disablethreadlibrarycalls */
+	/* @xref: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-disablethreadlibrarycalls */
 	DisableThreadLibraryCalls(hmodule);
 
 	std::jthread([]() -> void { instance(); }).detach();

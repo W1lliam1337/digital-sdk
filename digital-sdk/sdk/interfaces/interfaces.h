@@ -30,36 +30,32 @@
 
 using create_interface_fn = void*(*)(const char*, int*);
 
-class c_interfaces
+namespace interfaces
 {
-protected:
-	void* get_interface(HMODULE module, const char* interface_name) const;
-public:
+	void* get_interface(HMODULE module, const char* interface_name);
 	void init();
 
-	i_global_vars_base* m_globals{};
-	i_engine* m_engine{};
-	i_client_entity_list* m_entity_list{};
-	i_base_client_dll* m_client{};
-	i_input* m_input{};
-	i_surface* m_surface{};
-	i_debug_overlay* m_debug_overlay{};
-	IDirect3DDevice9* m_direct_device{};
-	i_panel* m_panel{};
-	i_engine_trace* m_trace{};
-	i_cvar* m_cvar{};
-	i_physics_surface_props* m_physics_surface_props{};
-	i_move_helper* m_move_helper{};
-	i_game_movement* m_game_movement{};
-	i_prediction* m_prediction{};
-	i_mdl_cache* m_mdl_cache{};
-	i_model_info* m_model_info{};
-	i_material_system* m_material_system{};
-	i_studio_render* m_studio_render{};
-	i_model_render* m_model_render{};
-	i_render_view* m_render_view{};
-	i_game_event_manager* m_event_manager{};
-	i_client_state* m_client_state{};
-};
-
-inline const auto g_interfaces = std::make_unique<c_interfaces>();
+	inline i_global_vars_base* m_globals{};
+	inline i_engine* m_engine{};
+	inline i_client_entity_list* m_entity_list{};
+	inline i_base_client_dll* m_client{};
+	inline i_input* m_input{};
+	inline i_surface* m_surface{};
+	inline i_debug_overlay* m_debug_overlay{};
+	inline IDirect3DDevice9* m_direct_device{};
+	inline i_panel* m_panel{};
+	inline i_engine_trace* m_trace{};
+	inline i_cvar* m_cvar{};
+	inline i_physics_surface_props* m_physics_surface_props{};
+	inline i_move_helper* m_move_helper{};
+	inline i_game_movement* m_game_movement{};
+	inline i_prediction* m_prediction{};
+	inline i_mdl_cache* m_mdl_cache{};
+	inline i_model_info* m_model_info{};
+	inline i_material_system* m_material_system{};
+	inline i_studio_render* m_studio_render{};
+	inline i_model_render* m_model_render{};
+	inline i_render_view* m_render_view{};
+	inline i_game_event_manager* m_event_manager{};
+	inline i_client_state* m_client_state{};
+}

@@ -14,9 +14,8 @@ struct net_var_table_t {
 	std::vector<net_var_table_t> child_tables{};
 };
 
-class c_net_vars
+namespace net_vars
 {
-public:
 	void init();
 
 	uint32_t      get_offset(const std::string& table_name, const std::string& prop_name);
@@ -26,17 +25,17 @@ public:
 
 	uint32_t      get_offset(const net_var_table_t& table, const std::string& prop_name);
 	recv_prop_t* get_net_var_prop(const net_var_table_t& table, const std::string& prop_name);
-};
+}
 
 #define GET_NETVAR_OFFSET(type, name, table, netvar, offset)                           \
     type& name() const {                                          \
-        static int _##name = g_net_vars->get_offset(table, netvar) + offset;     \
+        static int _##name = net_vars::get_offset(table, netvar) + offset;     \
         return *(type*)((DWORD)this + _##name);                 \
     }
 
 #define GET_NETVAR(type, name, table, netvar)                           \
     type& name() const {                                          \
-        static int _##name = g_net_vars->get_offset(table, netvar);     \
+        static int _##name = net_vars::get_offset(table, netvar);     \
         return *(type*)((DWORD)this + _##name);                 \
     }
 
@@ -44,7 +43,5 @@ public:
 #define GET_OFFSET( type, name, offset ) \
 __forceinline type& name( ) \
 {\
-    return *(type*)((uintptr_t)(this) + offset); \
+    return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 }
-
-inline const auto g_net_vars = std::make_unique<c_net_vars>();

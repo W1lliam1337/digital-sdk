@@ -37,6 +37,7 @@ public:
 	GET_OFFSET(int, get_most_recent_model_bone_counter, 2690);
 	GET_OFFSET(bool, get_maintain_sequence_transition, 0x9F0);
 	GET_OFFSET(bool, get_jiggle_bones, 0x2930);
+	GET_OFFSET(uint32_t, get_effects, 0xF0);
 	GET_OFFSET(c_vec3, get_abs_velocity, 0x94);
 	GET_OFFSET(int, get_eflags, 0xE8);
 	GET_OFFSET(int, get_take_damage, 0x280);
@@ -45,6 +46,7 @@ public:
 	GET_OFFSET(bool, should_use_new_anim_state, 0x9B14);
 	GET_OFFSET(studiohdr_t*, get_model_ptr, 0x2950);
 	GET_OFFSET(anim_layer_t*, get_anim_layers, 0x2990);
+	GET_OFFSET(int, get_custom_blending_rule_mask, 0xA24);
 
 	GET_VFUNC(bool(__thiscall*)(void*), is_player(), 158);
 	GET_VFUNC(int(__thiscall*)(void*), is_max_health(), 122);
@@ -58,42 +60,36 @@ public:
 
 	void set_abs_angles(const c_vec3 angles)
 	{
-		if (!this)
-			return;
-
-		static const auto set_angles_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8")));
+		static const auto set_angles_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8")));
 		set_angles_fn(this, angles);
 	}
 
 	void set_abs_origin(const c_vec3 position)
 	{
-		if (!this)
-			return;
-
-		static const auto set_pos_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8")));
+		static const auto set_pos_fn = reinterpret_cast<void(__thiscall*)(void*, const c_vec3&)>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8")));
 		set_pos_fn(this, position);
 	}
 
 	int sequence_activity(const int sequence)
 	{
-		const auto hdr = g_interfaces->m_model_info->get_studio_model(this->get_model());
+		const auto hdr = interfaces::m_model_info->get_studio_model(this->get_model());
 
 		if (!hdr)
 			return 0;
 
-		static const auto sequence_activity_fn = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 53 8B 5D 08 56 8B F1 83")));
+		static const auto sequence_activity_fn = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(utils::sig(modules::m_client_dll, _("55 8B EC 53 8B 5D 08 56 8B F1 83")));
 		return sequence_activity_fn(this, hdr, sequence);
 	}
 
 	void setup_bones_attachment_helper()
 	{
-		static const auto sig_fn = reinterpret_cast<void(__thiscall*)(void*, void*)>(g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 83 EC 48 53 8B 5D 08 89 4D F4")));
+		static const auto sig_fn = reinterpret_cast<void(__thiscall*)(void*, void*)>(utils::sig(modules::m_client_dll, _("55 8B EC 83 EC 48 53 8B 5D 08 89 4D F4")));
 		return sig_fn(this, this->get_model_ptr());
 	}
 
 	void invalidate_bone_cache()
 	{
-		static const auto invalidate_bone_cache_fn = reinterpret_cast<std::uintptr_t>(c_utils::find_sig(g_modules->m_client_dll,
+		static const auto invalidate_bone_cache_fn = reinterpret_cast<std::uintptr_t>(utils::sig(modules::m_client_dll,
 			_("80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81")) + 10);
 
 		*reinterpret_cast<std::uint32_t*>(reinterpret_cast<std::uintptr_t>(this) + 0x2924) = 0xFF7FFFFF;
@@ -133,12 +129,12 @@ public:
 
 	void set_sequence(const int flag)
 	{
-		return g_utils->call_vfunc<void(__thiscall*)(void*, int)>(this, 219)(this, flag);
+		return utils::call_vfunc<void(__thiscall*)(void*, int)>(this, 219)(this, flag);
 	}
 
 	c_vec3 get_hitbox_pos(const int hitbox_id)
 	{
-		const auto studio_model = g_interfaces->m_model_info->get_studio_model(this->get_model());
+		const auto studio_model = interfaces::m_model_info->get_studio_model(this->get_model());
 		if (studio_model)
 		{
 			const auto hitbox = studio_model->get_hitbox_set(hitbox_head)->get_hitbox(hitbox_id);
@@ -146,8 +142,8 @@ public:
 			{
 				c_vec3 min, max;
 
-				g_math->vector_transform(hitbox->m_mins, get_bone_cache()[hitbox->m_bone], min);
-				g_math->vector_transform(hitbox->m_maxs, get_bone_cache()[hitbox->m_bone], max);
+				math::vector_transform(hitbox->m_mins, get_bone_cache()[hitbox->m_bone], min);
+				math::vector_transform(hitbox->m_maxs, get_bone_cache()[hitbox->m_bone], max);
 
 				return (min + max) / 2.0f;
 			}
@@ -158,50 +154,50 @@ public:
 
 	void invalidate_physics_recursive(const int flag)
 	{
-		/* @ref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/shared/baseentity_shared.cpp#L1632 */
-		static auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3")));
+		// @xref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/shared/baseentity_shared.cpp#L1632
+		static const auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(utils::sig(
+			modules::m_client_dll, _("55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3")));
 		return invalidate_physics_recursive_fn(this, flag);
 	}
 
 	void select_item(const char* string, const int sub_type)
 	{
-		static auto select_item_fn = reinterpret_cast<void(__thiscall*)(void*, const char*, int)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("55 8B EC 56 8B F1 ? ? ? 85 C9 74 71 8B 06")));
+		static const auto select_item_fn = reinterpret_cast<void(__thiscall*)(void*, const char*, int)>(utils::sig(
+			modules::m_client_dll, _("55 8B EC 56 8B F1 ? ? ? 85 C9 74 71 8B 06")));
 		return select_item_fn(this, string, sub_type);
 	}
 
 	bool using_standard_weapons_in_vehicle()
 	{
-		static auto sig_fn = reinterpret_cast<bool(__thiscall*)(void*)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41")));
+		static const auto sig_fn = reinterpret_cast<bool(__thiscall*)(void*)>(utils::sig(
+			modules::m_client_dll, _("56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41")));
 		return sig_fn(this);
 	}
 
 	bool post_think_v_physics()
 	{
-		static auto sig_fn = reinterpret_cast<bool(__thiscall*)(void*)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB")));
+		static const auto sig_fn = reinterpret_cast<bool(__thiscall*)(void*)>(utils::sig(
+			modules::m_client_dll, _("55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB")));
 		return sig_fn(this);
 	}
 
 	void physics_simulated_entites()
 	{
-		static auto sig_fn = reinterpret_cast<void(__thiscall*)(void*)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74")));
+		static const auto sig_fn = reinterpret_cast<void(__thiscall*)(void*)>(utils::sig(
+			modules::m_client_dll, _("56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74")));
 		return sig_fn(this);
 	}
 
 	bool physics_run_think(const int index)
 	{
-		static auto physics_run_think_fn = reinterpret_cast<bool(__thiscall*)(void*, int)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("55 8B EC 83 EC 10 53 56 57 8B F9 8B 87")));
+		static const auto physics_run_think_fn = reinterpret_cast<bool(__thiscall*)(void*, int)>(utils::sig(
+			modules::m_client_dll, _("55 8B EC 83 EC 10 53 56 57 8B F9 8B 87")));
 		return physics_run_think_fn(this, index);
 	}
 
 	void post_think()
 	{
-		g_interfaces->m_mdl_cache->begin_lock();
+		interfaces::m_mdl_cache->begin_lock();
 		{
 			if (this->is_alive())
 			{
@@ -219,17 +215,16 @@ public:
 
 			this->physics_simulated_entites();
 		}
-		g_interfaces->m_mdl_cache->end_lock();
+		interfaces::m_mdl_cache->end_lock();
 	}
 
 	c_vec3 get_shoot_pos()
 	{
-		/* @uc: https://www.unknowncheats.me/forum/counterstrike-global-offensive/338731-weapon_shootpos-rebuilt-server-code.html
-		 * https://www.unknowncheats.me/forum/counterstrike-global-offensive/277792-getting-eye-position-m_vecviewoffset.html
-		*/
+		// @xref: https://www.unknowncheats.me/forum/counterstrike-global-offensive/338731-weapon_shootpos-rebuilt-server-code.html
+		// @xref: https://www.unknowncheats.me/forum/counterstrike-global-offensive/277792-getting-eye-position-m_vecviewoffset.html
 
-		static auto eye_pos_fn = reinterpret_cast<float* (__thiscall*)(void*, c_vec3*)>(g_utils->find_sig(
-			g_modules->m_client_dll, _("55 8B EC 56 8B 75 08 57 8B F9 56 8B 07 FF 90 ? ? ? ?"))); // 8B 07 FF 90 ? ? ? ? 80 BF ? ? ? ? ? 74 10 
+		static const auto eye_pos_fn = reinterpret_cast<float* (__thiscall*)(void*, c_vec3*)>(utils::sig(
+			modules::m_client_dll, _("55 8B EC 56 8B 75 08 57 8B F9 56 8B 07 FF 90 ? ? ? ?"))); // 8B 07 FF 90 ? ? ? ? 80 BF ? ? ? ? ? 74 10 
 		c_vec3 eye_pos;
 		eye_pos_fn(this, &eye_pos);
 		return eye_pos;
@@ -251,13 +246,12 @@ public:
 
 	bool is_breakable()
 	{
-		/* @ida: https://imgur.com/D00fKg4
-		 * module: server.dll; sig: (+0x54) E8 ? ? ? ? 84 C0 75 A1
-		 * module: client.dll; sig: 55 8B EC 51 56 8B F1 85 F6 74 68
-		*/
+		// @ida: https://imgur.com/D00fKg4
+		// module: server.dll; sig: (+0x54) E8 ? ? ? ? 84 C0 75 A1
+		// module: client.dll; sig: 55 8B EC 51 56 8B F1 85 F6 74 68
 
-		/* @ida: https://prnt.sc/fpPs3Y6VwsYP */
-		static auto is_breakable = g_utils->find_sig(g_modules->m_client_dll, _("55 8B EC 51 56 8B F1 85 F6 74 68"));
+		// @ida: https://prnt.sc/fpPs3Y6VwsYP
+		static const auto is_breakable = utils::sig(modules::m_client_dll, _("55 8B EC 51 56 8B F1 85 F6 74 68"));
 
 		const auto take_damage = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(is_breakable) + 0x26);
 		const auto backup = *reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage);

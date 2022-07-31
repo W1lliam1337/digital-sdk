@@ -10,7 +10,7 @@ class c_base_entity;
 
 #define GET_VFUNC( type, function_name, index, ...) \
 auto function_name { \
-return g_utils->call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
+return utils::call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
 };
 
 class c_base_attributable_item : public c_base_entity
@@ -59,29 +59,19 @@ public:
 	GET_VFUNC(float(__thiscall*)(void*), get_inaccuracy(), 483);
 	GET_VFUNC(c_weapon_info*(__thiscall*)(void*), get_weapon_data(), 461);
 
-	std::string get_name()
-	{
-		return { this->get_weapon_data()->m_weapon_name };
-	}
-
-	int get_weapon_type()
-	{
-		return this->get_weapon_data()->m_weapon_type;
-	}
-
 	bool is_smg()
 	{
-		return this->get_weapon_type() == weapon_type_submachinegun;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_submachinegun;
 	}
 
 	bool is_grenade()
 	{
-		return this->get_weapon_type() == weapon_type_grenade;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_grenade;
 	}
 
 	bool is_gun()
 	{
-		switch (this->get_weapon_type())
+		switch (this->get_weapon_data()->m_weapon_type)
 		{
 		case weapon_type_grenade:
 			return false;
@@ -96,21 +86,21 @@ public:
 
 	bool is_knife()
 	{
-		return this->get_weapon_type() == weapon_type_knife;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_knife;
 	}
 
 	bool is_rifle()
 	{
-		return this->get_weapon_type() == weapon_type_rifle;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_rifle;
 	}
 
 	bool is_sniper()
 	{
-		return this->get_weapon_type() == weapon_type_sniper_rifle;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_sniper_rifle;
 	}
 
 	bool is_bomb()
 	{
-		return this->get_weapon_type() == weapon_type_c4;
+		return this->get_weapon_data()->m_weapon_type == weapon_type_c4;
 	}
 };

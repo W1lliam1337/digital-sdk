@@ -1,8 +1,27 @@
 #pragma once
 
-#define MULTIPLAYER_BACKUP 150
+enum e_effects
+{
+	ef_bone_merge = 0x001,
+	ef_bright_light = 0x002,
+	ef_dimlight = 0x004,
+	ef_no_interp = 0x008,
+	ef_no_shadow = 0x010,
+	ef_no_draw = 0x020,
+	ef_no_receive_shadow = 0x040,
+	ef_bone_merge_fastcull = 0x080,
+	ef_item_blink = 0x100,
+	ef_parent_animates = 0x200,
+	ef_marked_for_fast_reflection = 0x400,
+	ef_no_shadow_depth = 0x800,
+	ef_shadow_depth_no_cache = 0x1000,
+	ef_no_flash_light = 0x2000,
+	ef_no_csm = 0x4000,
+	ef_max_bits = 15
+};
 
-enum e_buttons : int {
+enum e_buttons
+{
 	in_attack = 1 << 0,
 	in_jump = 1 << 1,
 	in_duck = 1 << 2,
@@ -260,7 +279,8 @@ enum e_idx : short
 	glove_hydra,
 };
 
-enum e_weapon_type {
+enum e_weapon_type 
+{
 	weapon_type_knife = 0,
 	weapon_type_pistol,
 	weapon_type_submachinegun,
@@ -276,7 +296,8 @@ enum e_weapon_type {
 
 enum { max_inferno_fires = 100 };
 
-enum e_class_id {
+enum e_class_id 
+{
 	class_id_ai_base_npc = 0,
 	class_id_c_ak47,
 	class_id_base_animating,

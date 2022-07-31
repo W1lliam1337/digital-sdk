@@ -4,31 +4,30 @@
 #include "game/inferno.h"
 #include "interfaces/interfaces.h"
 
-class c_sdk
+namespace ctx
 {
-public:
-	struct packet_data_t
+	namespace packet_data
 	{
-		c_user_cmd* m_cmd{};
-		bool m_send_packet{};
-	}m_packet_data{};
+		inline c_user_cmd* m_cmd{};
+		inline bool m_send_packet{};
+	}
 
-	struct menu_data_t
+	namespace menu_data
 	{
-		bool m_is_menu_opened{};
-	}m_menu_data{};
+		inline bool m_is_menu_opened{};
+	}
 
-	struct local_data_t
+	namespace local_data
 	{
-		c_vec3 m_shoot_pos{};
-	}m_local_data{};
+		inline c_vec3 m_shoot_pos{};
+	}
 
-	static __forceinline c_base_player* m_local()
+	static __forceinline c_base_player* local()
 	{
-		if (!g_interfaces->m_entity_list || !g_interfaces->m_engine)
+		if (!interfaces::m_entity_list || !interfaces::m_engine)
 			return nullptr;
 
-		const auto local_player = reinterpret_cast<c_base_player*>(g_interfaces->m_entity_list->get_client_entity(g_interfaces->m_engine->get_local_player()));
+		const auto local_player = reinterpret_cast<c_base_player*>(interfaces::m_entity_list->get_client_entity(interfaces::m_engine->get_local_player()));
 		if (!local_player)
 			return nullptr;
 
@@ -37,13 +36,11 @@ public:
 
 	static int time_to_ticks(const float time)
 	{
-		return static_cast<int>(0.5f + time / g_interfaces->m_globals->m_interval_per_tick);
+		return static_cast<int>(0.5f + time / interfaces::m_globals->m_interval_per_tick);
 	}
 
 	static float ticks_to_time(const int tick)
 	{
-		return static_cast<float>(tick) * g_interfaces->m_globals->m_interval_per_tick;
+		return static_cast<float>(tick) * interfaces::m_globals->m_interval_per_tick;
 	}
-};
-
-inline const auto g_sdk = std::make_unique<c_sdk>();
+}

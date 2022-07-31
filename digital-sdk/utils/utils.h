@@ -13,24 +13,21 @@ struct key_bind_t
 	int m_key_selected = 0;
 };
 
-class c_utils
+namespace utils
 {
-public:
 	struct m_key_data_t
 	{
 		std::array<bool, 256> m_holded_keys{};
 		std::array<bool, 256> m_toggled_keys{};
-	}m_key_data;
+	}inline m_key_data{};
 
-	static uint8_t* find_sig(HMODULE module, const std::string& byte_array);
+	uint8_t* sig(HMODULE module, const std::string& byte_array);
 	template <typename T>
 	static __forceinline T call_vfunc(void* instance, std::size_t index)
 	{
 		return (*static_cast<T**>(instance))[index];
 	}
 
-	[[nodiscard]] bool is_bind_active(key_bind_t key_bind) const noexcept;
+	[[nodiscard]] bool is_bind_active(key_bind_t key_bind) noexcept;
 	void init_key_sys(UINT msg, WPARAM wParam);
-};
-
-inline const auto g_utils = std::make_unique<c_utils>();
+}

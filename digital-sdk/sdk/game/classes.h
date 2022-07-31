@@ -327,7 +327,7 @@ public:
 	{
 		m_writable_bones = flags;
 	}
-
+private:
 	alignas(16) matrix_t* m_bone_array;
 	int m_readable_bones;
 	int m_writable_bones;

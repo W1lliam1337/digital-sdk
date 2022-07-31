@@ -41,30 +41,30 @@ public:
 	void update(const int server_tick, const bool is_valid, const int acknowledged, const int outgoing_cmd)
 	{
 		using update_fn = void(__thiscall*)(void*, int, bool, int, int);
-		return g_utils->call_vfunc<update_fn>(this, 3)(this, server_tick, is_valid, acknowledged, outgoing_cmd);
+		return utils::call_vfunc<update_fn>(this, 3)(this, server_tick, is_valid, acknowledged, outgoing_cmd);
 	}
 
 	void setup_move(c_base_entity* player, c_user_cmd* cmd, i_move_helper* move_helper, void* move_data)
 	{
 		using setup_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, i_move_helper*, void*);
-		return g_utils->call_vfunc<setup_move_fn>(this, 20)(this, player, cmd, move_helper, move_data);
+		return utils::call_vfunc<setup_move_fn>(this, 20)(this, player, cmd, move_helper, move_data);
 	}
 
 	void finish_move(c_base_entity* player, c_user_cmd* cmd, void* move_data)
 	{
 		using finish_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, void*);
-		return g_utils->call_vfunc<finish_move_fn>(this, 21)(this, player, cmd, move_data);
+		return utils::call_vfunc<finish_move_fn>(this, 21)(this, player, cmd, move_data);
 	}
 
 	void set_local_view_angles(qangle_t& angles)
 	{
 		using set_local_view_angles_fn = void(__thiscall*)(void*, qangle_t&);
-		return g_utils->call_vfunc<set_local_view_angles_fn>(this, 13)(this, angles);
+		return utils::call_vfunc<set_local_view_angles_fn>(this, 13)(this, angles);
 	}
 
 	void check_moving_ground(c_base_entity* player, const double frame_time)
 	{
 		using check_moving_ground_fn = void(__thiscall*)(void*, c_base_entity*, double);
-		return g_utils->call_vfunc<check_moving_ground_fn>(this, 18)(this, player, frame_time);
+		return utils::call_vfunc<check_moving_ground_fn>(this, 18)(this, player, frame_time);
 	}
 };
