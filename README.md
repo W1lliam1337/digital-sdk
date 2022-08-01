@@ -4,6 +4,7 @@
 - legit-bot (auto fire, silent aim, smooth, fov)
 - anti-aimbot (yaw and pitch modifiers)
 - player esp (box, name, health bar and text)
+- chams
 - bunnyhop
 - log system
 - engine-prediction
