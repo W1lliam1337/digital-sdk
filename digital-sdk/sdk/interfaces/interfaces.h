@@ -23,6 +23,7 @@
 #include "classes/i_render_view.h"
 #include "classes/i_event_manager.h"
 #include "classes/i_client_state.h"
+#include "classes/i_mem_alloc.h"
 #include "../../includes.h"
 
 #include <d3d9.h>
@@ -58,4 +59,5 @@ namespace interfaces
 	inline i_render_view* m_render_view{};
 	inline i_game_event_manager* m_event_manager{};
 	inline i_client_state* m_client_state{};
+	inline i_mem_alloc* m_mem_alloc{};
 }

@@ -3,7 +3,7 @@
 
 void legit_bot::init()
 {
-	if (!cfg::legit::m_enabled)
+	if (!g_cfg.m_legit.m_enabled)
 		return;
 
 	if (!ctx::local() || !ctx::local()->is_alive())
@@ -18,7 +18,7 @@ void legit_bot::init()
 
 void legit_bot::aimbot(c_weapon* active_weapon)
 {
-	auto best_fov = cfg::legit::m_fov;
+	auto best_fov = g_cfg.m_legit.m_fov;
 	auto best_angle = qangle_t{ 0, 0, 0 };
 
 	const auto shoot_pos = ctx::local()->get_shoot_pos();
@@ -59,7 +59,7 @@ void legit_bot::aimbot(c_weapon* active_weapon)
 			if (!trace.is_visible())
 				continue;
 
-			if (cfg::legit::m_auto_fire)
+			if (g_cfg.m_legit.m_auto_fire)
 				ctx::packet_data::m_cmd->m_buttons |= in_attack;
 
 			const auto enemy_angle_x = (hitbox_pos - shoot_pos).to_angle().x - ctx::packet_data::m_cmd->m_view_angles.x + ctx::local()->get_aim_punch_angle().x;
@@ -75,9 +75,9 @@ void legit_bot::aimbot(c_weapon* active_weapon)
 		}
 	}
 
-	const auto smooth = cfg::legit::m_silent ? 1 : cfg::legit::m_smooth;
+	const auto smooth = g_cfg.m_legit.m_silent ? 1 : g_cfg.m_legit.m_smooth;
 	ctx::packet_data::m_cmd->m_view_angles += best_angle / static_cast<float>(smooth);
 
-	if (!cfg::legit::m_silent)
+	if (!g_cfg.m_legit.m_silent)
 		interfaces::m_engine->set_view_angles(ctx::packet_data::m_cmd->m_view_angles);
 }

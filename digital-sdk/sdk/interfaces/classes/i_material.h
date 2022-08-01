@@ -4,6 +4,7 @@
 #include "../../math/vec4.h"
 #include "../../math/vec2.h"
 #include "../../game/enums.h"
+#include "../../other/key-values/key_values.h"
 
 #define DECLARE_POINTER_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
 #define MAXSTUDIOSKINS		32
@@ -287,7 +288,6 @@ public:
 
 typedef int vertex_format_t;
 typedef int material_property_types_t;
-class c_key_values;
 
 class i_material {
 public:
@@ -410,33 +410,33 @@ public:
 class i_material_system
 {
 public:
-	i_material* create_material(const char* name, void* key_values) {
-		using o_fn = i_material * (__thiscall*)(void*, const char*, void*);
-		return utils::call_vfunc< o_fn >(this, 83)(this, name, key_values);
+	i_material* create_material(const char* name, void* key_values)
+	{
+		return utils::call_vfunc<i_material*(__thiscall*)(void*, const char*, void*)>(this, 83)(this, name, key_values);
 	}
 
-	i_material* find_material(const char* name, const char* group = nullptr) {
-		using o_fn = i_material * (__thiscall*)(void*, const char*, const char*);
-		return utils::call_vfunc< o_fn >(this, 84)(this, name, group);
+	i_material* find_material(const char* name, const char* group = nullptr) 
+	{
+		return utils::call_vfunc<i_material*(__thiscall*)(void*, const char*, const char*)>(this, 84)(this, name, group);
 	}
 
-	materialhandle_t first_material() {
-		using o_fn = materialhandle_t(__thiscall*)(i_material_system*);
-		return utils::call_vfunc< o_fn >(this, 86)(this);
+	materialhandle_t first_material() 
+	{
+		return utils::call_vfunc<materialhandle_t(__thiscall*)(i_material_system*)>(this, 86)(this);
 	}
 
-	materialhandle_t next_material(materialhandle_t handle) {
-		using o_fn = materialhandle_t(__thiscall*)(i_material_system*, materialhandle_t);
-		return utils::call_vfunc< o_fn >(this, 87)(this, handle);
+	materialhandle_t next_material(materialhandle_t handle) 
+	{
+		return utils::call_vfunc<materialhandle_t(__thiscall*)(i_material_system*, materialhandle_t)>(this, 87)(this, handle);
 	}
 
-	materialhandle_t invalid_material_handle() {
-		using o_fn = materialhandle_t(__thiscall*)(i_material_system*);
-		return utils::call_vfunc< o_fn >(this, 88)(this);
+	materialhandle_t invalid_material_handle() 
+	{
+		return utils::call_vfunc<materialhandle_t(__thiscall*)(i_material_system*)>(this, 88)(this);
 	}
 
-	i_material* get_material(materialhandle_t handle) {
-		using o_fn = i_material * (__thiscall*)(i_material_system*, materialhandle_t);
-		return utils::call_vfunc< o_fn >(this, 89)(this, handle);
+	i_material* get_material(materialhandle_t handle) 
+	{
+		return utils::call_vfunc<i_material*(__thiscall*)(i_material_system*, materialhandle_t)>(this, 89)(this, handle);
 	}
 };

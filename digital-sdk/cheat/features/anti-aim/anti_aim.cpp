@@ -11,7 +11,7 @@ void anti_aim::init()
 
 bool anti_aim::cant_work()
 {
-	if (!cfg::anti_aim::m_enabled)
+	if (!g_cfg.m_anti_aim.m_enabled)
 		return true;
 
 	if (!ctx::packet_data::m_cmd)
@@ -52,7 +52,7 @@ void anti_aim::pitch()
 {
 	float modifier_value{};
 
-	switch (cfg::anti_aim::m_pitch_mode)
+	switch (g_cfg.m_anti_aim.m_pitch_mode)
 	{
 	case e_pitch_mode::down:
 	{ modifier_value = 89.0f; } break;
@@ -67,20 +67,20 @@ void anti_aim::pitch()
 void anti_aim::yaw()
 {
 	if (ctx::packet_data::m_send_packet)
-		m_desync_side = utils::is_bind_active(cfg::anti_aim::m_inverter) ? e_desync_side::left : e_desync_side::right;
+		m_desync_side = utils::is_bind_active(g_cfg.m_anti_aim.m_inverter) ? e_desync_side::left : e_desync_side::right;
 
 	ctx::packet_data::m_cmd->m_view_angles.y = math::normalize_yaw(ctx::packet_data::m_cmd->m_view_angles.y + 180.0f);
 
 	if (!ctx::packet_data::m_send_packet)
 	{
 		float desync_amount = 0.f;
-		switch (cfg::anti_aim::m_desync_mode)
+		switch (g_cfg.m_anti_aim.m_desync_mode)
 		{
 		case e_desync_mode::custom:
 		{
 			desync_amount = static_cast<float>((m_desync_side > 0
-				? cfg::anti_aim::m_desync_right_range
-				: cfg::anti_aim::m_desync_left_range));
+				? g_cfg.m_anti_aim.m_desync_right_range
+				: g_cfg.m_anti_aim.m_desync_left_range));
 		}
 		default: break;
 		}

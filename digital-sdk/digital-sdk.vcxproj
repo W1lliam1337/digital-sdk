@@ -73,7 +73,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)\digital-sdk\dependencies\freetype\headers\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)\digital-sdk\dependencies\minhook\headers\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\digital-sdk\dependencies\freetype\lib\;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\digital-sdk\dependencies\minhook\libs\;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)</TargetName>
     <OutDir>../dll/debug/</OutDir>
     <IntDir>../log/debug/</IntDir>
   </PropertyGroup>
@@ -154,13 +153,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cheat\features\visuals\player-esp\chams.h" />
     <ClInclude Include="dependencies\json\json.h" />
     <ClInclude Include="cheat\features\anti-aim\anti_aim.h" />
     <ClInclude Include="cheat\features\misc\events\events.h" />
     <ClInclude Include="cheat\features\misc\log-system\logs.h" />
+    <ClInclude Include="sdk\other\key-values\key_values.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
     <ClInclude Include="sdk\game\inferno.h" />
     <ClInclude Include="sdk\interfaces\classes\i_client_state.h" />
+    <ClInclude Include="sdk\interfaces\classes\i_mem_alloc.h" />
     <ClInclude Include="sdk\math\math.h" />
     <ClInclude Include="sdk\math\matrix.h" />
     <ClInclude Include="sdk\math\qangle.h" />
@@ -285,6 +287,7 @@
     <ClInclude Include="sdk\game\weapon.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cheat\features\visuals\player-esp\chams.cpp" />
     <ClCompile Include="cheat\features\anti-aim\anti_aim.cpp" />
     <ClCompile Include="cheat\features\misc\events\events.cpp" />
     <ClCompile Include="cheat\features\misc\log-system\logs.cpp" />
@@ -294,9 +297,11 @@
     <ClCompile Include="cheat\hooks\hooked\base_player.cpp" />
     <ClCompile Include="cheat\hooks\hooked\direct_device.cpp" />
     <ClCompile Include="cheat\hooks\hooked\engine.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\model_render.cpp" />
     <ClCompile Include="cheat\hooks\hooked\panel.cpp" />
     <ClCompile Include="cheat\hooks\hooked\surface.cpp" />
     <ClCompile Include="cheat\hooks\hooked\wnd_proc.cpp" />
+    <ClCompile Include="sdk\other\key-values\key_values.cpp" />
     <ClCompile Include="sdk\math\math.cpp" />
     <ClCompile Include="sdk\math\vec2.cpp" />
     <ClCompile Include="sdk\math\vec4.cpp" />

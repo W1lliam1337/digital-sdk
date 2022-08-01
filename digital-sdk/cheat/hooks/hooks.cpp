@@ -14,6 +14,7 @@ void hooks::init()
 	static const auto lock_cursor = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(interfaces::m_surface))[67]);
 	static const auto is_paused = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(interfaces::m_engine))[90]);
 	static const auto is_hltv = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(interfaces::m_engine))[93]);
+	static const auto dme = reinterpret_cast<void*>((*reinterpret_cast<uintptr_t**>(interfaces::m_model_render))[21]);
 	static const auto override_view = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F8 8B 4D 04 83 EC 58")));
 	static const auto modify_eye_position = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60")));
 	static const auto calculate_view = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 EC 14 53 56 57 FF 75 18")));
@@ -43,6 +44,7 @@ void hooks::init()
 	HOOK(standard_blending_rules, hk_standard_blending_rules, og::m_standard_blending_rules);
 	HOOK(is_paused, hk_is_paused, og::m_is_paused);
 	HOOK(is_hltv, hk_is_hltv, og::m_is_hltv);
+	HOOK(dme, hk_draw_model_execute, og::m_draw_model_execute);
 
 	printf("targets size: %u\n", hooks::m_targets.size());
 }

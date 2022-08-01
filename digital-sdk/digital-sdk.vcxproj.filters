@@ -402,6 +402,15 @@
     <ClInclude Include="utils\crypt\xor.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="cheat\features\visuals\player-esp\chams.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\interfaces\classes\i_mem_alloc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\other\key-values\key_values.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -516,6 +525,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="cheat\hooks\hooked\client_mode.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\model_render.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\features\visuals\player-esp\chams.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\other\key-values\key_values.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

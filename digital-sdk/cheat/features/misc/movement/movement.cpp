@@ -2,7 +2,7 @@
 
 void movement::bunny_hop()
 {
-	if (!cfg::misc::m_bunny_hop)
+	if (!g_cfg.m_misc.m_bunny_hop)
 		return;
 
 	if (!ctx::local() || !ctx::packet_data::m_cmd)

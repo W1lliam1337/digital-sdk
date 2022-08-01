@@ -47,6 +47,7 @@ public:
 	GET_OFFSET(studiohdr_t*, get_model_ptr, 0x2950);
 	GET_OFFSET(anim_layer_t*, get_anim_layers, 0x2990);
 	GET_OFFSET(int, get_custom_blending_rule_mask, 0xA24);
+	GET_OFFSET(float, get_spawn_time, 0x103C0);
 
 	GET_VFUNC(bool(__thiscall*)(void*), is_player(), 158);
 	GET_VFUNC(int(__thiscall*)(void*), is_max_health(), 122);

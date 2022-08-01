@@ -8,7 +8,7 @@ void __fastcall hooks::hk_paint_traverse(void* ecx, void* edx, const vgui::vpane
 		if (!strcmp(_("HudZoom"), interfaces::m_panel->get_name(panel)))
 			hud_zoom_panel = panel;
 
-	if (hud_zoom_panel == panel && cfg::misc::m_no_scope)
+	if (hud_zoom_panel == panel && g_cfg.m_misc.m_no_scope)
 		return;
 
 	hooks::og::m_paint_traverse(ecx, edx, panel, force_repaint, allow_force);

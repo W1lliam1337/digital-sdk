@@ -117,12 +117,12 @@ void menu::legit_tab()
 	ImGui::Text("Legit settings");
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Enable legitbot"), &cfg::legit::m_enabled);
-	ImGui::Checkbox(_("Auto fire"), &cfg::legit::m_auto_fire);
-	ImGui::Checkbox(_("Silent aim"), &cfg::legit::m_silent);
+	ImGui::Checkbox(_("Enable legitbot"), &g_cfg.m_legit.m_enabled);
+	ImGui::Checkbox(_("Auto fire"), &g_cfg.m_legit.m_auto_fire);
+	ImGui::Checkbox(_("Silent aim"), &g_cfg.m_legit.m_silent);
 
-	ImGui::SliderInt(_("Smooth"), &cfg::legit::m_smooth, 1, 100);
-	ImGui::SliderInt(_("FOV"), &cfg::legit::m_fov, 1, 180);
+	ImGui::SliderInt(_("Smooth"), &g_cfg.m_legit.m_smooth, 1, 100);
+	ImGui::SliderInt(_("FOV"), &g_cfg.m_legit.m_fov, 1, 180);
 }
 
 void menu::antiaim_tab()
@@ -140,11 +140,12 @@ void menu::player_esp_tab()
 	ImGui::Text("Player esp settings");
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Name"), &cfg::esp::m_player[1].m_name);
-	ImGui::Checkbox(_("Box"), &cfg::esp::m_player[1].m_box);
-	ImGui::Checkbox(_("Health bar"), &cfg::esp::m_player[1].m_health_bar);
-	ImGui::Checkbox(_("Health text"), &cfg::esp::m_player[1].m_health_text);
-
+	ImGui::Checkbox(_("Name"), &g_cfg.m_esp.m_player[1].m_name);
+	ImGui::Checkbox(_("Box"), &g_cfg.m_esp.m_player[1].m_box);
+	ImGui::Checkbox(_("Health bar"), &g_cfg.m_esp.m_player[1].m_health_bar);
+	ImGui::Checkbox(_("Health text"), &g_cfg.m_esp.m_player[1].m_health_text);
+	ImGui::Checkbox(_("Chams"), &g_cfg.m_esp.m_player[1].m_chams);
+	ImGui::Checkbox(_("Invisible chams"), &g_cfg.m_esp.m_player[1].m_invisible_chams);
 }
 
 void menu::misc_tab()
@@ -152,11 +153,11 @@ void menu::misc_tab()
 	ImGui::Text(_("Misc"));
 	ImGui::Separator();
 
-	ImGui::Checkbox(_("Bunny hop"), &cfg::misc::m_bunny_hop);
-	ImGui::Checkbox(_("Remove scope"), &cfg::misc::m_no_scope);
-	ImGui::Checkbox(_("Remove molotov"), &cfg::misc::m_remove_molotov);
-	ImGui::SliderInt(_("Third person distance"), &cfg::misc::m_third_person_distance, 0, 250);
-	ImGui::Keybind(_("Third person bind"), &cfg::misc::m_third_person_bind.m_key_selected, &cfg::misc::m_third_person_bind.m_mode_selected);
+	ImGui::Checkbox(_("Bunny hop"), &g_cfg.m_misc.m_bunny_hop);
+	ImGui::Checkbox(_("Remove scope"), &g_cfg.m_misc.m_no_scope);
+	ImGui::Checkbox(_("Remove molotov"), &g_cfg.m_misc.m_remove_molotov);
+	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
+	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
 
 	ImGui::Text(_("Configs"));
 	ImGui::Separator();

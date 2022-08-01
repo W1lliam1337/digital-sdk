@@ -62,6 +62,8 @@ void interfaces::init()
 	m_panel = static_cast<i_panel*>(get_interface(
 		modules::m_vgui2_dll, _("VGUI_Panel009")));
 
+	m_mem_alloc = *reinterpret_cast<i_mem_alloc**>(GetProcAddress(modules::m_tier_dll, _("g_pMemAlloc")));
+
 	m_client_state = **reinterpret_cast<i_client_state***>(utils::sig(
 		modules::m_engine_dll, _("A1 ? ? ? ? 8B 80 ? ? ? ? C3")) 
 		+ 0x1);

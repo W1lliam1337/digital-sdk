@@ -5,3 +5,4 @@
 #include "legitbot/legitbot.h"
 #include "misc/log-system/logs.h"
 #include "anti-aim/anti_aim.h"
+#include "visuals/player-esp/chams.h"

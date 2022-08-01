@@ -52,7 +52,7 @@ __declspec(naked) void __stdcall hooks::hk_create_move_proxy(int sequence, float
 // @xref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/Effects/clientinferno.cpp#L89
 void __fastcall hooks::hk_inferno_client_think(void* ecx, void* edx)
 {
-	if (cfg::misc::m_remove_molotov)
+	if (g_cfg.m_misc.m_remove_molotov)
 		return;
 
 	return og::m_inferno_client_think(ecx, edx);

@@ -92,7 +92,7 @@ void player_esp::draw()
 
 void player_esp::render_box(const RECT bbox, c_base_player* player)
 {
-	if (!cfg::esp::m_player[m_type].m_box)
+	if (!g_cfg.m_esp.m_player[m_type].m_box)
 		return;
 
 	render::rect(bbox.left + 1, bbox.top + 1, bbox.right - 1, bbox.bottom - 1, c_color(0.f, 0.f, 0.f));
@@ -102,7 +102,7 @@ void player_esp::render_box(const RECT bbox, c_base_player* player)
 
 void player_esp::render_name(const RECT bbox, c_base_player* player)
 {
-	if (!cfg::esp::m_player[m_type].m_name)
+	if (!g_cfg.m_esp.m_player[m_type].m_name)
 		return;
 
 	player_info_t p_info{};
@@ -115,7 +115,7 @@ void player_esp::render_name(const RECT bbox, c_base_player* player)
 
 void player_esp::render_health_bar(const RECT bbox, c_base_player* player)
 {
-	if (!cfg::esp::m_player[m_type].m_health_bar)
+	if (!g_cfg.m_esp.m_player[m_type].m_health_bar)
 		return;
 
 	const auto box_height = static_cast<float>(bbox.bottom - bbox.top);
@@ -129,7 +129,7 @@ void player_esp::render_health_bar(const RECT bbox, c_base_player* player)
 	render::rect_filled(bbox.left - 5.0f, bbox.top + (colored_bar_max_height - colored_bar_height),
 		bbox.left - 3.0f, bbox.top + colored_bar_max_height, c_color(0, 255, 0));
 
-	if (cfg::esp::m_player[m_type].m_health_text)
+	if (g_cfg.m_esp.m_player[m_type].m_health_text)
 	{
 		render::text(render::fonts::m_esp, ImVec2(bbox.left - 20, bbox.top - 2.0f),
 		              std::to_string(player->get_health()), c_color(0, 255, 0), false, true);

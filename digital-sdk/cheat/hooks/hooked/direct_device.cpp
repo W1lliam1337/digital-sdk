@@ -1,6 +1,6 @@
 #include "../hooks.h"
 
-long __stdcall hooks::hk_present(IDirect3DDevice9* device, const RECT* src, const RECT* dest, const HWND window_override, const RGNDATA* dirty_region)
+long __stdcall hooks::hk_present(IDirect3DDevice9* device, RECT* src, RECT* dest, HWND window_override, RGNDATA* dirty_region)
 {
 	if (!ImGui::GetCurrentContext())
 		return og::m_present(device, src, dest, window_override, dirty_region);

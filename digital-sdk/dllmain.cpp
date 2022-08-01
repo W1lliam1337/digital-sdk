@@ -32,6 +32,9 @@ DWORD WINAPI instance()
 	net_vars::init();
 	printf(_("netvars initialization was successful\n"));
 
+	chams::init_materials();
+	printf(_("chams materials initialization was successful\n"));
+
 	hooks::init();
 	printf(_("hooks initialization was successful\n"));
 
