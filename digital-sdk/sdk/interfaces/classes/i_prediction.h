@@ -40,31 +40,31 @@ public:
 
 	void update(const int server_tick, const bool is_valid, const int acknowledged, const int outgoing_cmd)
 	{
-		using update_fn = void(__thiscall*)(void*, int, bool, int, int);
-		return utils::call_vfunc<update_fn>(this, 3)(this, server_tick, is_valid, acknowledged, outgoing_cmd);
-	}
-
-	void setup_move(c_base_entity* player, c_user_cmd* cmd, i_move_helper* move_helper, void* move_data)
-	{
-		using setup_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, i_move_helper*, void*);
-		return utils::call_vfunc<setup_move_fn>(this, 20)(this, player, cmd, move_helper, move_data);
-	}
-
-	void finish_move(c_base_entity* player, c_user_cmd* cmd, void* move_data)
-	{
-		using finish_move_fn = void(__thiscall*)(void*, c_base_entity*, c_user_cmd*, void*);
-		return utils::call_vfunc<finish_move_fn>(this, 21)(this, player, cmd, move_data);
+		return utils::call_vfunc<void(__thiscall*)(void*, int, bool, int, int)>(this, 3)(this, server_tick, is_valid, acknowledged, outgoing_cmd);
 	}
 
 	void set_local_view_angles(qangle_t& angles)
 	{
-		using set_local_view_angles_fn = void(__thiscall*)(void*, qangle_t&);
-		return utils::call_vfunc<set_local_view_angles_fn>(this, 13)(this, angles);
+		return utils::call_vfunc<void(__thiscall*)(void*, qangle_t&)>(this, 13)(this, angles);
 	}
 
-	void check_moving_ground(c_base_entity* player, const double frame_time)
+	void check_moving_ground(c_base_player* player, const double frame_time)
 	{
-		using check_moving_ground_fn = void(__thiscall*)(void*, c_base_entity*, double);
-		return utils::call_vfunc<check_moving_ground_fn>(this, 18)(this, player, frame_time);
+		return utils::call_vfunc<void(__thiscall*)(void*, c_base_player*, double)>(this, 18)(this, player, frame_time);
+	}
+
+	void run_command(c_base_player* player, c_user_cmd* cmd, i_move_helper* move_helper)
+	{
+		return utils::call_vfunc<void(__thiscall*)(void*, c_base_player*, c_user_cmd*, i_move_helper*)>(this, 19)(this, player, cmd, move_helper);
+	}
+
+	void setup_move(c_base_player* player, c_user_cmd* cmd, i_move_helper* move_helper, void* move_data)
+	{
+		return utils::call_vfunc<void(__thiscall*)(void*, c_base_player*, c_user_cmd*, i_move_helper*, void*)>(this, 20)(this, player, cmd, move_helper, move_data);
+	}
+
+	void finish_move(c_base_player* player, c_user_cmd* cmd, void* move_data)
+	{
+		return utils::call_vfunc<void(__thiscall*)(void*, c_base_player*, c_user_cmd*, void*)>(this, 21)(this, player, cmd, move_data);
 	}
 };

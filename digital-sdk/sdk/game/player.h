@@ -48,13 +48,23 @@ public:
 	GET_OFFSET(anim_layer_t*, get_anim_layers, 0x2990);
 	GET_OFFSET(int, get_custom_blending_rule_mask, 0xA24);
 	GET_OFFSET(float, get_spawn_time, 0x103C0);
+	GET_OFFSET(int, get_button_released, 0x3204);
+	GET_OFFSET(int, get_button_pressed, 0x3200);
+	GET_OFFSET(int, get_buttons, 0x3208);
+	GET_OFFSET(int, get_button_last, 0x31FC);
+	GET_OFFSET(int, get_next_think_tick, 0xFC);
+	GET_OFFSET(int, get_button_forced, 0x3344);
+	GET_OFFSET(int, get_button_disabled, 0x3340);
+	GET_OFFSET(c_user_cmd*, get_current_cmd, 0x3348);
+	GET_OFFSET(c_user_cmd*, get_last_cmd, 0x3298);
 
 	GET_VFUNC(bool(__thiscall*)(void*), is_player(), 158);
 	GET_VFUNC(int(__thiscall*)(void*), is_max_health(), 122);
 	GET_VFUNC(const char* (__thiscall*)(void*), get_classname(), 59);
 	GET_VFUNC(unsigned int(__thiscall*)(void*), physics_solid_mask_for_entity(), 151);
-	GET_VFUNC(void(__thiscall*)(void*), get_think(), 139);
-	GET_VFUNC(void(__thiscall*)(void*), get_pre_think(), 318);
+	GET_VFUNC(void(__thiscall*)(void*), think(), 139);
+	GET_VFUNC(void(__thiscall*)(void*), pre_think(), 318);
+	GET_VFUNC(void(__thiscall*)(void*), post_think(), 318);
 	GET_VFUNC(void(__thiscall*)(void*), studio_frame_advance(), 220);
 	GET_VFUNC(void(__thiscall*)(void*), update_collistion_bounds(), 340);
 	GET_VFUNC(void(__thiscall*)(void*), update_client_side_animations(), 224);
@@ -189,14 +199,16 @@ public:
 		return sig_fn(this);
 	}
 
-	bool physics_run_think(const int index)
+	bool physics_run_think(const int index = 0 /* THINK_FIRE_ALL_FUNCTIONS */)
 	{
 		static const auto physics_run_think_fn = reinterpret_cast<bool(__thiscall*)(void*, int)>(utils::sig(
 			modules::m_client_dll, _("55 8B EC 83 EC 10 53 56 57 8B F9 8B 87")));
 		return physics_run_think_fn(this, index);
 	}
 
-	void post_think()
+	// @note: rebuild
+	// @xref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/server/player.cpp#L4769
+	/*void post_think()
 	{
 		interfaces::m_mdl_cache->begin_lock();
 		{
@@ -217,7 +229,7 @@ public:
 			this->physics_simulated_entites();
 		}
 		interfaces::m_mdl_cache->end_lock();
-	}
+	}*/
 
 	c_vec3 get_shoot_pos()
 	{
