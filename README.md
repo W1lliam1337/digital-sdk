@@ -1,5 +1,5 @@
 # Internal CS:GO cheat base ![CS:GO](https://img.shields.io/badge/game-CS%3AGO-orange?style=flat) ![LIC](https://img.shields.io/github/license/W1lliam1337/digital-sdk) ![LANG](https://img.shields.io/badge/language-C%2B%2B-brightgreen?style=flat )
-![App menu](https://i.imgur.com/nHQW7MP.png)
+![App menu](https://i.imgur.com/cxUT5ZY.png)
 # Features
 - legit-bot (auto fire, silent aim, smooth, fov)
 - anti-aimbot (yaw and pitch modifiers)
