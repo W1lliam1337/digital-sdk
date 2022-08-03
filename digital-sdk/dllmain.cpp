@@ -3,7 +3,7 @@
 #include "cheat/hooks/hooks.h"
 #include "cheat/features/misc/events/events.h"
 
-DWORD WINAPI instance()
+void instance()
 {
 	while (!LoadLibraryA(_("serverbrowser.dll")))
 		std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -12,7 +12,7 @@ DWORD WINAPI instance()
 	if (!freopen(_("CONOUT$"), _("w"), stdout))
 	{
 		FreeConsole();
-		return EXIT_SUCCESS;
+		return;
 	}
 
 	SetConsoleTitleA(_("csgo-sdk console\n"));
@@ -40,9 +40,6 @@ DWORD WINAPI instance()
 
 	g_events->init();
 	printf(_("events initialization was successful\n"));
-
-	FreeConsole();
-	return EXIT_SUCCESS;
 }
 
 BOOL APIENTRY DllMain(HMODULE hmodule,
@@ -55,8 +52,8 @@ BOOL APIENTRY DllMain(HMODULE hmodule,
 
 	/* @xref: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-disablethreadlibrarycalls */
 	DisableThreadLibraryCalls(hmodule);
-
-	std::jthread([]() -> void { instance(); }).detach();
+	
+	std::thread(instance).detach();
 
 	return TRUE;
 }
