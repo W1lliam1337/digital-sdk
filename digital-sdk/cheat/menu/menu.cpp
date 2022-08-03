@@ -162,20 +162,30 @@ void menu::misc_tab()
 	ImGui::Text(_("Configs"));
 	ImGui::Separator();
 
-	static ImGuiTextFilter configs_filter;
-	configs_filter.Draw(_("##cfg_filter"), 338.f);
-
 	ImGui::Text(_("Available configs"));
 	ImGui::Separator();
 
-	//ImGui::Checkbox("test", &cfg::m_text.test_var);
+	static char buf[32];
+	static std::string cur_cfg;
+
+	ImGui::InputText(_("Config name"), buf, sizeof(buf));
+	cur_cfg = buf;
+
 	if (ImGui::Button(_("Save Config"), ImVec2{ 138.f, 19.f }))
 	{
-		//c_config_manager::get()->save_config("fd");
+		cfg_manager::save(cur_cfg);
+		
+		std::string cfg_msg = "saved ";
+		cfg_msg += cur_cfg + " config";
+		logs::push_log(cfg_msg);
 	}
 
-	if (ImGui::Button(_("Update Configs"), ImVec2{ 138.f, 19.f }))
+	if (ImGui::Button(_("Load Config"), ImVec2{ 138.f, 19.f }))
 	{
+		cfg_manager::load(cur_cfg);
 
+		std::string cfg_msg = "loaded "; 
+		cfg_msg += cur_cfg + " config";
+		logs::push_log(cfg_msg);
 	}
 }

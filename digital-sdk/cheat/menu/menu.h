@@ -1,6 +1,7 @@
 #pragma once
 #include "../../includes.h"
 #include "../../sdk/sdk.h"
+#include "../features/misc/log-system/logs.h"
 
 enum e_menu : int
 {

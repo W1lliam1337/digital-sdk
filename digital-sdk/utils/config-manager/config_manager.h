@@ -1,5 +1,14 @@
 #pragma once
 #include "../utils.h"
+#include "../../dependencies/json/json.h"
+#include <fstream>
+
+namespace cfg_manager
+{
+	void save(std::string cfg_name);
+	void load(std::string cfg_name);
+	void write_file(nlohmann::json cfg, std::string cfg_name);
+};
 
 class c_cfg
 {
