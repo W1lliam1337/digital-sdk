@@ -80,3 +80,13 @@ void __fastcall hooks::hk_calculate_view(void* ecx, void* edx, c_vec3& eye_origi
 	}
 	player->should_use_new_anim_state() = backup_use_new_anim_state;
 }
+
+// @xref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/client/cstrike15/c_cs_player.cpp#L7318
+float __fastcall hooks::hk_get_fov(void* ecx, void* edx)
+{
+	const auto player = static_cast<c_base_player*>(ecx);
+	if (!player || player != ctx::local())
+		return og::m_get_fov(ecx, edx);
+
+	return player->is_scoped() ? og::m_get_fov(ecx, edx) : g_cfg.m_misc.m_fov;
+}

@@ -158,6 +158,7 @@ void menu::misc_tab()
 	ImGui::Checkbox(_("Remove molotov"), &g_cfg.m_misc.m_remove_molotov);
 	ImGui::SliderInt(_("Third person distance"), &g_cfg.m_misc.m_third_person_distance, 0, 250);
 	ImGui::Keybind(_("Third person bind"), &g_cfg.m_misc.m_third_person_bind.m_key_selected, &g_cfg.m_misc.m_third_person_bind.m_mode_selected);
+	ImGui::SliderInt(_("FOV"), &g_cfg.m_misc.m_fov, 0, 179);
 
 	ImGui::Text(_("Configs"));
 	ImGui::Separator();

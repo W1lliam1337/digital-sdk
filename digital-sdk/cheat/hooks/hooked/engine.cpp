@@ -14,8 +14,8 @@ bool __fastcall hooks::hk_is_paused(void* ecx, void* edx)
 
 bool __fastcall hooks::hk_is_hltv(void* ecx, void* edx) 
 {
-	static auto setup_velocity = static_cast<void*>(utils::sig(modules::m_client_dll, _("84 C0 75 38 8B 0D ? ? ? ? 8B 01 8B 80")));
-	static auto accumulate_layers = static_cast<void*>(utils::sig(modules::m_client_dll, _("84 C0 75 0D F6 87")));
+	static const auto setup_velocity = static_cast<void*>(utils::sig(modules::m_client_dll, _("84 C0 75 38 8B 0D ? ? ? ? 8B 01 8B 80")));
+	static const auto accumulate_layers = static_cast<void*>(utils::sig(modules::m_client_dll, _("84 C0 75 0D F6 87")));
 
 	// @note: skip call to setup_velocity and accumulate_layers
 	if (_ReturnAddress() == setup_velocity || _ReturnAddress() == accumulate_layers)

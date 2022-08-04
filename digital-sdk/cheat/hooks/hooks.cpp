@@ -26,7 +26,8 @@ void hooks::init()
 	static const auto standard_blending_rules = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 8B 75 08 57 8B F9 85 F6")));
 	static const auto build_transformations = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 E4 F0 81 EC ? ? ? ? 56 57 8B F9 8B 0D ? ? ? ? 89 7C 24 28")));
 	static const auto should_skip_anim_frame = static_cast<void*>(utils::sig(modules::m_client_dll, _("57 8B F9 8B 07 8B 80 ? ? ? ? FF D0 84 C0 75 02")));
-
+	static const auto get_fov = static_cast<void*>(utils::sig(modules::m_client_dll, _("55 8B EC 83 EC 08 56 8B F1 E8 ? ? ? ? 8B 0D ? ? ? ?")));
+	
 	HOOK(create_move, hk_create_move_proxy, og::m_create_move);
 	HOOK(reset, hk_reset, og::m_reset);
 	HOOK(present, hk_present, og::m_present);
@@ -45,6 +46,7 @@ void hooks::init()
 	HOOK(is_paused, hk_is_paused, og::m_is_paused);
 	HOOK(is_hltv, hk_is_hltv, og::m_is_hltv);
 	HOOK(dme, hk_draw_model_execute, og::m_draw_model_execute);
+	HOOK(get_fov, hk_get_fov, og::m_get_fov);
 
 	printf("targets size: %u\n", hooks::m_targets.size());
 }

@@ -59,6 +59,37 @@ public:
 	GET_VFUNC(float(__thiscall*)(void*), get_inaccuracy(), 483);
 	GET_VFUNC(c_weapon_info*(__thiscall*)(void*), get_weapon_data(), 461);
 
+	std::string get_weapon_type()
+	{
+		switch (this->get_weapon_data()->m_weapon_type)
+		{
+			case weapon_type_c4:
+				return "c4";
+			case weapon_type_grenade:
+				return "grenade";
+			case weapon_type_knife:
+				return "knife";
+			case weapon_type_machinegun:
+				return "machinegun";
+			case weapon_type_pistol:
+				return "pistol";
+			case weapon_type_placeholder:
+				return "placeholder";
+			case weapon_type_rifle:
+				return "rifle";
+			case weapon_type_shotgun:
+				return "shotgun";
+			case weapon_type_sniper_rifle:
+				return "sniper rifle";
+			case weapon_type_submachinegun:
+				return "submachinegun";
+			case weapon_type_unknown:
+				return "unknown";
+			default: 
+				return "unk";
+		}
+	}
+
 	bool is_smg()
 	{
 		return this->get_weapon_data()->m_weapon_type == weapon_type_submachinegun;

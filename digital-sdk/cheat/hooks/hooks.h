@@ -6,7 +6,7 @@
 
 #define HOOK(target, detour, og) \
 	if (MH_CreateHook(target, detour, reinterpret_cast<void**>(&(og))) == MH_OK &&  MH_EnableHook(target) == MH_OK) {\
-		printf("created target: 0x%p, detour: 0x%p, og: 0x%p\n", target, detour, og); hooks::m_targets.emplace_back(target);\
+		printf("created target: 0x%p, detour: 0x%p, og: 0x%p\n", #target, detour, og); hooks::m_targets.emplace_back(target);\
 	}
 
 using create_move_t = void(__stdcall*)(int, float, bool);
@@ -34,6 +34,7 @@ namespace hooks
 	bool __fastcall hk_is_paused(void* ecx, void* edx);
 	bool __fastcall hk_is_hltv(void* ecx, void* edx);
 	void __fastcall hk_draw_model_execute(void* ecx, void* edx, void* ctx, draw_model_state_t& state, model_render_info_t& info, matrix_t* custom_bone_to_world);
+	float __fastcall hk_get_fov(void* ecx, void* edx);
 	void init_wnd_proc();
 	long __stdcall hk_wnd_proc(HWND window, UINT msg, WPARAM wparm, LPARAM lparm);
 	void unhook(LPVOID target);
@@ -45,6 +46,7 @@ namespace hooks
 		inline create_move_t m_create_move{};
 		inline WNDPROC m_wnd_proc{};
 
+		inline decltype(&hk_get_fov) m_get_fov{};
 		inline decltype(&hk_draw_model_execute) m_draw_model_execute{};
 		inline decltype(&hk_lock_cursor) m_lock_cursor{};
 		inline decltype(&hk_build_transformations) m_build_transformations{};
