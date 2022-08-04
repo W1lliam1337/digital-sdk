@@ -6,7 +6,7 @@
 
 #define HOOK(target, detour, og) \
 	if (MH_CreateHook(target, detour, reinterpret_cast<void**>(&(og))) == MH_OK &&  MH_EnableHook(target) == MH_OK) {\
-		printf("created target: 0x%p, detour: 0x%p, og: 0x%p\n", #target, detour, og); hooks::m_targets.emplace_back(target);\
+		printf("created target: 0x%p, detour: 0x%p, og: 0x%p\n", target, detour, og); hooks::m_targets.emplace_back(target);\
 	}
 
 using create_move_t = void(__stdcall*)(int, float, bool);
