@@ -4,8 +4,7 @@
 
 class c_verified_user_cmd;
 
-class i_input
-{
+class i_input {
 public:
 	char pad0[0xC]{};
 	bool m_trackir_available{};
@@ -19,13 +18,11 @@ public:
 	c_user_cmd* m_commands{};
 	c_verified_user_cmd* m_verified_commands{};
 
-	[[nodiscard]] c_user_cmd* get_user_cmd(const int sequence_number) const
-	{
+	[[nodiscard]] c_user_cmd* get_user_cmd( const int sequence_number ) const {
 		return &m_commands[sequence_number % 150];
 	}
 
-	[[nodiscard]] c_verified_user_cmd* get_verified_cmd(const int sequence_number) const
-	{
+	[[nodiscard]] c_verified_user_cmd* get_verified_cmd( const int sequence_number ) const {
 		return &m_verified_commands[sequence_number % 150];
 	}
 };

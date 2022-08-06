@@ -29,12 +29,11 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-using create_interface_fn = void*(*)(const char*, int*);
+using create_interface_fn = void* (*)(const char*, int*);
 
-namespace interfaces
-{
-	void* get_interface(HMODULE module, const char* interface_name);
-	void init();
+namespace interfaces {
+	void* get_interface( HMODULE module, const char* interface_name );
+	void init( );
 
 	inline i_global_vars_base* m_globals{};
 	inline i_engine* m_engine{};

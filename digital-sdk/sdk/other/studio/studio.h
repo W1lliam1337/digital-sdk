@@ -12,8 +12,7 @@ using radian_euler = float[3];
 #define MAX_NUM_LODS 8
 #define MAXSTUDIOBONES		128		// total bones actually used
 
-enum e_bone_flags
-{
+enum e_bone_flags {
 	bone_calculate_mask = 0x1f,
 	bone_physically_simulated = 0x01,
 	bone_physics_procedural = 0x02,
@@ -40,8 +39,7 @@ enum e_bone_flags
 	bone_has_saveframe_rot = 0x00400000
 };
 
-enum e_hitgroups
-{
+enum e_hitgroups {
 	hitgroup_generic = 0,
 	hitgroup_head,
 	hitgroup_chest,
@@ -54,16 +52,14 @@ enum e_hitgroups
 	hitgroup_gear = 10
 };
 
-enum e_modtypes
-{
+enum e_modtypes {
 	mod_bad = 0,
 	mod_brush,
 	mod_sprite,
 	mod_studio
 };
 
-enum e_hitboxes
-{
+enum e_hitboxes {
 	hitbox_head,
 	hitbox_neck,
 	hitbox_pelvis,
@@ -88,10 +84,11 @@ enum e_hitboxes
 
 using mdl_handle_t = unsigned short;
 
-struct mstudiobone_t
-{
+struct mstudiobone_t {
 	int m_name_index{};
-	char* psz_name(void) const { return (char*)this + m_name_index; }
+	char* psz_name( void ) const {
+		return (char*) this + m_name_index;
+	}
 	int m_parent{};
 	int m_bone_controller[6]{}; // bone controller index, -1 == none
 	c_vec3 m_pos{};
@@ -113,20 +110,22 @@ struct mstudiobone_t
 	int m_surface_prop_lookup{};
 	int m_pad01[7]{};
 
-	char* psz_surface_prop(void) const { return (char*)(this + m_surface_prop_idx); }
-	int get_surface_prop(void) const { return m_surface_prop_lookup; }
+	char* psz_surface_prop( void ) const {
+		return (char*) (this + m_surface_prop_idx);
+	}
+	int get_surface_prop( void ) const {
+		return m_surface_prop_lookup;
+	}
 
-	mstudiobone_t()
-	{
+	mstudiobone_t( ) {
 	}
 
 private:
 	// No copy constructors allowed
-	mstudiobone_t(const mstudiobone_t& other);
+	mstudiobone_t( const mstudiobone_t& other );
 };
 
-struct mstudiobbox_t
-{
+struct mstudiobbox_t {
 	int m_bone{};
 	int m_group{};
 	c_vec3 m_mins{};
@@ -136,34 +135,29 @@ struct mstudiobbox_t
 	float m_radius{};
 	int pad2[4]{};
 
-	const char* get_name()
-	{
-		if (!m_hitbox_name_index) return nullptr;
+	const char* get_name( ) {
+		if ( !m_hitbox_name_index ) return nullptr;
 		return reinterpret_cast<const char*>(reinterpret_cast<uint8_t*>(this) + m_hitbox_name_index);
 	}
 };
 
-struct mstudiohitboxset_t
-{
+struct mstudiohitboxset_t {
 	int m_name_index{};
 	int m_num_hitboxes{};
 	int m_hitbox_index{};
 
-	const char* get_name()
-	{
-		if (!m_name_index) return nullptr;
+	const char* get_name( ) {
+		if ( !m_name_index ) return nullptr;
 		return reinterpret_cast<const char*>(reinterpret_cast<uint8_t*>(this) + m_name_index);
 	}
 
-	mstudiobbox_t* get_hitbox(const int i)
-	{
-		if (i > m_num_hitboxes) return nullptr;
+	mstudiobbox_t* get_hitbox( const int i ) {
+		if ( i > m_num_hitboxes ) return nullptr;
 		return reinterpret_cast<mstudiobbox_t*>(reinterpret_cast<uint8_t*>(this) + m_hitbox_index) + i;
 	}
 };
 
-class studiohdr_t
-{
+class studiohdr_t {
 public:
 	__int32 m_id{}; //0x0000 
 	__int32 m_version{}; //0x0004 
@@ -192,21 +186,18 @@ public:
 	__int32 m_num_textures{}; //0x00CC 
 	__int32 m_texture_index{}; //0x00D0
 
-	mstudiohitboxset_t* get_hitbox_set(const int i)
-	{
-		if (i > m_num_hitbox_sets) return nullptr;
+	mstudiohitboxset_t* get_hitbox_set( const int i ) {
+		if ( i > m_num_hitbox_sets ) return nullptr;
 		return reinterpret_cast<mstudiohitboxset_t*>(reinterpret_cast<uint8_t*>(this) + m_hitbox_set_index) + i;
 	}
 
-	mstudiobone_t* get_bone(const int i)
-	{
-		if (i > m_num_bones) return nullptr;
+	mstudiobone_t* get_bone( const int i ) {
+		if ( i > m_num_bones ) return nullptr;
 		return reinterpret_cast<mstudiobone_t*>(reinterpret_cast<uint8_t*>(this) + m_bone_index) + i;
 	}
 };
 
-struct model_render_info_t
-{
+struct model_render_info_t {
 	c_vec3 m_origin{};
 	c_vec3 m_angles{};
 	char pad[0x4]{};
@@ -222,8 +213,7 @@ struct model_render_info_t
 	int m_hitboxset{};
 	unsigned short m_instance{};
 
-	model_render_info_t()
-	{
+	model_render_info_t( ) {
 		m_model_to_world = nullptr;
 		m_lighting_offset = nullptr;
 		m_lighting_origin = nullptr;
@@ -232,8 +222,7 @@ struct model_render_info_t
 
 using studio_decal_handle_t = void*;
 
-struct draw_model_state_t
-{
+struct draw_model_state_t {
 	studiohdr_t* m_studio_hdr{};
 	studiohwdata_t* m_studio_hwdara{};
 	i_client_renderable* m_entity{};

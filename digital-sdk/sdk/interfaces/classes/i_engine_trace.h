@@ -24,8 +24,7 @@ enum e_surfaceflags {
 	dispsurf_flag_surfprop2 = (1 << 4),
 };
 
-enum e_contents
-{
+enum e_contents {
 	contents_empty = 0,
 	contents_solid = 0x1,
 	contents_window = 0x2,
@@ -60,8 +59,7 @@ enum e_contents
 	contents_hitbox = 0x40000000,
 };
 
-enum e_surf
-{
+enum e_surf {
 	surf_light = 0x0001,
 	surf_sky2d = 0x0002,
 	surf_sky = 0x0004,
@@ -108,43 +106,36 @@ enum e_masks {
 	mask_deadsolid = contents_solid | contents_playerclip | contents_window | contents_grate,
 };
 
-enum e_trace_type : std::int32_t
-{
+enum e_trace_type : std::int32_t {
 	trace_everything = 0,
 	trace_world_only,
 	trace_entities_only,
 	trace_everything_filter_props,
 };
 
-class i_trace_filter
-{
+class i_trace_filter {
 public:
-	virtual bool should_hit_entity(i_handle_entity* pEntity, int contentsMask) = 0;
-	virtual e_trace_type get_trace_type() const = 0;
+	virtual bool should_hit_entity( i_handle_entity* pEntity, int contentsMask ) = 0;
+	virtual e_trace_type get_trace_type( ) const = 0;
 };
 
-class c_trace_filter : public i_trace_filter
-{
+class c_trace_filter : public i_trace_filter {
 public:
-	bool should_hit_entity(i_handle_entity* pEntityHandle, int contents_mask) override
-	{
-		const auto e_cc = static_cast<i_client_entity*>(pEntityHandle)->get_client_class();
-		if (e_cc && m_ignore != nullptr && strcmp(m_ignore, "") != 0)
-		{
-			if (e_cc->m_network_name == m_ignore)
+	bool should_hit_entity( i_handle_entity* pEntityHandle, int contents_mask ) override {
+		const auto e_cc = static_cast<i_client_entity*>(pEntityHandle)->get_client_class( );
+		if ( e_cc && m_ignore != nullptr && strcmp( m_ignore, "" ) != 0 ) {
+			if ( e_cc->m_network_name == m_ignore )
 				return false;
 		}
 
 		return !(pEntityHandle == m_skip);
 	}
 
-	[[nodiscard]] e_trace_type get_trace_type() const override
-	{
+	[[nodiscard]] e_trace_type get_trace_type( ) const override {
 		return trace_everything;
 	}
 
-	void set_ignore_class(const char* Class)
-	{
+	void set_ignore_class( const char* Class ) {
 		m_ignore = Class;
 	}
 
@@ -152,8 +143,7 @@ public:
 	const char* m_ignore{ "" };
 };
 
-struct brush_side_info_t
-{
+struct brush_side_info_t {
 	c_vec4 m_plane; // The plane of the brush side
 	uint16_t m_bevel; // Bevel plane?
 	uint16_t m_thin; // Thin?
@@ -161,8 +151,7 @@ struct brush_side_info_t
 
 class c_phys_collide;
 
-struct vcollide_t
-{
+struct vcollide_t {
 	uint16_t m_solid_count : 15;
 	uint16_t m_is_packed : 1;
 	uint16_t m_desc_size;
@@ -171,47 +160,39 @@ struct vcollide_t
 	void* m_user_data;
 };
 
-struct cmodel_t
-{
+struct cmodel_t {
 	c_vec3 m_mins, m_maxs;
 	c_vec3 m_origin; // for sounds or lights
 	int m_headnode;
 	vcollide_t m_vcollision_data;
 };
 
-struct csurface_t
-{
+struct csurface_t {
 	const char* m_name;
 	short m_surface_props;
 	uint16_t m_flags;
 };
 
-class __declspec(align(16)) vector_aligned : public c_vec3
-{
+class __declspec(align(16)) vector_aligned : public c_vec3 {
 public:
-	vector_aligned(void)
-	{
+	vector_aligned( void ) {
 	};
 
-	vector_aligned(float X, float Y, float Z)
-	{
-		init(X, Y, Z);
+	vector_aligned( float X, float Y, float Z ) {
+		init( X, Y, Z );
 	}
 
-	explicit vector_aligned(const c_vec3& vOther)
-	{
-		init(vOther.x, vOther.y, vOther.z);
+	explicit vector_aligned( const c_vec3& vOther ) {
+		init( vOther.x, vOther.y, vOther.z );
 	}
 
-	vector_aligned& operator=(const c_vec3& vOther)
-	{
-		init(vOther.x, vOther.y, vOther.z);
+	vector_aligned& operator=( const c_vec3& vOther ) {
+		init( vOther.x, vOther.y, vOther.z );
 		return *this;
 	}
 
-	vector_aligned& operator=(const vector_aligned& vOther)
-	{
-		init(vOther.x, vOther.y, vOther.z);
+	vector_aligned& operator=( const vector_aligned& vOther ) {
+		init( vOther.x, vOther.y, vOther.z );
 		return *this;
 	}
 
@@ -221,8 +202,7 @@ public:
 //-----------------------------------------------------------------------------
 // A ray...
 //-----------------------------------------------------------------------------
-struct ray_t
-{
+struct ray_t {
 	vector_aligned m_start; // starting point, centered within the extents
 	vector_aligned m_delta; // direction + length of the ray
 	vector_aligned m_start_offset; // Add this to m_Start to Get the actual ray start
@@ -231,36 +211,33 @@ struct ray_t
 	bool m_is_ray; // are the extents zero?
 	bool m_is_swept; // is delta != 0?
 
-	ray_t() : m_world_axis_transform(nullptr)
-	{
+	ray_t( ) : m_world_axis_transform( nullptr ) {
 	}
 
-	void init(const c_vec3& start, const c_vec3& end)
-	{
+	void init( const c_vec3& start, const c_vec3& end ) {
 		m_delta = end - start;
 
-		m_is_swept = (m_delta.length_sqr() != 0);
+		m_is_swept = (m_delta.length_sqr( ) != 0);
 
-		m_extents.init();
+		m_extents.init( );
 
 		m_world_axis_transform = nullptr;
 		m_is_ray = true;
 
 		// Offset m_Start to be in the center of the box...
-		m_start_offset.init();
+		m_start_offset.init( );
 		m_start = start;
 	}
 
-	void init(const c_vec3& start, const c_vec3& end, const c_vec3& mins, const c_vec3& maxs)
-	{
+	void init( const c_vec3& start, const c_vec3& end, const c_vec3& mins, const c_vec3& maxs ) {
 		m_delta = end - start;
 
 		m_world_axis_transform = nullptr;
-		m_is_swept = (m_delta.length_sqr() != 0);
+		m_is_swept = (m_delta.length_sqr( ) != 0);
 
 		m_extents = maxs - mins;
 		m_extents *= 0.5f;
-		m_is_ray = (m_extents.length_sqr() < 1e-6);
+		m_is_ray = (m_extents.length_sqr( ) < 1e-6);
 
 		// Offset m_Start to be in the center of the box...
 		m_start_offset = maxs + mins;
@@ -270,8 +247,7 @@ struct ray_t
 	}
 };
 
-struct cplane_t
-{
+struct cplane_t {
 	c_vec3 m_normal;
 	float m_dist;
 	uint8_t m_type; // for fast side tests
@@ -279,16 +255,13 @@ struct cplane_t
 	uint8_t m_pad[2];
 };
 
-class c_game_trace
-{
+class c_game_trace {
 public:
-	[[nodiscard]] bool did_hit() const
-	{
+	[[nodiscard]] bool did_hit( ) const {
 		return m_fraction < 1.0f || m_all_solid || m_start_solid;
 	}
 
-	[[nodiscard]] bool is_visible() const
-	{
+	[[nodiscard]] bool is_visible( ) const {
 		return m_fraction > 0.97f;
 	}
 
@@ -308,18 +281,17 @@ public:
 	int					m_hitbox;				// box hit by trace in studio
 };
 
-class i_engine_trace
-{
+class i_engine_trace {
 public:
-	virtual int get_point_contents(const c_vec3& abs_position, int contents_mask = mask_all,
-		i_handle_entity** ppEntity = nullptr) = 0;
-	virtual int get_point_contents_world_only(const c_vec3& abs_position, int contents_mask = mask_all) = 0;
-	virtual int get_point_contents_collideable(i_collideable* collide, const c_vec3& abs_position) = 0;
-	virtual void clip_ray_to_entity(const ray_t& ray, unsigned int mask, i_handle_entity* ent, c_game_trace* trace) = 0;
-	virtual void clip_ray_to_collideable(const ray_t& ray, unsigned int mask, i_collideable* collide, c_game_trace* trace)
+	virtual int get_point_contents( const c_vec3& abs_position, int contents_mask = mask_all,
+									i_handle_entity** ppEntity = nullptr ) = 0;
+	virtual int get_point_contents_world_only( const c_vec3& abs_position, int contents_mask = mask_all ) = 0;
+	virtual int get_point_contents_collideable( i_collideable* collide, const c_vec3& abs_position ) = 0;
+	virtual void clip_ray_to_entity( const ray_t& ray, unsigned int mask, i_handle_entity* ent, c_game_trace* trace ) = 0;
+	virtual void clip_ray_to_collideable( const ray_t& ray, unsigned int mask, i_collideable* collide, c_game_trace* trace )
 		= 0;
-	virtual void trace_ray(const ray_t& ray, unsigned int mask, c_trace_filter* filter, c_game_trace* engine_trace) = 0;
+	virtual void trace_ray( const ray_t& ray, unsigned int mask, c_trace_filter* filter, c_game_trace* engine_trace ) = 0;
 
-	void trace_line(c_vec3 src, c_vec3 dst, int mask, i_handle_entity* entity, int collision_group,
-		c_game_trace* trace);
+	void trace_line( c_vec3 src, c_vec3 dst, int mask, i_handle_entity* entity, int collision_group,
+					 c_game_trace* trace );
 };

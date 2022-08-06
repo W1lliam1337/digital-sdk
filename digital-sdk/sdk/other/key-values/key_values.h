@@ -1,20 +1,18 @@
 #pragma once
 #include <cstdint>
 
-using symbol_fn = bool(__cdecl*)(const char*);
-class c_key_values
-{
+using symbol_fn = bool( __cdecl* )(const char*);
+class c_key_values {
 public:
-	void load_from_buffer(const char* resource_name, const char* buf, void* file_sys = nullptr, const char* path_id = nullptr, void* eval_sym_proc = nullptr, void* unk = nullptr);
-	c_key_values(const char* key_name, void* unk = nullptr, void* unk2 = nullptr);
+	void load_from_buffer( const char* resource_name, const char* buf, void* file_sys = nullptr, const char* path_id = nullptr, void* eval_sym_proc = nullptr, void* unk = nullptr );
+	c_key_values( const char* key_name, void* unk = nullptr, void* unk2 = nullptr );
 private:
 	std::uint32_t m_key_name : 24;
 	std::uint32_t m_key_name_case_sensitive1 : 8;
 	char* m_sz_value{};
 	wchar_t* m_wsz_value{};
 
-	union
-	{
+	union {
 		int m_i_value{};
 		float m_f_value;
 		void* m_value;

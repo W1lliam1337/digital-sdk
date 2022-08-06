@@ -1,8 +1,7 @@
 #pragma once
 #include "../../../utils/utils.h"
 
-class c_view_setup
-{
+class c_view_setup {
 public:
 	int m_x{};
 	int m_unscaled_x{};
@@ -51,16 +50,13 @@ public:
 	bool m_csm_view{};
 };
 
-class i_render_view
-{
+class i_render_view {
 public:
-	void set_blend(const float blend)
-	{
-		utils::call_vfunc<void(__thiscall*)(void*, float)>(this, 4)(this, blend);
+	void set_blend( const float blend ) {
+		utils::call_vfunc<void( __thiscall* )(void*, float)>( this, 4 )(this, blend);
 	}
 
-	void set_color_modulation(const float blend)
-	{
-		utils::call_vfunc<void(__thiscall*)(void*, float)>(this, 6)(this, blend);
+	void set_color_modulation( const float blend ) {
+		utils::call_vfunc<void( __thiscall* )(void*, float)>( this, 6 )(this, blend);
 	}
 };

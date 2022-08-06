@@ -14,17 +14,16 @@ struct net_var_table_t {
 	std::vector<net_var_table_t> child_tables{};
 };
 
-namespace net_vars
-{
-	void init();
+namespace net_vars {
+	void init( );
 
-	uint32_t      get_offset(const std::string& table_name, const std::string& prop_name);
-	recv_prop_t* get_net_var_prop(const std::string& table_name, const std::string& prop_name);
+	uint32_t      get_offset( const std::string& table_name, const std::string& prop_name );
+	recv_prop_t* get_net_var_prop( const std::string& table_name, const std::string& prop_name );
 
-	net_var_table_t  load_table(const recv_table_t* recv_table);
+	net_var_table_t  load_table( const recv_table_t* recv_table );
 
-	uint32_t      get_offset(const net_var_table_t& table, const std::string& prop_name);
-	recv_prop_t* get_net_var_prop(const net_var_table_t& table, const std::string& prop_name);
+	uint32_t      get_offset( const net_var_table_t& table, const std::string& prop_name );
+	recv_prop_t* get_net_var_prop( const net_var_table_t& table, const std::string& prop_name );
 }
 
 #define GET_NETVAR_OFFSET(type, name, table, netvar, offset)                           \

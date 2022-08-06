@@ -2,8 +2,7 @@
 #include "../math/qangle.h"
 #include "../math/vec3.h"
 
-class c_move_data
-{
+class c_move_data {
 public:
 	bool            m_first_run_of_functions : 1;
 	bool            m_game_code_moved_player : 1;

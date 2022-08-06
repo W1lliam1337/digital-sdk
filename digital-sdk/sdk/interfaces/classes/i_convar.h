@@ -40,32 +40,29 @@ class c_color;
 #define FCVAR_MEME_DLL                  (1<<31)
 #define FCVAR_MATERIAL_THREAD_MASK ( FCVAR_RELOAD_MATERIALS | FCVAR_RELOAD_TEXTURES | FCVAR_MATERIAL_SYSTEM_THREAD )
 
-class i_convar
-{
+class i_convar {
 public:
-	virtual void set_value(const char* pValue) = 0;
-	virtual void set_value(float flValue) = 0;
-	virtual void set_value(int nValue) = 0;
-	virtual void set_value(c_color value) = 0;
-	virtual const char* get_name(void) const = 0;
-	virtual const char* get_base_name(void) const = 0;
-	virtual bool is_flag_set(int nFlag) const = 0;
-	virtual int get_split_screen_player_slot() const = 0;
+	virtual void set_value( const char* pValue ) = 0;
+	virtual void set_value( float flValue ) = 0;
+	virtual void set_value( int nValue ) = 0;
+	virtual void set_value( c_color value ) = 0;
+	virtual const char* get_name( void ) const = 0;
+	virtual const char* get_base_name( void ) const = 0;
+	virtual bool is_flag_set( int nFlag ) const = 0;
+	virtual int get_split_screen_player_slot( ) const = 0;
 
-	__forceinline float get_float(void)
-	{
+	__forceinline float get_float( void ) {
 		int xord = static_cast<int>(*reinterpret_cast<int*>(&m_f_value) ^ reinterpret_cast<uintptr_t>(this));
 		return *reinterpret_cast<float*>(&xord);
 	}
 
-	__forceinline int get_int(void)
-	{
+	__forceinline int get_int( void ) {
 		const int xord = static_cast<int>(*&m_n_value ^ reinterpret_cast<uintptr_t>(this));
 		return *&xord;
 	}
 
-	bool get_bool(void) {
-		return !!get_int();
+	bool get_bool( void ) {
+		return !!get_int( );
 	}
 
 	unsigned char pad_0x0[0x4]{};

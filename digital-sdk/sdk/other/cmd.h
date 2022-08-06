@@ -3,8 +3,7 @@
 #include "../math/qangle.h"
 #include "../math/vec3.h"
 
-class c_user_cmd
-{
+class c_user_cmd {
 public:
 	void* m_vtable{}; // 0x00
 	int m_command{}; // 0x04
@@ -23,11 +22,10 @@ public:
 	short m_mouse_direction_y{}; // 0x46 mouse accum in y from create move
 	bool m_has_been_predicted{}; // 0x48 Client only, tracks whether we've predicted this command at least once
 	char pad[0x18]{};
-	[[nodiscard]] std::uint32_t get_checksum() const;
+	[[nodiscard]] std::uint32_t get_checksum( ) const;
 };
 
-class c_verified_user_cmd
-{
+class c_verified_user_cmd {
 public:
 	c_user_cmd m_cmd{};
 	std::uint32_t m_crc{};

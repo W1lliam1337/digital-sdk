@@ -279,7 +279,7 @@ enum e_idx : short
 	glove_hydra,
 };
 
-enum e_weapon_type 
+enum e_weapon_type
 {
 	weapon_type_knife = 0,
 	weapon_type_pistol,
@@ -294,9 +294,11 @@ enum e_weapon_type
 	weapon_type_unknown
 };
 
-enum { max_inferno_fires = 100 };
+enum {
+	max_inferno_fires = 100
+};
 
-enum e_class_id 
+enum e_class_id
 {
 	class_id_ai_base_npc = 0,
 	class_id_c_ak47,

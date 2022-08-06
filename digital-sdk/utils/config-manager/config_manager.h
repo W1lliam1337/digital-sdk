@@ -3,18 +3,15 @@
 #include "../../dependencies/json/json.h"
 #include <fstream>
 
-namespace cfg_manager
-{
-	void save(std::string cfg_name);
-	void load(std::string cfg_name);
-	void write_file(nlohmann::json cfg, std::string cfg_name);
+namespace cfg_manager {
+	void save( std::string cfg_name );
+	void load( std::string cfg_name );
+	void write_file( nlohmann::json cfg, std::string cfg_name );
 };
 
-class c_cfg
-{
+class c_cfg {
 public:
-	struct legit_t
-	{
+	struct legit_t {
 		bool m_enabled{};
 		bool m_auto_fire{};
 		bool m_auto_scope{};
@@ -26,19 +23,17 @@ public:
 		int m_rcs_y{};
 	}m_legit{};
 
-	struct misc_t
-	{
+	struct misc_t {
 		bool m_bunny_hop{};
 		bool m_no_scope{};
 		bool m_infinity_duck{};
 		bool m_remove_molotov{};
-		int m_fov{90};
+		int m_fov{ 90 };
 		int m_third_person_distance{};
-		key_bind_t m_third_person_bind = key_bind_t();
+		key_bind_t m_third_person_bind = key_bind_t( );
 	}m_misc{};
 
-	struct anti_aim_t
-	{
+	struct anti_aim_t {
 		bool m_enabled{};
 		bool m_desync{};
 		bool m_fake_lags{};
@@ -50,13 +45,11 @@ public:
 		int m_pitch_mode{};
 		int m_desync_mode{};
 
-		key_bind_t m_inverter = key_bind_t();
+		key_bind_t m_inverter = key_bind_t( );
 	}m_anti_aim{};
 
-	struct esp_t
-	{
-		struct player_t
-		{
+	struct esp_t {
+		struct player_t {
 			bool m_name{};
 			bool m_box{};
 			bool m_health_bar{};
@@ -67,4 +60,4 @@ public:
 	}m_esp{};
 };
 
-inline auto g_cfg = c_cfg();
+inline auto g_cfg = c_cfg( );

@@ -6,8 +6,7 @@ class c_weapon;
 class c_base_player;
 class matrix_t;
 
-class c_weapon_info
-{
+class c_weapon_info {
 public:
 	char gap14[140];
 	char* m_weapon_name;
@@ -22,7 +21,7 @@ public:
 	char gapED[3];
 	int m_damage;
 	float m_headshot_multiplier;
-	float m_armor_ratio; 
+	float m_armor_ratio;
 	int m_bullets;
 	float m_penetration;
 	float m_flinch_velocity_modifier_large;
@@ -99,29 +98,29 @@ public:
 	bool m_cannot_shoot_underwater;
 };
 
-struct anim_layer_t
-{
-	char pad_0x01[0x14];
-	int	m_order;
-	int	m_sequence;
-	float m_previous_cycle;
-	float m_weight;
-	float m_weight_delta_rate;
-	float m_playback_rate;
-	float m_cycle;
-	void* m_owner;
-	char pad_0x02[0x4];
+class c_anim_layer {
+public:
+	char pad_0x01[0x14]{};
+	int	m_order{};
+	int	m_sequence{};
+	float m_previous_cycle{};
+	float m_weight{};
+	float m_weight_delta_rate{};
+	float m_playback_rate{};
+	float m_cycle{};
+	void* m_owner{};
+	char pad_0x02[0x4]{};
 };
 
-struct anim_state_pose_param_cache_t
-{
-	std::uint8_t pad_0x0[0x4]; //0x0
-	std::uint32_t m_idx; //0x4 
-	char* m_name; //0x8
+class c_anim_state_pose_param_cache {
+public:
+	std::uint8_t pad_0x0[0x4]{}; //0x0
+	std::uint32_t m_idx{}; //0x4 
+	char* m_name{}; //0x8
 };
 
-struct procedural_foot_t
-{
+class procedural_foot_t {
+public:
 	c_vec3 m_pos_anim{};
 	c_vec3 m_pos_anim_last{};
 	c_vec3 m_pos_plant{};
@@ -178,26 +177,26 @@ public:
 	uint8_t pad_0x0128[0xC]{}; //0x0128
 	bool m_moving{}; //0x0134
 	uint8_t pad_0x0135[0x7B]{}; //0x0135
-	anim_state_pose_param_cache_t m_lean_yaw_pose{}; //0x1B0
-	anim_state_pose_param_cache_t m_speed_pose{}; //0x01BC
-	anim_state_pose_param_cache_t m_ladder_speed_pose{}; //0x01C8
-	anim_state_pose_param_cache_t m_ladder_yaw_pose{}; //0x01D4
-	anim_state_pose_param_cache_t m_move_yaw_pose{}; //0x01E0
-	anim_state_pose_param_cache_t m_run_pose{}; //0x01EC 
-	anim_state_pose_param_cache_t m_body_yaw_pose{}; //0x01F8
-	anim_state_pose_param_cache_t m_body_pitch_pose{}; //0x0204
-	anim_state_pose_param_cache_t m_dead_yaw_pose{}; //0x0210
-	anim_state_pose_param_cache_t m_stand_pose{}; //0x021C
-	anim_state_pose_param_cache_t m_jump_fall_pose{}; //0x0228
-	anim_state_pose_param_cache_t m_aim_blend_stand_idle_pose{}; //0x0234
-	anim_state_pose_param_cache_t m_aim_blend_crouch_idle_pose{}; //0x0240
-	anim_state_pose_param_cache_t m_strafe_yaw_pose{}; //0x024C
-	anim_state_pose_param_cache_t m_aim_blend_stand_walk_pose{}; //0x0258
-	anim_state_pose_param_cache_t m_aim_blend_stand_run_pose{}; //0x0264
-	anim_state_pose_param_cache_t m_aim_blend_crouch_walk_pose{}; //0x0270
-	anim_state_pose_param_cache_t m_move_blend_walk_pose{}; //0x027C
-	anim_state_pose_param_cache_t m_move_blend_run_pose{}; //0x0288
-	anim_state_pose_param_cache_t m_move_blend_crouch_pose{}; //0x0294
+	c_anim_state_pose_param_cache m_lean_yaw_pose{}; //0x1B0
+	c_anim_state_pose_param_cache m_speed_pose{}; //0x01BC
+	c_anim_state_pose_param_cache m_ladder_speed_pose{}; //0x01C8
+	c_anim_state_pose_param_cache m_ladder_yaw_pose{}; //0x01D4
+	c_anim_state_pose_param_cache m_move_yaw_pose{}; //0x01E0
+	c_anim_state_pose_param_cache m_run_pose{}; //0x01EC 
+	c_anim_state_pose_param_cache m_body_yaw_pose{}; //0x01F8
+	c_anim_state_pose_param_cache m_body_pitch_pose{}; //0x0204
+	c_anim_state_pose_param_cache m_dead_yaw_pose{}; //0x0210
+	c_anim_state_pose_param_cache m_stand_pose{}; //0x021C
+	c_anim_state_pose_param_cache m_jump_fall_pose{}; //0x0228
+	c_anim_state_pose_param_cache m_aim_blend_stand_idle_pose{}; //0x0234
+	c_anim_state_pose_param_cache m_aim_blend_crouch_idle_pose{}; //0x0240
+	c_anim_state_pose_param_cache m_strafe_yaw_pose{}; //0x024C
+	c_anim_state_pose_param_cache m_aim_blend_stand_walk_pose{}; //0x0258
+	c_anim_state_pose_param_cache m_aim_blend_stand_run_pose{}; //0x0264
+	c_anim_state_pose_param_cache m_aim_blend_crouch_walk_pose{}; //0x0270
+	c_anim_state_pose_param_cache m_move_blend_walk_pose{}; //0x027C
+	c_anim_state_pose_param_cache m_move_blend_run_pose{}; //0x0288
+	c_anim_state_pose_param_cache m_move_blend_crouch_pose{}; //0x0294
 	float m_duration_move_weight_is_too_high{};
 	float m_static_approach_speed{};
 	int m_previous_move_state{};
@@ -214,26 +213,21 @@ public:
 	float m_min_pitch{}; //0x033C
 };
 
-class c_bone_accressor
-{
+class c_bone_accressor {
 public:
-	[[nodiscard]] matrix_t* get_bone_array_for_write() const
-	{
+	[[nodiscard]] matrix_t* get_bone_array_for_write( ) const {
 		return m_bone_array;
 	}
 
-	void set_bone_array_for_write(matrix_t* bone_array)
-	{
+	void set_bone_array_for_write( matrix_t* bone_array ) {
 		m_bone_array = bone_array;
 	}
 
-	void set_readable_bones(const int flags)
-	{
+	void set_readable_bones( const int flags ) {
 		m_readable_bones = flags;
 	}
 
-	void set_writable_bones(const int flags)
-	{
+	void set_writable_bones( const int flags ) {
 		m_writable_bones = flags;
 	}
 private:

@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <algorithm>
 
-class c_bf_read
-{
+class c_bf_read {
 public:
 	const char* m_debug_name{};
 	bool m_overflow{};
@@ -16,12 +15,13 @@ public:
 	const uint32_t* m_buffer_end{};
 	const uint32_t* m_data{};
 
-	c_bf_read() = default;
+	c_bf_read( ) = default;
 
-	c_bf_read(const void* data, const int bytes, const int bits = -1) { start_reading(data, bytes, 0, bits); }
+	c_bf_read( const void* data, const int bytes, const int bits = -1 ) {
+		start_reading( data, bytes, 0, bits );
+	}
 
-	__forceinline void start_reading(const void* data, const int bytes, const int start_bit, const int bits)
-	{
+	__forceinline void start_reading( const void* data, const int bytes, const int start_bit, const int bits ) {
 		m_data = reinterpret_cast<const uint32_t*>(data);
 		m_data_in = m_data;
 		m_data_bytes = bytes;
@@ -31,18 +31,15 @@ public:
 		m_overflow = false;
 		m_buffer_end = reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(m_data) + bytes);
 
-		if (m_data)
-		{
-			seek(start_bit);
+		if ( m_data ) {
+			seek( start_bit );
 		}
 	}
 
-	__forceinline bool seek(int pos)
-	{
+	__forceinline bool seek( int pos ) {
 		auto succ = true;
-		if (pos < 0
-			|| pos > m_data_bits)
-		{
+		if ( pos < 0
+			 || pos > m_data_bits ) {
 			m_overflow = true;
 			succ = false;
 			pos = m_data_bits;
@@ -50,22 +47,18 @@ public:
 
 		const auto head = m_data_bytes & 3;
 
-		if (const auto byeteofs = pos / 8; m_data_bytes < 4
-			|| head && byeteofs < head)
-		{
+		if ( const auto byeteofs = pos / 8; m_data_bytes < 4
+			 || head && byeteofs < head ) {
 			auto partial = reinterpret_cast<const uint8_t*>(m_data);
 
-			if (m_data)
-			{
+			if ( m_data ) {
 				m_in_buf_word = *partial++;
 
-				if (head > 1)
-				{
+				if ( head > 1 ) {
 					m_in_buf_word |= *partial++ << 8;
 				}
 
-				if (head > 2)
-				{
+				if ( head > 2 ) {
 					m_in_buf_word |= *partial++ << 16;
 				}
 			}
@@ -74,52 +67,44 @@ public:
 			m_in_buf_word >>= pos & 31;
 			m_bits_avail = (head << 3) - (pos & 31);
 		}
-		else
-		{
+		else {
 			const auto adj_pos = pos - (head << 3);
 
 			m_data_in = reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(m_data) + (adj_pos / 32 << 2)
-				+ head);
+														   + head);
 
-			if (m_data)
-			{
+			if ( m_data ) {
 				m_bits_avail = 32;
 
-				grab_next_dword();
+				grab_next_dword( );
 			}
-			else
-			{
+			else {
 				m_in_buf_word = 0;
 				m_bits_avail = 1;
 			}
 
 			m_in_buf_word >>= adj_pos & 31;
-			m_bits_avail = std::min<int>(m_bits_avail, 32 - (adj_pos & 31));
+			m_bits_avail = std::min<int>( m_bits_avail, 32 - (adj_pos & 31) );
 		}
 
 		return succ;
 	}
 
-	__forceinline void grab_next_dword(const bool overflow_immediately = false)
-	{
-		if (m_data_in == m_buffer_end)
-		{
+	__forceinline void grab_next_dword( const bool overflow_immediately = false ) {
+		if ( m_data_in == m_buffer_end ) {
 			m_bits_avail = 1;
 			m_in_buf_word = 0;
 			m_data_in++;
 
-			if (overflow_immediately)
-			{
+			if ( overflow_immediately ) {
 				m_overflow = true;
 			}
 		}
-		else if (m_data_in > m_buffer_end)
-		{
+		else if ( m_data_in > m_buffer_end ) {
 			m_overflow = true;
 			m_in_buf_word = 0;
 		}
-		else
-		{
+		else {
 			m_in_buf_word = *m_data_in++;
 		}
 	}

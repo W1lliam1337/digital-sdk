@@ -2,8 +2,7 @@
 #include "../../math/qangle.h"
 #include "i_client.h"
 
-struct event_info_t
-{
+struct event_info_t {
 	int				m_class_id{};
 	float			m_delay{};
 	char			pad1[4]{};
@@ -12,8 +11,7 @@ struct event_info_t
 	event_info_t* m_next{};
 };
 
-class i_net_channel
-{
+class i_net_channel {
 public:
 	char pad_0000[20]{};           //0x0000
 	bool m_processing_messages{};  //0x0014
@@ -28,8 +26,7 @@ public:
 	char pad_0030[1044]{};         //0x0030
 };
 
-class c_clock_drift_mgr
-{
+class c_clock_drift_mgr {
 public:
 	float m_clock_offsets[16]{};   //0x0000
 	uint32_t m_cur_clock_offset{}; //0x0044
@@ -37,8 +34,7 @@ public:
 	uint32_t m_client_tick{};     //0x004C
 };
 
-class i_client_state
-{
+class i_client_state {
 public:
 	char			pad0[0x9C]{};
 	i_net_channel* m_net_channel{};
@@ -53,8 +49,7 @@ public:
 	int				m_server_count{};
 	int				m_cur_sequence{};
 	char			pad4[8]{};
-	struct
-	{
+	struct {
 		float		m_clock_offsets[0x10]{};
 		int			m_cur_clock_offset{};
 		int			m_server_tick{};

@@ -150,6 +150,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="cheat\features\anti-aim\anti_aim.h" />
     <ClInclude Include="cheat\features\misc\events\events.h" />
     <ClInclude Include="cheat\features\misc\log-system\logs.h" />
+    <ClInclude Include="dependencies\minhook\headers\MinHook.h" />
     <ClInclude Include="sdk\other\key-values\key_values.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
     <ClInclude Include="sdk\game\inferno.h" />
