@@ -102,7 +102,7 @@ void render::circle_3d( const c_vec3 position, const int point_count, const floa
 		c_vec3 start_2d, end_2d;
 		if ( interfaces::m_debug_overlay->screen_position( start, start_2d )
 			 || interfaces::m_debug_overlay->screen_position( end, end_2d ) )
-			return;
+			continue;
 
 		line( start_2d.x, start_2d.y, end_2d.x, end_2d.y, color, 1.0f );
 	}

@@ -2,7 +2,7 @@
 
 #include "i_app_sys.h"
 
-class studiohdr_t;
+class c_studio_hdr;
 struct studiohwdata_t;
 struct vcollide_t;
 struct virtualmodel_t;
@@ -47,7 +47,7 @@ public:
 	virtual int add_ref( unsigned short handle ) = 0;
 	virtual int release( unsigned short handle ) = 0;
 	virtual int get_ref( unsigned short handle ) = 0;
-	virtual studiohdr_t* get_studio_hdr( unsigned short handle ) = 0;
+	virtual c_studio_hdr* get_studio_hdr( unsigned short handle ) = 0;
 	virtual studiohwdata_t* get_hardware_data( unsigned short handle ) = 0;
 	virtual vcollide_t* get_vcollide( unsigned short handle ) = 0;
 	virtual unsigned char* get_anim_block( unsigned short handle, int nBlock ) = 0;
@@ -61,7 +61,7 @@ public:
 	virtual void flush( mdl_cache_flush_t nFlushFlags = mdlcache_flush_all ) = 0;
 	virtual void flush( unsigned short handle, int nFlushFlags = mdlcache_flush_all ) = 0;
 	virtual const char* get_model_name( unsigned short handle ) = 0;
-	virtual virtualmodel_t* get_virtual_model_fast( const studiohdr_t* pStudioHdr, unsigned short handle ) = 0;
+	virtual virtualmodel_t* get_virtual_model_fast( const c_studio_hdr* pStudioHdr, unsigned short handle ) = 0;
 	virtual void begin_lock( ) = 0;
 	virtual void end_lock( ) = 0;
 	virtual int* get_frame_unlock_counter_ptr_old( ) = 0;
@@ -77,7 +77,7 @@ public:
 	virtual void shutdown_preload_data( ) = 0;
 	virtual bool is_data_loaded( unsigned short handle, mdl_cache_data_type_t type ) = 0;
 	virtual int* get_frame_unlock_counter_ptr( mdl_cache_data_type_t type ) = 0;
-	virtual studiohdr_t* lock_studio_hdr( unsigned short handle ) = 0;
+	virtual c_studio_hdr* lock_studio_hdr( unsigned short handle ) = 0;
 	virtual void unlock_studio_hdr( unsigned short handle ) = 0;
 	virtual bool preload_model( unsigned short handle ) = 0;
 	virtual void reset_error_model_status( unsigned short handle ) = 0;

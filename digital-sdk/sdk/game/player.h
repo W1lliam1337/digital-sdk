@@ -43,7 +43,7 @@ public:
 	GET_OFFSET( c_bone_accressor, get_bone_accessor, 0x26A8 );
 	GET_OFFSET( c_utl_vector<matrix_t>, get_bone_cache, 0x2914 );
 	GET_OFFSET( bool, should_use_new_anim_state, 0x9B14 );
-	GET_OFFSET( studiohdr_t*, get_model_ptr, 0x2950 );
+	GET_OFFSET( c_studio_hdr*, get_model_ptr, 0x2950 );
 	GET_OFFSET( c_anim_layer*, get_anim_layers, 0x2990 );
 	GET_OFFSET( int, get_custom_blending_rule_mask, 0xA24 );
 	GET_OFFSET( float, get_spawn_time, 0x103C0 );
@@ -84,7 +84,7 @@ public:
 		if ( !hdr )
 			return 0;
 
-		static const auto sequence_activity_fn = reinterpret_cast<int( __fastcall* )(void*, studiohdr_t*, int)>(utils::sig( modules::m_client_dll, _( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) ));
+		static const auto sequence_activity_fn = reinterpret_cast<int( __fastcall* )(void*, c_studio_hdr*, int)>(utils::sig( modules::m_client_dll, _( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) ));
 		return sequence_activity_fn( this, hdr, sequence );
 	}
 
@@ -102,8 +102,6 @@ public:
 	}
 
 	bool is_armored( const int hit_group ) const {
-		bool is_armored = false;
-
 		if ( this->get_armour_value( ) > 0 ) {
 			switch ( hit_group ) {
 				case hitgroup_generic:
@@ -112,21 +110,21 @@ public:
 				case hitgroup_leftarm:
 				case hitgroup_rightarm:
 				case hitgroup_neck:
-					is_armored = true;
+					return true;
 					break;
 				case hitgroup_head:
 					if ( this->has_helmet( ) )
-						is_armored = true;
+						return true;
 				case hitgroup_leftleg:
 				case hitgroup_rightleg:
 					if ( this->has_heavy_armor( ) )
-						is_armored = true;
+						return true;
 					break;
 				default: break;
 			}
 		}
 
-		return is_armored;
+		return false;
 	}
 
 	void set_sequence( const int flag ) {

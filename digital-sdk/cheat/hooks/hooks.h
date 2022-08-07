@@ -33,7 +33,7 @@ namespace hooks {
 	bool __fastcall hk_is_paused( i_engine* engine, void* edx );
 	bool __fastcall hk_is_hltv( i_engine* engine, void* edx );
 	void __fastcall hk_draw_model_execute( i_model_render* model_render, void* edx, void* ctx, draw_model_state_t& state, model_render_info_t& info, matrix_t* custom_bone_to_world );
-	float __fastcall hk_get_fov( void* ecx, void* edx );
+	float __fastcall hk_get_fov( c_base_player* player, void* edx );
 	void init_wnd_proc( );
 	long __stdcall hk_wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm );
 	void unhook( LPVOID target );

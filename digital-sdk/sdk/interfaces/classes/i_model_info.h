@@ -1,7 +1,7 @@
 #pragma once
 #include "../../../utils/utils.h"
 
-class studiohdr_t;
+class c_studio_hdr;
 struct model_t;
 
 class i_model_info {
@@ -18,7 +18,7 @@ public:
 		return utils::call_vfunc<const char* (__thiscall*)(i_model_info*, const void*)>( this, 3 )(this, model);
 	}
 
-	studiohdr_t* get_studio_model( const model_t* model ) {
-		return utils::call_vfunc< studiohdr_t* (__thiscall*)(i_model_info*, const model_t*)>( this, 32 )(this, model);
+	c_studio_hdr* get_studio_model( const model_t* model ) {
+		return utils::call_vfunc< c_studio_hdr* (__thiscall*)(i_model_info*, const model_t*)>( this, 32 )(this, model);
 	}
 };

@@ -157,7 +157,7 @@ struct mstudiohitboxset_t {
 	}
 };
 
-class studiohdr_t {
+class c_studio_hdr {
 public:
 	__int32 m_id{}; //0x0000 
 	__int32 m_version{}; //0x0004 
@@ -223,7 +223,7 @@ struct model_render_info_t {
 using studio_decal_handle_t = void*;
 
 struct draw_model_state_t {
-	studiohdr_t* m_studio_hdr{};
+	c_studio_hdr* m_studio_hdr{};
 	studiohwdata_t* m_studio_hwdara{};
 	i_client_renderable* m_entity{};
 	const matrix_t* m_model_to_world{};

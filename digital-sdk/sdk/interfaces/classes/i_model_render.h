@@ -24,7 +24,7 @@ public:
 	virtual int draw_model( int flags, void* renderable, unsigned short instance, int entity_index, void* model, c_vec3 const& origin, c_vec3 const& angles, int skin, int body, int hitboxset, const matrix_t* modelToWorld = NULL, const matrix_t* pLightingOffset = NULL ) = 0;
 	virtual void force_material( i_material* mat, int nOverrideType = 0, int nOverrides = 0 ) = 0;
 	virtual bool is_forced_material( void ) = 0;
-	virtual void set_view_target( const class studiohdr_t* studio_hdr, int body_index, const c_vec3& target ) = 0;
+	virtual void set_view_target( const class c_studio_hdr* studio_hdr, int body_index, const c_vec3& target ) = 0;
 	virtual unsigned short create_instance( void* renderable, void* cache = nullptr ) = 0;
 	virtual void destroy_instance( unsigned short handle ) = 0;
 	virtual void set_static_lighting( unsigned short handle, void* _handle ) = 0;
