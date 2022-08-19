@@ -160,6 +160,7 @@
     <ClInclude Include="cheat\features\misc\events\events.h" />
     <ClInclude Include="cheat\features\misc\log-system\logs.h" />
     <ClInclude Include="dependencies\minhook\headers\MinHook.h" />
+    <ClInclude Include="sdk\game\client_precipitation.h" />
     <ClInclude Include="sdk\other\key-values\key_values.h" />
     <ClInclude Include="sdk\game\breakable_surface.h" />
     <ClInclude Include="sdk\game\inferno.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="cheat\hooks\hooked\base_player.cpp" />
     <ClCompile Include="cheat\hooks\hooked\direct_device.cpp" />
     <ClCompile Include="cheat\hooks\hooked\engine.cpp" />
+    <ClCompile Include="cheat\hooks\hooked\material_system.cpp" />
     <ClCompile Include="cheat\hooks\hooked\model_render.cpp" />
     <ClCompile Include="cheat\hooks\hooked\panel.cpp" />
     <ClCompile Include="cheat\hooks\hooked\surface.cpp" />

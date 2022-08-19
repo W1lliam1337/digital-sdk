@@ -81,7 +81,7 @@ void player_esp::draw( ) {
 		render_box( bbox, entity );
 		render_name( bbox, entity );
 		render_health_bar( bbox, entity );
-		//render_weapon(bbox, entity);
+		//render_weapon( bbox, entity );
 	}
 }
 
@@ -102,8 +102,8 @@ void player_esp::render_name( const RECT bbox, c_base_player* player ) {
 	interfaces::m_engine->get_player_info( player->get_index( ), &p_info );
 	const std::string name = p_info.m_name;
 
-	render::text( render::fonts::m_esp, ImVec2( bbox.left + (bbox.right - bbox.left) * 0.5f, bbox.top - 17 ),
-				  name, c_color::white, true );
+	render::text( render::fonts::m_esp, ImVec2( bbox.left + (bbox.right - bbox.left) / 2.0f, bbox.top - 17 ),
+				  name, c_color::white, true, true );
 }
 
 void player_esp::render_health_bar( const RECT bbox, c_base_player* player ) {
@@ -122,8 +122,8 @@ void player_esp::render_health_bar( const RECT bbox, c_base_player* player ) {
 						 bbox.left - 3.0f, bbox.top + colored_bar_max_height, c_color( 0, 255, 0 ) );
 
 	if ( g_cfg.m_esp.m_player[m_type].m_health_text ) {
-		render::text( render::fonts::m_esp, ImVec2( bbox.left - 20, bbox.top - 2.0f ),
-					  std::to_string( player->get_health( ) ), c_color( 0, 255, 0 ), false, true );
+		render::text( render::fonts::m_esp, ImVec2( bbox.left - 20, bbox.top + (colored_bar_max_height - colored_bar_height) ),
+					  std::to_string( player->get_health( ) ), c_color( 0, 255, 0 ), true, true );
 	}
 }
 
@@ -136,8 +136,8 @@ void player_esp::render_weapon( const RECT bbox, c_base_player* player ) {
 	if ( !weapon_data )
 		return;
 
-	const std::string name = weapon_data->m_weapon_name;
-
-	render::text( render::fonts::m_esp, ImVec2( bbox.left + (bbox.right - bbox.left) * 0.5f, bbox.bottom + 10 ),
-				  name, c_color::white, true );
+	if ( g_cfg.m_esp.m_player[m_type].m_weapon_text ) {
+		render::text( render::fonts::m_esp, ImVec2( bbox.left + (bbox.right - bbox.left) / 2.0f, bbox.bottom + 3 ),
+					  weapon->get_weapon_type( ), c_color::white, true, true );
+	}
 }

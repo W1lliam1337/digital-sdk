@@ -4,6 +4,7 @@
 void c_events::init( ) noexcept {
 	interfaces::m_event_manager->add_listener( this, _( "player_hurt" ), false );
 	interfaces::m_event_manager->add_listener( this, _( "player_death" ), false );
+	interfaces::m_event_manager->add_listener( this, _( "cs_win_panel_round" ), false );
 }
 
 void c_events::fire_game_event( i_game_event* event ) {
@@ -14,6 +15,44 @@ void c_events::fire_game_event( i_game_event* event ) {
 
 	player_hurt( event, event_name );
 	player_death( event, event_name );
+	cs_win_panel_round( event, event_name );
+}
+
+void c_events::cs_win_panel_round( i_game_event* event, const char* event_name ) {
+	if ( strcmp( event_name, _( "cs_win_panel_round" ) ) )
+		return;
+
+	switch ( const auto end_event = event->get_int( "final_event" ) ) {
+		case target_bombed:
+		case vip_assassinated:
+		case terrorists_escaped:
+		case terrorists_win:
+		case hostages_not_rescued:
+		case vip_not_escaped:
+		case cts_surrender:
+		case terrorists_planted:
+		{
+			logs::push_log( ctx::round_info::m_msg = _( "terrorists win" ) );
+		}break;
+		case vip_escaped:
+		case cts_prevent_escape:
+		case escaping_terrorists_neutralized:
+		case bomb_defused:
+		case cts_win:
+		case all_hostages_rescued:
+		case target_saved:
+		case terrorists_not_escaped:
+		case terrorists_surrender:
+		case cts_reached_hostage:
+		{
+			logs::push_log( ctx::round_info::m_msg = _( "cts win" ) );
+		}break;
+		case round_draw:
+		{
+			logs::push_log( ctx::round_info::m_msg = _( "round draw" ) );
+		}break;
+		default: break;
+	}
 }
 
 void c_events::player_hurt( i_game_event* event, const char* event_name ) const {
@@ -28,7 +67,7 @@ void c_events::player_hurt( i_game_event* event, const char* event_name ) const 
 	if ( !hurt_player || !hurt_player->is_player( ) )
 		return;
 
-	auto get_hitbox_by_hitgroup = [] ( const int hitgroup ) -> int {
+	const auto get_hitbox_by_hitgroup = [] ( const int hitgroup ) -> int {
 		switch ( hitgroup ) {
 			case hitgroup_head:
 				return hitbox_head;
@@ -49,7 +88,7 @@ void c_events::player_hurt( i_game_event* event, const char* event_name ) const 
 		}
 	};
 
-	auto get_hitbox_name_from_hitgroup = [get_hitbox_by_hitgroup] ( const int hitgroup ) -> std::string {
+	const auto get_hitbox_name_from_hitgroup = [get_hitbox_by_hitgroup] ( const int hitgroup ) -> std::string {
 		switch ( get_hitbox_by_hitgroup( hitgroup ) ) {
 			case hitbox_head:
 				return _( "head" );

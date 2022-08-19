@@ -10,6 +10,8 @@ void __stdcall hooks::hk_create_move( int sequence, float frame_time, bool is_ac
 		return;
 
 	ctx::packet_data::m_cmd = cmd;
+	ctx::packet_data::m_ver_cmd = verified_cmd;
+
 	ctx::packet_data::m_send_packet = true;
 
 	engine_prediction::update( );

@@ -30,10 +30,9 @@ public:
 	GET_NETVAR_OFFSET( float, get_old_sim_time, _( "DT_CSPlayer" ), _( "m_flSimulationTime" ), 0x4 );
 
 	GET_OFFSET( int, get_occlusion_frame, 0xA30 );
-	GET_OFFSET( int, get_occlusion_mask, 0xA28 );
+	GET_OFFSET( unsigned int, get_anim_lod_flags, 0xA28 );
 	GET_OFFSET( int, get_client_effects, 0x68 );
 	GET_OFFSET( int, get_last_skip_framecount, 0xA68 );
-	GET_OFFSET( int, get_most_recent_model_bone_counter, 2690 );
 	GET_OFFSET( bool, get_maintain_sequence_transition, 0x9F0 );
 	GET_OFFSET( bool, get_jiggle_bones, 0x2930 );
 	GET_OFFSET( uint32_t, get_effects, 0xF0 );
@@ -56,6 +55,9 @@ public:
 	GET_OFFSET( int, get_button_disabled, 0x3340 );
 	GET_OFFSET( c_user_cmd*, get_current_cmd, 0x3348 );
 	GET_OFFSET( c_user_cmd*, get_last_cmd, 0x3298 );
+	GET_OFFSET( bool, addon_models_are_out_of_date, 0x1179E );
+	GET_OFFSET( uint32_t, get_last_bone_setup_time, 0x2928 );
+	GET_OFFSET( uint32_t, get_most_recent_model_bone_counter, 0x2690 );
 
 	GET_VFUNC( bool( __thiscall* )(void*), is_player( ), 158 );
 	GET_VFUNC( int( __thiscall* )(void*), is_max_health( ), 122 );
@@ -70,12 +72,12 @@ public:
 
 	void set_abs_angles( const c_vec3 angles ) {
 		static const auto set_angles_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8" ) ));
-		set_angles_fn( this, angles );
+		return set_angles_fn( this, angles );
 	}
 
 	void set_abs_origin( const c_vec3 position ) {
 		static const auto set_pos_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ));
-		set_pos_fn( this, position );
+		return set_pos_fn( this, position );
 	}
 
 	int sequence_activity( const int sequence ) {
@@ -94,11 +96,11 @@ public:
 	}
 
 	void invalidate_bone_cache( ) {
-		static const auto invalidate_bone_cache_fn = reinterpret_cast<std::uintptr_t>(utils::sig( modules::m_client_dll,
-																								  _( "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81" ) ) + 10);
+		static const auto invalidate_bone_cache_fn = reinterpret_cast<uintptr_t>(utils::sig( modules::m_client_dll,
+																							 _( "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81" ) ) + 10);
 
-		*reinterpret_cast<std::uint32_t*>(reinterpret_cast<std::uintptr_t>(this) + 0x2924) = 0xFF7FFFFF;
-		*reinterpret_cast<std::uint32_t*>(reinterpret_cast<std::uintptr_t>(this) + 0x2690) = **reinterpret_cast<std::uintptr_t**>(invalidate_bone_cache_fn) - 1;
+		this->get_last_bone_setup_time( ) = 0xFF7FFFFF;
+		this->get_most_recent_model_bone_counter( ) = **reinterpret_cast<uintptr_t**>(invalidate_bone_cache_fn) - 1;
 	}
 
 	bool is_armored( const int hit_group ) const {
@@ -185,6 +187,12 @@ public:
 		return physics_run_think_fn( this, index );
 	}
 
+	bool lookup_bone( const char* pos ) {
+		static const auto lookup_bone_fn = reinterpret_cast<int( __thiscall* )(void*, const char*)>(utils::sig(
+			modules::m_client_dll, _( "55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75 14 8B 46 04 8D 4E 04 FF 50 20 85 C0 74 07 8B CE E8 ? ? ? ? 8B 8E ? ? ? ? 85 C9 0F 84" ) ));
+		return lookup_bone_fn( this, pos );
+	}
+
 	// @note: rebuild
 	// @xref: https://github.com/perilouswithadollarsign/cstrike15_src/blob/f82112a2388b841d72cb62ca48ab1846dfcc11c8/game/server/player.cpp#L4769
 	/*void post_think()
@@ -247,9 +255,9 @@ public:
 		const auto client_class = this->get_client_class( );
 		const auto network_name = client_class->m_network_name;
 
-		if ( !strcmp( network_name, "CBreakableSurface" ) )
-			*reinterpret_cast<uint8_t*>(reinterpret_cast<std::uintptr_t>(this) + take_damage) = 2;
-		else if ( !strcmp( network_name, "CBaseDoor" ) || !strcmp( network_name, "CDynamicProp" ) )
+		if ( !strcmp( network_name, _( "CBreakableSurface" ) ) )
+			*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage) = 2;
+		else if ( !strcmp( network_name, _( "CBaseDoor" ) ) || !strcmp( network_name, _( "CDynamicProp" ) ) )
 			*reinterpret_cast<uint8_t*>(reinterpret_cast<uintptr_t>(this) + take_damage) = 0;
 
 		const auto result = reinterpret_cast<bool( __thiscall* )(void*)>(is_breakable)(this);
@@ -257,7 +265,7 @@ public:
 		return result;
 	}
 
-	c_anim_state* get_anim_state( ) {
+	[[nodiscard]] c_anim_state* get_anim_state( ) {
 		return *static_cast<c_anim_state**>(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this) + 0x9960));
 	}
 };

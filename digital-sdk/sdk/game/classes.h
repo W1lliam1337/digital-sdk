@@ -7,18 +7,26 @@ class c_base_player;
 class matrix_t;
 
 class c_weapon_info {
-public:
 	char gap14[140];
+public:
 	char* m_weapon_name;
-	char gap90[56];
+private:
+	char gap90[48];
+public:
+	int m_weapon_price;
+	int m_kill_award;
 	int m_weapon_type;
+private:
 	char gap6[16];
+public:
 	float m_cycle_time;
 	float m_cycle_time_alt;
 	float m_time_to_idle;
 	float m_idle_interval;
 	bool m_is_full_auto;
+private:
 	char gapED[3];
+public:
 	int m_damage;
 	float m_headshot_multiplier;
 	float m_armor_ratio;
@@ -29,10 +37,14 @@ public:
 	float m_range;
 	float m_range_modifier;
 	float m_throw_velocity;
+private:
 	char pad11[12];
+public:
 	bool m_has_silencer;
 	char* m_silencer_model;
+private:
 	char pad12[4];
+public:
 	int m_crosshair_delta_distance;
 	float m_max_player_speed;
 	float m_max_player_speed_alt;
@@ -74,33 +86,45 @@ public:
 	float m_recovery_transition_end_bullet;
 	bool m_unzoom_after_shot;
 	bool m_hide_view_model_zoomed;
+private:
 	char gap1CE[2];
+public:
 	int m_zoom_levels;
 	int m_zoom_fov1;
 	int m_zoom_fov2;
 	float m_zoom_time0;
 	float m_zoom_time1;
 	float m_zoom_time2;
+private:
 	char gap1E8[8];
+public:
 	float m_addon_scale;
+private:
 	char gap1F4[8];
+public:
 	float m_tracer_frequency;
 	float m_tracer_frequency_alt;
+private:
 	char gap204[20];
+public:
 	float m_heat_per_shot;
+private:
 	char gap21C[8];
+public:
 	float m_inaccuracy_pitch_shift;
 	float m_inaccuracy_alt_sound_threshold;
 	float m_bot_audible_range;
+private:
 	char gap230[12];
+public:
 	bool m_has_burst_mode;
 	bool m_is_revolver;
 	bool m_cannot_shoot_underwater;
 };
 
 class c_anim_layer {
-public:
 	char pad_0x01[0x14]{};
+public:
 	int	m_order{};
 	int	m_sequence{};
 	float m_previous_cycle{};
@@ -109,12 +133,13 @@ public:
 	float m_playback_rate{};
 	float m_cycle{};
 	void* m_owner{};
+private:
 	char pad_0x02[0x4]{};
 };
 
 class c_anim_state_pose_param_cache {
-public:
 	std::uint8_t pad_0x0[0x4]{}; //0x0
+public:
 	std::uint32_t m_idx{}; //0x4 
 	char* m_name{}; //0x8
 };
@@ -130,10 +155,12 @@ public:
 };
 
 class c_anim_state {
-public:
 	std::uint8_t pad_0x0000[0x4]{}; //0x0000
+public:
 	bool m_force_update{}; //0x0005 
+private:
 	std::uint8_t pad_0x0006[0x5A]{}; //0x0006
+public:
 	c_base_player* m_player{}; //0x0060 
 	c_weapon* m_weapon{}; //0x0064 
 	c_weapon* m_last_weapon{}; //0x0068 
@@ -147,13 +174,19 @@ public:
 	float m_body_yaw{}; //0x0088 
 	float m_body_yaw_clamped{}; //0x008C 
 	float m_feet_vel_dir_delta{}; //0x0090 
+private:
 	uint8_t pad_0x0094[0x4]{}; //0x0094
+public:
 	float m_feet_cycle{}; //0x0098 
 	float m_feet_yaw_rate{}; //0x009C 
+private:
 	uint8_t pad_0x00A0[0x4]{}; //0x00A0
+public:
 	float m_duck_amount{}; //0x00A4 
 	float m_landing_duck_additive{}; //0x00A8 
+private:
 	uint8_t pad_0x00AC[0x4]{}; //0x00AC
+public:
 	c_vec3 m_origin{};
 	c_vec3 m_old_origin{};
 	c_vec3 m_velocity{};
@@ -168,15 +201,25 @@ public:
 	float m_time_since_stop{}; //0x0104 
 	bool m_on_ground{}; //0x0108 
 	bool m_hit_ground{}; //0x0109 
+private:
 	uint8_t pad_0x010A[0x4]{}; //0x010A
+public:
 	float m_time_in_air{}; //0x0110 
+private:
 	uint8_t pad_0x0114[0x6]{}; //0x0114
+public:
 	float m_ground_fraction{}; //0x011C 
+private:
 	uint8_t pad_0x0120[0x2]{}; //0x0120
+public:
 	float m_unk_fraction{}; //0x0124 
+private:
 	uint8_t pad_0x0128[0xC]{}; //0x0128
+public:
 	bool m_moving{}; //0x0134
+private:
 	uint8_t pad_0x0135[0x7B]{}; //0x0135
+public:
 	c_anim_state_pose_param_cache m_lean_yaw_pose{}; //0x1B0
 	c_anim_state_pose_param_cache m_speed_pose{}; //0x01BC
 	c_anim_state_pose_param_cache m_ladder_speed_pose{}; //0x01C8

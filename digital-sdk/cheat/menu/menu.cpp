@@ -121,7 +121,20 @@ void menu::antiaim_tab( ) {
 }
 
 void menu::world_esp_tab( ) {
+	ImGui::Checkbox( _( "World modulation" ), &g_cfg.m_visuals.m_world_modulation );
+	ImGui::SliderFloat( _( "World alpha" ), &g_cfg.m_visuals.m_world_alpha, 0.0f, 100.0f );
+	float a_color[4] =
+	{
+		g_cfg.m_visuals.m_world_modulation_color[0] / 255.0f,
+		g_cfg.m_visuals.m_world_modulation_color[1] / 255.0f,
+		g_cfg.m_visuals.m_world_modulation_color[2] / 255.0f,
+	};
 
+	if ( ImGui::ColorEdit4( _( "World color" ), a_color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_RGB ) ) {
+		g_cfg.m_visuals.m_world_modulation_color[0] = static_cast<unsigned char>(a_color[0] * 255.0f);
+		g_cfg.m_visuals.m_world_modulation_color[1] = static_cast<unsigned char>(a_color[1] * 255.0f);
+		g_cfg.m_visuals.m_world_modulation_color[2] = static_cast<unsigned char>(a_color[2] * 255.0f);
+	}
 }
 
 void menu::player_esp_tab( ) {

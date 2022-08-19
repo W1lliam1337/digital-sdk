@@ -6,6 +6,7 @@ class c_events : public i_game_event_listener {
 public:
 	void player_hurt( i_game_event* event, const char* event_name ) const;
 	void player_death( i_game_event* event, const char* event_name ) const;
+	void cs_win_panel_round( i_game_event* event, const char* event_name );
 	void fire_game_event( i_game_event* event );
 	void init( ) noexcept;
 };

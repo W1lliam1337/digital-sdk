@@ -414,6 +414,9 @@
     <ClInclude Include="dependencies\minhook\headers\MinHook.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\game\client_precipitation.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -537,6 +540,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="sdk\other\key-values\key_values.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\hooks\hooked\material_system.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

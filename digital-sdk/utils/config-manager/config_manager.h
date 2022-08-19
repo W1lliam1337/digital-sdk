@@ -56,8 +56,15 @@ public:
 			bool m_health_text{};
 			bool m_chams{};
 			bool m_invisible_chams{};
+			bool m_weapon_text{};
 		}m_player[4]{};
 	}m_esp{};
+
+	struct visuals_t {
+		float m_world_modulation_color[3];
+		float m_world_alpha{ 100.0f };
+		bool m_world_modulation{};
+	}m_visuals{};
 };
 
 inline auto g_cfg = c_cfg( );

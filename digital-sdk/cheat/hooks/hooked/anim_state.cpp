@@ -12,8 +12,7 @@ void __fastcall hooks::hk_modify_eye_position( c_anim_state* anim_state, void* e
 		return;
 	}
 
-	static auto lookup_bone = reinterpret_cast<int( __thiscall* )(void*, const char*)>(utils::sig( modules::m_client_dll, _( "55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75 14 8B 46 04 8D 4E 04 FF 50 20 85 C0 74 07 8B CE E8 ? ? ? ? 8B 8E ? ? ? ? 85 C9 0F 84" ) ));
-	const auto head_bone = lookup_bone( anim_state->m_player, _( "head_0" ) );
+	const auto head_bone = anim_state->m_player->lookup_bone( _( "head_0" ) );
 	if ( head_bone == -1 )
 		return;
 

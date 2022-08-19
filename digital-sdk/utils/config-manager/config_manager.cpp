@@ -32,6 +32,9 @@ void cfg_manager::save( const std::string cfg_name ) {
 		{ _( "anti_aim::m_desync_mode" ),	g_cfg.m_anti_aim.m_desync_mode },
 		{ _( "anti_aim::m_inverter_key_selected" ), g_cfg.m_anti_aim.m_inverter.m_key_selected },
 		{ _( "anti_aim::m_inverter_mode_selected" ), g_cfg.m_anti_aim.m_inverter.m_mode_selected },
+
+		{ _( "visuals::m_world_modulation" ), g_cfg.m_visuals.m_world_modulation },
+		{ _( "visuals::m_world_alpha" ), g_cfg.m_visuals.m_world_alpha },
 	};
 
 	for ( int i{}; i <= 3; i++ ) {
@@ -41,6 +44,7 @@ void cfg_manager::save( const std::string cfg_name ) {
 		j[_( "esp::" )][std::to_string( i )][_( "m_health_text" )] = g_cfg.m_esp.m_player[i].m_health_text;
 		j[_( "esp::" )][std::to_string( i )][_( "m_chams" )] = g_cfg.m_esp.m_player[i].m_chams;
 		j[_( "esp::" )][std::to_string( i )][_( "m_invisible_chams" )] = g_cfg.m_esp.m_player[i].m_invisible_chams;
+		j[_( "esp::" )][std::to_string( i )][_( "m_weapon_text" )] = g_cfg.m_esp.m_player[i].m_weapon_text;
 	}
 
 	// write data to file
@@ -98,6 +102,9 @@ void cfg_manager::load( const std::string cfg_name ) {
 	g_cfg.m_anti_aim.m_inverter.m_key_selected = j[_( "anti_aim::m_inverter_key_selected" )];
 	g_cfg.m_anti_aim.m_inverter.m_mode_selected = j[_( "anti_aim::m_inverter_mode_selected" )];
 
+	g_cfg.m_visuals.m_world_modulation = j[_( "visuals::m_world_modulation" )];
+	g_cfg.m_visuals.m_world_alpha = j[_( "visuals::m_world_alpha" )];
+
 	for ( int i{}; i <= 3; i++ ) {
 		g_cfg.m_esp.m_player[i].m_name = j[_( "esp::" )][std::to_string( i )][_( "m_name" )];
 		g_cfg.m_esp.m_player[i].m_box = j[_( "esp::" )][std::to_string( i )][_( "m_box" )];
@@ -105,6 +112,7 @@ void cfg_manager::load( const std::string cfg_name ) {
 		g_cfg.m_esp.m_player[i].m_health_text = j[_( "esp::" )][std::to_string( i )][_( "m_health_text" )];
 		g_cfg.m_esp.m_player[i].m_chams = j[_( "esp::" )][std::to_string( i )][_( "m_chams" )];
 		g_cfg.m_esp.m_player[i].m_invisible_chams = j[_( "esp::" )][std::to_string( i )][_( "m_invisible_chams" )];
+		g_cfg.m_esp.m_player[i].m_weapon_text = j[_( "esp::" )][std::to_string( i )][_( "m_weapon_text" )];
 	}
 
 	file.close( );

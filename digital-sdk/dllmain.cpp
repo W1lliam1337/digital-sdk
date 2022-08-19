@@ -45,7 +45,7 @@ BOOL APIENTRY DllMain( HMODULE hmodule,
 					   LPVOID reserved
 ) {
 	if ( reason_for_call != DLL_PROCESS_ATTACH )
-		return TRUE;
+		return FALSE;
 
 	/* @xref: https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-disablethreadlibrarycalls */
 	DisableThreadLibraryCalls( hmodule );

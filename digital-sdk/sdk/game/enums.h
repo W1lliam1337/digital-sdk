@@ -1,7 +1,6 @@
 #pragma once
 
-enum e_effects
-{
+enum e_effects {
 	ef_bone_merge = 0x001,
 	ef_bright_light = 0x002,
 	ef_dimlight = 0x004,
@@ -20,8 +19,7 @@ enum e_effects
 	ef_max_bits = 15
 };
 
-enum e_buttons
-{
+enum e_buttons {
 	in_attack = 1 << 0,
 	in_jump = 1 << 1,
 	in_duck = 1 << 2,
@@ -50,8 +48,7 @@ enum e_buttons
 	in_lookspin = 1 << 25
 };
 
-enum e_frame_stage
-{
+enum e_frame_stage {
 	frame_undefined = -1,
 	frame_start,
 	frame_net_update_start,
@@ -62,8 +59,7 @@ enum e_frame_stage
 	frame_render_end
 };
 
-enum e_chars
-{
+enum e_chars {
 	char_tex_antlion = 'a',
 	char_tex_bloodyflesh = 'b',
 	char_tex_concrete = 'c',
@@ -87,24 +83,21 @@ enum e_chars
 	char_tex_warpshield = 'z',
 };
 
-enum e_team_id
-{
+enum e_team_id {
 	team_unassigned = 0,
 	team_spectator,
 	team_tt,
 	team_ct
 };
 
-enum e_life_state
-{
+enum e_life_state {
 	life_alive = 0,
 	life_dying = 1,
 	life_dead = 2,
 	max_life_state
 };
 
-enum e_move_type
-{
+enum e_move_type {
 	move_type_none = 0,
 	move_type_isometric,
 	move_type_walk,
@@ -121,8 +114,7 @@ enum e_move_type
 	move_type_max_bits = 4
 };
 
-enum e_flags
-{
+enum e_flags {
 	fl_on_ground = 1 << 0,
 	fl_ducking = 1 << 1,
 	fl_anim_ducking = 1 << 2,
@@ -157,8 +149,7 @@ enum e_flags
 	fl_unblockable_by_player = 1 << 31
 };
 
-enum e_collision_group
-{
+enum e_collision_group {
 	collision_group_none = 0,
 	collision_group_debris,						// collides with nothing but world and static stuff
 	collision_group_debris_trigger,				// same as debris, but hits triggers
@@ -184,8 +175,7 @@ enum e_collision_group
 	last_shared_collision_group
 };
 
-enum e_idx : short
-{
+enum e_idx : short {
 	weapon_none = 0,
 	weapon_deagle,
 	weapon_elite,
@@ -279,8 +269,7 @@ enum e_idx : short
 	glove_hydra,
 };
 
-enum e_weapon_type
-{
+enum e_weapon_type {
 	weapon_type_knife = 0,
 	weapon_type_pistol,
 	weapon_type_submachinegun,
@@ -298,8 +287,19 @@ enum {
 	max_inferno_fires = 100
 };
 
-enum e_class_id
-{
+enum e_precipitation_type : int {
+	precipitation_type_rain = 0,
+	precipitation_type_snow,
+	precipitation_type_ash,
+	precipitation_type_snowfall,
+	precipitation_type_particle_rain,
+	precipitation_type_particle_ash,
+	precipitation_type_particle_rain_storm,
+	precipitation_type_particle_snow,
+	max_precipitation_types
+};
+
+enum e_class_id {
 	class_id_ai_base_npc = 0,
 	class_id_c_ak47,
 	class_id_base_animating,
@@ -586,8 +586,7 @@ enum e_class_id
 	class_id_spore_trail
 };
 
-enum e_animationlayer
-{
+enum e_animationlayer {
 	animation_layer_aimmatrix = 0,
 	animation_layer_weapon_action,
 	animation_layer_weapon_action_recrouch,
@@ -1608,8 +1607,7 @@ enum e_activities : int {
 	activity_list_max
 };
 
-enum e_image_format
-{
+enum e_image_format {
 	image_format_unknown = -1,
 	image_format_rgba8888 = 0,
 	image_format_abgr8888,
@@ -1653,4 +1651,30 @@ enum e_image_format
 	image_format_dxt1_runtime,
 	image_format_dxt5_runtime,
 	num_image_formats
+};
+
+enum e_round_end_reason {
+	invalid_round_end_reason = -1,
+	round_end_reason_still_in_progress,
+	target_bombed,
+	vip_escaped,
+	vip_assassinated,
+	terrorists_escaped,
+	cts_prevent_escape,
+	escaping_terrorists_neutralized,
+	bomb_defused,
+	cts_win,
+	terrorists_win,
+	round_draw,
+	all_hostages_rescued,
+	target_saved,
+	hostages_not_rescued,
+	terrorists_not_escaped,
+	vip_not_escaped,
+	game_commencing,
+	terrorists_surrender,
+	cts_surrender,
+	terrorists_planted,
+	cts_reached_hostage,
+	round_end_reason_count,
 };

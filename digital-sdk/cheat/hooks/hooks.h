@@ -34,6 +34,8 @@ namespace hooks {
 	bool __fastcall hk_is_hltv( i_engine* engine, void* edx );
 	void __fastcall hk_draw_model_execute( i_model_render* model_render, void* edx, void* ctx, draw_model_state_t& state, model_render_info_t& info, matrix_t* custom_bone_to_world );
 	float __fastcall hk_get_fov( c_base_player* player, void* edx );
+	void __fastcall hk_get_color_modulation( i_material* material, void* edx, float* r, float* g, float* b );
+	float __fastcall hk_get_alpha_modulation( i_material* material, void* edx );
 	void init_wnd_proc( );
 	long __stdcall hk_wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm );
 	void unhook( LPVOID target );
@@ -44,6 +46,8 @@ namespace hooks {
 		inline create_move_t m_create_move{};
 		inline WNDPROC m_wnd_proc{};
 
+		inline decltype(&hk_get_alpha_modulation) m_get_alpha_modulation{};
+		inline decltype(&hk_get_color_modulation) m_get_color_modulation{};
 		inline decltype(&hk_get_fov) m_get_fov{};
 		inline decltype(&hk_draw_model_execute) m_draw_model_execute{};
 		inline decltype(&hk_lock_cursor) m_lock_cursor{};

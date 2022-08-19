@@ -3,10 +3,16 @@
 #include "game/weapon.h"
 #include "game/inferno.h"
 #include "interfaces/interfaces.h"
+#include "game/client_precipitation.h"
 
 namespace ctx {
+	namespace round_info {
+		inline std::string m_msg{};
+	}
+
 	namespace packet_data {
 		inline c_user_cmd* m_cmd{};
+		inline c_verified_user_cmd* m_ver_cmd{};
 		inline bool m_send_packet{};
 	}
 

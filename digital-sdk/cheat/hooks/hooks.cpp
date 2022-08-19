@@ -26,6 +26,8 @@ void hooks::init( ) {
 	static const auto build_transformations = static_cast<void*>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F0 81 EC ? ? ? ? 56 57 8B F9 8B 0D ? ? ? ? 89 7C 24 28" ) ));
 	static const auto should_skip_anim_frame = static_cast<void*>(utils::sig( modules::m_client_dll, _( "57 8B F9 8B 07 8B 80 ? ? ? ? FF D0 84 C0 75 02" ) ));
 	static const auto get_fov = static_cast<void*>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 EC 08 56 8B F1 E8 ? ? ? ? 8B 0D ? ? ? ?" ) ));
+	static const auto color_modulation = static_cast<void*>(utils::sig( modules::m_mat_sys_dll, _( "55 8B EC 83 EC ? 56 8B F1 8A 46" ) ));
+	static const auto alpha_modulation = static_cast<void*>(utils::sig( modules::m_mat_sys_dll, _( "56 8B F1 8A 46 20 C0 E8 02 A8 01 75 0B 6A 00 6A 00 6A 00 E8 ? ? ? ? 80 7E 22 05 76 0E" ) ));
 
 	HOOK( create_move, hk_create_move_proxy, og::m_create_move );
 	HOOK( reset, hk_reset, og::m_reset );
@@ -46,6 +48,8 @@ void hooks::init( ) {
 	HOOK( is_hltv, hk_is_hltv, og::m_is_hltv );
 	HOOK( dme, hk_draw_model_execute, og::m_draw_model_execute );
 	HOOK( get_fov, hk_get_fov, og::m_get_fov );
+	HOOK( color_modulation, hk_get_color_modulation, og::m_get_color_modulation );
+	HOOK( alpha_modulation, hk_get_alpha_modulation, og::m_get_alpha_modulation );
 
 	printf( "targets size: %u\n", hooks::m_targets.size( ) );
 }

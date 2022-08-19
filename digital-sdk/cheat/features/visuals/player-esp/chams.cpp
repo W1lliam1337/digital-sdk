@@ -1,7 +1,7 @@
 #include "chams.h"
 #include "../../../hooks/hooks.h"
 
-void chams::init_materials( ) {
+void chams::init_materials( ) noexcept {
 	m_regular = create_material( _( "digital_regular.vmt" ), _( "VertexLitGeneric" ), _( R"#("VertexLitGeneric" {
 			"$basetexture" "vgui/white_additive"
 			"$ignorez"      "0"
@@ -14,15 +14,15 @@ void chams::init_materials( ) {
 		})#" ) );
 }
 
-i_material* chams::create_material( std::string_view material_name, std::string_view shader_type, std::string_view material_data ) {
-	const auto key_values = new c_key_values( shader_type.data( ) );
+i_material* chams::create_material( const std::string_view material_name, const std::string_view shader_type, const std::string_view material_data ) {
+	static const auto key_values = new c_key_values( shader_type.data( ) );
 	key_values->load_from_buffer( material_name.data( ), material_data.data( ) );
 
 	return interfaces::m_material_system->create_material( material_name.data( ), key_values );
 }
 
 void chams::override_material( const c_color& clr, const bool ignorez ) {
-	const auto material = m_regular;
+	static const auto material = m_regular;
 	if ( !material )
 		return;
 
@@ -48,7 +48,7 @@ bool chams::draw_model( i_model_render* model_render, void* edx, void* context, 
 	if ( !player )
 		return true;
 
-	// @note: get the player model
+	// get the player model
 	const bool is_player = strstr( info.m_model->m_name, _( "models/player" ) );
 
 	// @note: works only for the enemy, remake it for yourself
