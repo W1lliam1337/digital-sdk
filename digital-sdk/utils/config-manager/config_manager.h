@@ -62,7 +62,7 @@ public:
 
 	struct visuals_t {
 		float m_world_modulation_color[3];
-		float m_world_alpha{ 100.0f };
+		float m_world_alpha{ 255.0f };
 		bool m_world_modulation{};
 	}m_visuals{};
 };

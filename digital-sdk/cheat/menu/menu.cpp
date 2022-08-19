@@ -122,7 +122,7 @@ void menu::antiaim_tab( ) {
 
 void menu::world_esp_tab( ) {
 	ImGui::Checkbox( _( "World modulation" ), &g_cfg.m_visuals.m_world_modulation );
-	ImGui::SliderFloat( _( "World alpha" ), &g_cfg.m_visuals.m_world_alpha, 0.0f, 100.0f );
+	ImGui::SliderFloat( _( "World alpha" ), &g_cfg.m_visuals.m_world_alpha, 0.0f, 255.0f );
 	float a_color[4] =
 	{
 		g_cfg.m_visuals.m_world_modulation_color[0] / 255.0f,
