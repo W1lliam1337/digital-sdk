@@ -20,7 +20,7 @@ namespace utils {
 
 	uint8_t* sig( HMODULE module, const std::string& byte_array );
 	template <typename T>
-	static __forceinline T call_vfunc( void* instance, std::size_t index ) {
+	[[nodiscard]] static __forceinline T call_vfunc( void* instance, std::size_t index ) {
 		return (*static_cast<T**>(instance))[index];
 	}
 

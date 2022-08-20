@@ -5,8 +5,7 @@
 #include "../../utils/utils.h"
 #include "enums.h"
 
-class c_base_entity : public i_client_entity
-{
+class c_base_entity : public i_client_entity {
 public:
 	GET_NETVAR( int, get_team, _( "DT_BaseEntity" ), _( "m_iTeamNum" ) );
 	GET_NETVAR( int, get_collision_group, _( "DT_BaseEntity" ), _( "m_CollisionGroup" ) );

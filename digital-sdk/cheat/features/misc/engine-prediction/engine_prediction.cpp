@@ -46,7 +46,7 @@ void engine_prediction::begin( ) {
 	*reinterpret_cast<int*>(m_prediction_player) = reinterpret_cast<std::uintptr_t>(ctx::local( ));
 	*reinterpret_cast<int*>(m_prediction_seed) = ctx::packet_data::m_cmd ? ctx::packet_data::m_cmd->m_random_seed : -1;
 
-	// set globals
+	// setup globals
 	interfaces::m_globals->m_current_time = ctx::ticks_to_time( ctx::local( )->get_tick_base( ) );
 	interfaces::m_globals->m_frame_time = interfaces::m_prediction->m_engine_paused
 		? 0.0f

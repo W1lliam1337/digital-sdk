@@ -19,8 +19,8 @@ void net_vars::init( ) {
 net_var_table_t net_vars::load_table( const recv_table_t* recv_table ) {
 	auto table = net_var_table_t{};
 
-	table.offset = 0;
-	table.name = recv_table->m_net_table_name;
+	table.m_offset = 0;
+	table.m_name = recv_table->m_net_table_name;
 
 	for ( auto i = 0; i < recv_table->m_props; ++i ) {
 		auto prop = &recv_table->m_props_pointer[i];
@@ -31,12 +31,12 @@ net_var_table_t net_vars::load_table( const recv_table_t* recv_table ) {
 			continue;
 
 		if ( prop->m_recv_type == dpt_datatable && prop->m_data_table ) {
-			table.child_tables.emplace_back( load_table( prop->m_data_table ) );
-			table.child_tables.back( ).offset = prop->m_offset;
-			table.child_tables.back( ).prop = prop;
+			table.m_child_tables.emplace_back( load_table( prop->m_data_table ) );
+			table.m_child_tables.back( ).m_offset = prop->m_offset;
+			table.m_child_tables.back( ).m_prop = prop;
 		}
 		else {
-			table.child_props.emplace_back( prop );
+			table.m_child_props.emplace_back( prop );
 		}
 	}
 	return table;
@@ -45,7 +45,7 @@ net_var_table_t net_vars::load_table( const recv_table_t* recv_table ) {
 uint32_t net_vars::get_offset( const std::string& table_name, const std::string& prop_name ) {
 	auto result = 0u;
 	for ( const auto& table : m_database ) {
-		if ( table.name == table_name ) {
+		if ( table.m_name == table_name ) {
 			result = get_offset( table, prop_name );
 			if ( result != 0 )
 				return result;
@@ -55,19 +55,19 @@ uint32_t net_vars::get_offset( const std::string& table_name, const std::string&
 }
 
 uint32_t net_vars::get_offset( const net_var_table_t& table, const std::string& prop_name ) {
-	for ( const auto& prop : table.child_props ) {
+	for ( const auto& prop : table.m_child_props ) {
 		if ( strncmp( prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
-			return table.offset + prop->m_offset;
+			return table.m_offset + prop->m_offset;
 		}
 	}
-	for ( const auto& child : table.child_tables ) {
+	for ( const auto& child : table.m_child_tables ) {
 		const auto prop_offset = get_offset( child, prop_name );
 		if ( prop_offset != 0 )
-			return table.offset + prop_offset;
+			return table.m_offset + prop_offset;
 	}
-	for ( const auto& child : table.child_tables ) {
-		if ( strncmp( child.prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
-			return table.offset + child.offset;
+	for ( const auto& child : table.m_child_tables ) {
+		if ( strncmp( child.m_prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
+			return table.m_offset + child.m_offset;
 		}
 	}
 	return 0;
@@ -76,7 +76,7 @@ uint32_t net_vars::get_offset( const net_var_table_t& table, const std::string& 
 recv_prop_t* net_vars::get_net_var_prop( const std::string& table_name, const std::string& prop_name ) {
 	recv_prop_t* result = nullptr;
 	for ( const auto& table : m_database ) {
-		if ( table.name == table_name ) {
+		if ( table.m_name == table_name ) {
 			result = get_net_var_prop( table, prop_name );
 		}
 	}
@@ -84,19 +84,19 @@ recv_prop_t* net_vars::get_net_var_prop( const std::string& table_name, const st
 }
 
 recv_prop_t* net_vars::get_net_var_prop( const net_var_table_t& table, const std::string& prop_name ) {
-	for ( const auto& prop : table.child_props ) {
+	for ( const auto& prop : table.m_child_props ) {
 		if ( strncmp( prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
 			return prop;
 		}
 	}
-	for ( const auto& child : table.child_tables ) {
+	for ( const auto& child : table.m_child_tables ) {
 		const auto prop = get_net_var_prop( child, prop_name );
 		if ( prop != nullptr )
 			return prop;
 	}
-	for ( const auto& child : table.child_tables ) {
-		if ( strncmp( child.prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
-			return child.prop;
+	for ( const auto& child : table.m_child_tables ) {
+		if ( strncmp( child.m_prop->m_var_name, prop_name.data( ), prop_name.size( ) ) == 0 ) {
+			return child.m_prop;
 		}
 	}
 	return nullptr;

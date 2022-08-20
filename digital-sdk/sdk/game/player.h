@@ -18,7 +18,7 @@ public:
 	GET_NETVAR( int, get_armour_value, _( "DT_CSPlayer" ), _( "m_ArmorValue" ) );
 	GET_NETVAR( qangle_t, get_aim_punch_angle, _( "DT_BasePlayer" ), _( "m_aimPunchAngle" ) );
 	GET_NETVAR( c_handle < c_weapon >, get_active_weapon_handle, _( "DT_BaseCombatCharacter" ), _( "m_hActiveWeapon" ) );
-	GET_NETVAR( bool, is_defusing, _( "DT_BasePlayer" ), _( "m_bIsDefusing" ) );
+	GET_NETVAR( bool, is_defusing, _( "DT_CSPlayer" ), _( "m_bIsDefusing" ) );
 	GET_NETVAR( bool, is_scoped, _( "DT_CSPlayer" ), _( "m_bIsScoped" ) );
 	GET_NETVAR( c_vec3, get_velocity, _( "DT_BasePlayer" ), _( "m_vecVelocity[0]" ) );
 	GET_NETVAR( bool, get_client_side_animation, _( "DT_BaseAnimating" ), _( "m_bClientSideAnimation" ) );
@@ -71,12 +71,14 @@ public:
 	GET_VFUNC( void( __thiscall* )(void*), update_client_side_animations( ), 224 );
 
 	void set_abs_angles( const c_vec3 angles ) {
-		static const auto set_angles_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8" ) ));
+		static const auto set_angles_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig( 
+			modules::m_client_dll, _( "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8" ) ));
 		return set_angles_fn( this, angles );
 	}
 
 	void set_abs_origin( const c_vec3 position ) {
-		static const auto set_pos_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ));
+		static const auto set_pos_fn = reinterpret_cast<void( __thiscall* )(void*, const c_vec3&)>(utils::sig(
+			modules::m_client_dll, _( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ));
 		return set_pos_fn( this, position );
 	}
 
@@ -86,18 +88,20 @@ public:
 		if ( !hdr )
 			return 0;
 
-		static const auto sequence_activity_fn = reinterpret_cast<int( __fastcall* )(void*, c_studio_hdr*, int)>(utils::sig( modules::m_client_dll, _( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) ));
+		static const auto sequence_activity_fn = reinterpret_cast<int( __fastcall* )(void*, c_studio_hdr*, int)>(utils::sig(
+			modules::m_client_dll, _( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) ));
 		return sequence_activity_fn( this, hdr, sequence );
 	}
 
 	void setup_bones_attachment_helper( ) {
-		static const auto sig_fn = reinterpret_cast<void( __thiscall* )(void*, void*)>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 EC 48 53 8B 5D 08 89 4D F4" ) ));
+		static const auto sig_fn = reinterpret_cast<void( __thiscall* )(void*, c_studio_hdr*)>(utils::sig(
+			modules::m_client_dll, _( "55 8B EC 83 EC 48 53 8B 5D 08 89 4D F4" ) ));
 		return sig_fn( this, this->get_model_ptr( ) );
 	}
 
 	void invalidate_bone_cache( ) {
-		static const auto invalidate_bone_cache_fn = reinterpret_cast<uintptr_t>(utils::sig( modules::m_client_dll,
-																							 _( "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81" ) ) + 10);
+		static const auto invalidate_bone_cache_fn = reinterpret_cast<uintptr_t>(utils::sig(
+			modules::m_client_dll, _( "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81" ) ) + 10);
 
 		this->get_last_bone_setup_time( ) = 0xFF7FFFFF;
 		this->get_most_recent_model_bone_counter( ) = **reinterpret_cast<uintptr_t**>(invalidate_bone_cache_fn) - 1;
@@ -231,10 +235,7 @@ public:
 
 	[[nodiscard]] c_weapon* get_active_weapon( ) const {
 		const auto& handle = get_active_weapon_handle( );
-		if ( !handle )
-			return nullptr;
-
-		return handle.get( );
+		return handle ? handle.get( ) : nullptr;
 	}
 
 	[[nodiscard]] bool is_alive( ) const {

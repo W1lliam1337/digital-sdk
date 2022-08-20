@@ -6,12 +6,10 @@
 #include "enums.h"
 #include "entity.h"
 
-class c_base_entity;
-
 #define GET_VFUNC( type, function_name, index, ...) \
-auto function_name { \
-return utils::call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
-};
+	auto function_name { \
+		return utils::call_vfunc< type >( this, index )( this, __VA_ARGS__ ); \
+	}
 
 class c_base_attributable_item : public c_base_entity {
 public:
@@ -60,29 +58,29 @@ public:
 	std::string get_weapon_type( ) {
 		switch ( this->get_weapon_data( )->m_weapon_type ) {
 			case weapon_type_c4:
-				return "c4";
+				return _( "c4" );
 			case weapon_type_grenade:
-				return "grenade";
+				return _( "grenade" );
 			case weapon_type_knife:
-				return "knife";
+				return _( "knife" );
 			case weapon_type_machinegun:
-				return "machinegun";
+				return _( "machinegun" );
 			case weapon_type_pistol:
-				return "pistol";
+				return _( "pistol" );
 			case weapon_type_placeholder:
-				return "placeholder";
+				return _( "placeholder" );
 			case weapon_type_rifle:
-				return "rifle";
+				return _( "rifle" );
 			case weapon_type_shotgun:
-				return "shotgun";
+				return _( "shotgun" );
 			case weapon_type_sniper_rifle:
-				return "sniper rifle";
+				return _( "sniper rifle" );
 			case weapon_type_submachinegun:
-				return "submachinegun";
+				return _( "submachinegun" );
 			case weapon_type_unknown:
-				return "unknown";
+				return _( "unknown" );
 			default:
-				return "unk";
+				return _( "unk" );
 		}
 	}
 
