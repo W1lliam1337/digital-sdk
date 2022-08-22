@@ -258,7 +258,6 @@
     <ClInclude Include="sdk\other\move_data.h" />
     <ClInclude Include="sdk\other\studio\studio.h" />
     <ClInclude Include="sdk\other\utl\utl.h" />
-    <ClInclude Include="utils\crypt\xor.h" />
     <ClInclude Include="utils\render\fonts\roboto_medium.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="sdk\game\enums.h" />

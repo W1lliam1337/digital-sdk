@@ -399,9 +399,6 @@
     <ClInclude Include="sdk\interfaces\classes\i_client_state.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\crypt\xor.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="cheat\features\visuals\player-esp\chams.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
