@@ -15,7 +15,7 @@
 #include "dependencies/imgui/imgui_impl_win32.h"
 
 #include "utils/utils.h"
-#include "utils/crypt/xor.h"
+#include "utils/xor.h"
 #include "utils/modules/modules.h"
 #include "utils/render/render.h"
 #include "utils/config-manager/config_manager.h"

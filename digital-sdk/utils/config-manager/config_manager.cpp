@@ -1,5 +1,5 @@
 #include "config_manager.h"
-#include "../crypt/xor.h"
+#include "../xor.h"
 
 void cfg_manager::save( const std::string cfg_name ) {
 	// write data
