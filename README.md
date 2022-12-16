@@ -67,3 +67,12 @@ void c_self_class::test_func( const int index ) noexcept {
     static const auto setup_bones_sig = static_cast<void*>(utils::sig( modules::m_client_dll, _( "55 8B EC 83 E4 F0 B8 D8" ) ));
 }
 ```
+
+# Some key notes / FAQ
+1. Key notes: This SDK is only x86 compatible as it uses cdecl (naked) operators, which does not support x64 and ARM.
+
+2. Please install DirectX on your target system and include in the visual-studio library-link path + include-link path. I updated this manually for my system by putting the relevant headers + libs into dependencies/DirectX/include and dependencies/DirectX/lib. I do not remember off the top of the head if these libraries are portable across all systems, so be prepared to overwrite this OR update the path and remove.
+
+3. Some of usage of this cheat is undocumented and you'll have to go through the codebase to figure out how different things work. That's OK. Just a heads up that to open the menu, press the "Insert" key according to menu.cpp:~30
+
+4. SDK compiles a DLL which will need to be injected (of course). The choice of injection is up to the user / developer.
