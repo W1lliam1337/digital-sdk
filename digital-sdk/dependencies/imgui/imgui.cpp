@@ -3363,6 +3363,11 @@ void ImGui::NewFrame()
     ImGuiTestEngineHook_PreNewFrame(&g);
 #endif
 
+    //Do a first pass check if IO Delta Time is 0. Make this a very small float.
+    if (g.IO.DeltaTime <= 0.000001f) {
+        g.IO.DeltaTime = 0.001f;
+    }
+
     // Check user data
     // (We pass an error message in the assert expression to make it visible to programmers who are not using a debugger, as most assert handlers display their argument)
     IM_ASSERT(g.Initialized);
