@@ -15,536 +15,358 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sdk\interfaces\interfaces.h">
+    <ClInclude Include="core\core.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_input.h">
+    <ClInclude Include="context.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\cmd.h">
+    <ClInclude Include="core\utils\utils.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\utils.h">
+    <ClInclude Include="core\utils\color\color.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="includes.h">
+    <ClInclude Include="core\utils\math\math.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\sdk.h">
+    <ClInclude Include="core\utils\math\utl.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\xor.h">
+    <ClInclude Include="core\utils\math\vector.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\modules\modules.h">
+    <ClInclude Include="core\utils\math\matrix.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_client.h">
+    <ClInclude Include="core\utils\memory\address.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\recv.h">
+    <ClInclude Include="core\utils\memory\memory.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_globals.h">
+    <ClInclude Include="core\utils\memory\pattern.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\hooks\hooks.h">
+    <ClInclude Include="core\utils\console\console.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\features\misc\movement\movement.h">
+    <ClInclude Include="core\utils\pe\pe.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_client_entity_list.h">
+    <ClInclude Include="core\sdk\sdk.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\handle\base_handle.h">
+    <ClInclude Include="core\sdk\interfaces\interfaces.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\handle\i_handle_entity.h">
+    <ClInclude Include="core\sdk\entities\entities.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\game\player.h">
+    <ClInclude Include="core\sdk\misc\misc.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\game\weapon.h">
+    <ClInclude Include="core\sdk\interfaces\classes\engine.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_client_entity.h">
+    <ClInclude Include="core\sdk\misc\client_state.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_model_render.h">
+    <ClInclude Include="core\sdk\misc\client_class.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\bfread\bfread.h">
+    <ClInclude Include="core\sdk\misc\dt_recv.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_engine.h">
+    <ClInclude Include="core\sdk\misc\data_map.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\netvar-manager\netvar_manager.h">
+    <ClInclude Include="core\sdk\interfaces\classes\globals.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\game\enums.h">
+    <ClInclude Include="core\sdk\interfaces\classes\steam.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\features\features.h">
+    <ClInclude Include="core\sdk\interfaces\classes\engine_trace.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imconfig.h">
+    <ClInclude Include="core\sdk\misc\game_trace.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imgui.h">
+    <ClInclude Include="core\sdk\misc\client_entity.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imgui_freetype.h">
+    <ClInclude Include="core\sdk\misc\base_handle.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imgui_impl_dx9.h">
+    <ClInclude Include="core\sdk\misc\collideable.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imgui_impl_win32.h">
+    <ClInclude Include="core\sdk\interfaces\classes\model_render.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imgui_internal.h">
+    <ClInclude Include="core\sdk\misc\studio.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imstb_rectpack.h">
+    <ClInclude Include="core\sdk\interfaces\classes\prediction.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imstb_textedit.h">
+    <ClInclude Include="core\sdk\modules\modules.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\imgui\imstb_truetype.h">
+    <ClInclude Include="core\sdk\net_vars\net_vars.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_surface.h">
+    <ClInclude Include="deps\fnv1a\fnv1a.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\other\color\color.h">
+    <ClInclude Include="deps\imgui\imconfig.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_debug_overlay.h">
+    <ClInclude Include="deps\imgui\imgui.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\menu\menu.h">
+    <ClInclude Include="deps\imgui\imgui_impl_dx9.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\render\render.h">
+    <ClInclude Include="deps\imgui\imgui_impl_win32.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\render\fonts\roboto_medium.h">
+    <ClInclude Include="deps\imgui\imgui_internal.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\features\visuals\player-esp\player_esp.h">
+    <ClInclude Include="deps\imgui\imstb_rectpack.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_panel.h">
+    <ClInclude Include="deps\imgui\imstb_textedit.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\config\ftconfig.h">
+    <ClInclude Include="deps\imgui\imstb_truetype.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\config\ftheader.h">
+    <ClInclude Include="deps\xor\xor.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\config\ftmodule.h">
+    <ClInclude Include="deps\deps.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\config\ftoption.h">
+    <ClInclude Include="core\sdk\interfaces\classes\input.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\config\ftstdlib.h">
+    <ClInclude Include="core\sdk\misc\user_cmd.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\freetype.h">
+    <ClInclude Include="core\sdk\interfaces\classes\cvar.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftadvanc.h">
+    <ClInclude Include="core\sdk\interfaces\classes\client_mode.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftbbox.h">
+    <ClInclude Include="core\sdk\interfaces\classes\data_cache.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftbdf.h">
+    <ClInclude Include="core\sdk\interfaces\classes\mat_sys.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftbitmap.h">
+    <ClInclude Include="core\sdk\interfaces\classes\base_client.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftbzip2.h">
+    <ClInclude Include="core\sdk\interfaces\classes\game_movement.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftcache.h">
+    <ClInclude Include="core\sdk\interfaces\classes\phys_surface_props.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftchapters.h">
+    <ClInclude Include="core\sdk\interfaces\classes\surface.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftcid.h">
+    <ClInclude Include="core\sdk\interfaces\classes\key_values_sys.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftcolor.h">
+    <ClInclude Include="core\sdk\misc\key_values.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftdriver.h">
+    <ClInclude Include="core\sdk\interfaces\classes\move_helper.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\fterrdef.h">
+    <ClInclude Include="core\sdk\misc\bone_accessor.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\fterrors.h">
+    <ClInclude Include="core\sdk\interfaces\classes\engine_vgui.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftfntfmt.h">
+    <ClInclude Include="core\sdk\misc\handle_entity.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftgasp.h">
+    <ClInclude Include="core\sdk\entities\player.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftglyph.h">
+    <ClInclude Include="core\sdk\entities\weapon.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftgxval.h">
+    <ClInclude Include="core\sdk\entities\entity.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftgzip.h">
+    <ClInclude Include="core\ent_listener\ent_listener.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftimage.h">
+    <ClInclude Include="core\hooks\hooks.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftincrem.h">
+    <ClInclude Include="features\features.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftlcdfil.h">
+    <ClInclude Include="features\auto_wall\auto_wall.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftlist.h">
+    <ClInclude Include="features\chams\chams.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftlzw.h">
+    <ClInclude Include="features\eng_pred\eng_pred.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftmac.h">
+    <ClInclude Include="features\esp\esp.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftmm.h">
+    <ClInclude Include="features\misc\misc.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftmodapi.h">
+    <ClInclude Include="core\menu\menu.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftmoderr.h">
+    <ClInclude Include="core\render\render.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftotval.h">
+    <ClInclude Include="core\sdk\misc\ray.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftoutln.h">
+    <ClInclude Include="core\sdk\interfaces\classes\model_cache.hh">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftparams.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftpfr.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftrender.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftsizes.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftsnames.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftstroke.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftsynth.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftsystem.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\fttrigon.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\fttypes.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ftwinfnt.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\t1tables.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\ttnameid.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\tttables.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\freetype\freetype\tttags.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\autowall\autowall.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_engine_trace.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_prop_physics.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_cvar.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_convar.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_multiplayer_physics.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_breakable_with_prop_data.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\other\studio\studio.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\game\classes.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_move_helper.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_prediction.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_game_movement.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\other\utl\utl.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_model_cache.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_event_manager.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_app_sys.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\other\move_data.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\misc\engine-prediction\engine_prediction.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_model_info.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\game\entity.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\legitbot\legitbot.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_material.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_render_view.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\config-manager\config_manager.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\misc\log-system\logs.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\misc\events\events.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\anti-aim\anti_aim.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\json\json.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\math.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\matrix.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\qangle.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\vec2.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\vec3.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\math\vec4.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\game\breakable_surface.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\game\inferno.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_client_state.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="cheat\features\visuals\player-esp\chams.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\interfaces\classes\i_mem_alloc.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\other\key-values\key_values.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\minhook\headers\MinHook.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="sdk\game\client_precipitation.h">
+    <ClInclude Include="deps\minhook\headers\MinHook.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="context.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\interfaces\interfaces.cpp">
+    <ClCompile Include="dllmain.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\utils.cpp">
+    <ClCompile Include="core\utils\color\color.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\modules\modules.cpp">
+    <ClCompile Include="core\utils\math\math.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooks.cpp">
+    <ClCompile Include="core\utils\memory\pattern.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\misc\movement\movement.cpp">
+    <ClCompile Include="core\utils\console\console.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\netvar-manager\netvar_manager.cpp">
+    <ClCompile Include="core\utils\pe\pe.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui.cpp">
+    <ClCompile Include="core\sdk\interfaces\interfaces.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_draw.cpp">
+    <ClCompile Include="core\sdk\misc\base_handle.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_freetype.cpp">
+    <ClCompile Include="core\sdk\modules\modules.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_impl_dx9.cpp">
+    <ClCompile Include="core\sdk\net_vars\net_vars.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_impl_win32.cpp">
+    <ClCompile Include="deps\imgui\imgui.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp">
+    <ClCompile Include="deps\imgui\imgui_demo.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\menu\menu.cpp">
+    <ClCompile Include="deps\imgui\imgui_draw.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\render\render.cpp">
+    <ClCompile Include="deps\imgui\imgui_impl_dx9.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\visuals\player-esp\player_esp.cpp">
+    <ClCompile Include="deps\imgui\imgui_impl_win32.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\other\color\color.cpp">
+    <ClCompile Include="deps\imgui\imgui_tables.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\autowall\autowall.cpp">
+    <ClCompile Include="deps\imgui\imgui_widgets.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\misc\engine-prediction\engine_prediction.cpp">
+    <ClCompile Include="core\sdk\misc\user_cmd.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\other\handle\base_handle.cpp">
+    <ClCompile Include="core\sdk\misc\key_values.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\legitbot\legitbot.cpp">
+    <ClCompile Include="core\ent_listener\ent_listener.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\config-manager\config_manager.cpp">
+    <ClCompile Include="core\hooks\hooks.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\misc\log-system\logs.cpp">
+    <ClCompile Include="core\hooks\fn\engine.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\misc\events\events.cpp">
+    <ClCompile Include="core\hooks\fn\model_render.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\features\anti-aim\anti_aim.cpp">
+    <ClCompile Include="core\hooks\fn\surface.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\math\math.cpp">
+    <ClCompile Include="features\auto_wall\auto_wall.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\math\vec2.cpp">
+    <ClCompile Include="features\chams\chams.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\math\vec4.cpp">
+    <ClCompile Include="features\eng_pred\eng_pred.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\other\cmd.cpp">
+    <ClCompile Include="features\esp\entity\grenade.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\client.cpp">
+    <ClCompile Include="features\esp\entity\player.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\surface.cpp">
+    <ClCompile Include="features\esp\entity\world.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\panel.cpp">
+    <ClCompile Include="features\esp\esp.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\engine.cpp">
+    <ClCompile Include="features\misc\misc.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\direct_device.cpp">
+    <ClCompile Include="core\menu\menu.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\wnd_proc.cpp">
+    <ClCompile Include="core\render\render.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\base_player.cpp">
+    <ClCompile Include="core\hooks\fn\client.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\anim_state.cpp">
+    <ClCompile Include="core\hooks\fn\client_ent_list.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\client_mode.cpp">
+    <ClCompile Include="core\hooks\fn\direct_device.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\model_render.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="cheat\features\visuals\player-esp\chams.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="sdk\other\key-values\key_values.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="cheat\hooks\hooked\material_system.cpp">
+    <ClCompile Include="core\utils\utils.cc">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="dependencies\freetype\lib\freetype.lib" />
-    <Library Include="dependencies\minhook\libs\MinHook.lib" />
+    <Library Include="deps\minhook\libs\MinHook.lib" />
   </ItemGroup>
 </Project>
