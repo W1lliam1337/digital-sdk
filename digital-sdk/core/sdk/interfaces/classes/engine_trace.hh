@@ -114,10 +114,10 @@ public:
 
 class i_engine_trace {
 public:
-    virtual int get_point_contents( const c_vec3& abs_position, int contents_mask = mask_all,
+    virtual int get_point_contents( const vec3_t& abs_position, int contents_mask = mask_all,
                                     c_handle_entity** entity = nullptr ) = 0;
-    virtual int get_point_contents_world_only( const c_vec3& abs_position, int contents_mask = mask_all ) = 0;
-    virtual int get_point_contents_collideable( c_collideable* collide, const c_vec3& abs_position ) = 0;
+    virtual int get_point_contents_world_only( const vec3_t& abs_position, int contents_mask = mask_all ) = 0;
+    virtual int get_point_contents_collideable( c_collideable* collide, const vec3_t& abs_position ) = 0;
     virtual void clip_ray_to_entity( const ray_t& ray, unsigned int mask, c_handle_entity* ent,
                                      c_game_trace* trace ) = 0;
     virtual void clip_ray_to_collideable( const ray_t& ray, unsigned int mask, c_collideable* collide,

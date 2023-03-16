@@ -3,7 +3,7 @@
 void c_render::init( ) {
     ImGui::CreateContext( );
 
-    if ( !ImGui_ImplDX9_Init( g_interfaces->m_device ) || !ImGui_ImplWin32_Init( g_ctx->m_hwnd ) )
+    if ( !ImGui_ImplDX9_Init( g_interfaces->m_device ) || !ImGui_ImplWin32_Init( g_ctx->hwnd( ) ) )
         return;
 
     auto& io = ImGui::GetIO( );
@@ -72,7 +72,7 @@ void c_render::circle_filled( const float x1, const float y1, const float radius
     m_draw_list->AddCircleFilled( ImVec2( x1, y1 ), radius, col.u32( ), segments );
 }
 
-void c_render::text( const c_vec2 txt_pos, c_color color, const int flags, const ImFont* font,
+void c_render::text( const vec2_t& txt_pos, c_color color, const int flags, const ImFont* font,
                      const std::string_view& message ) const {
     m_draw_list->PushTextureID( font->ContainerAtlas->TexID );
 
@@ -80,7 +80,7 @@ void c_render::text( const c_vec2 txt_pos, c_color color, const int flags, const
     const auto pos = ImVec2( txt_pos.x - size.x / 2.0f, txt_pos.y );
     auto outline_clr = c_color( 0, 0, 0, static_cast< int >( color.a( ) * 0.3f ) );
 
-   if ( flags & drop_shadow )
+    if ( flags & drop_shadow )
         m_draw_list->AddText( ImVec2( pos.x + 1, pos.y + 1 ), outline_clr.u32( ), message.data( ) );
 
     if ( flags & outline ) {
@@ -95,7 +95,7 @@ void c_render::text( const c_vec2 txt_pos, c_color color, const int flags, const
     m_draw_list->AddText( font, font->FontSize, pos, color.u32( ), message.data( ) );
 }
 
-bool c_render::world_to_screen( const c_vec3& in, c_vec2& out ) {
+bool c_render::world_to_screen( const vec3_t& in, vec2_t& out ) {
     const auto& matrix = g_interfaces->m_engine->get_view_matrix( );
     out.x = matrix[ 0 ][ 0 ] * in.x + matrix[ 0 ][ 1 ] * in.y + matrix[ 0 ][ 2 ] * in.z + matrix[ 0 ][ 3 ];
     out.y = matrix[ 1 ][ 0 ] * in.x + matrix[ 1 ][ 1 ] * in.y + matrix[ 1 ][ 2 ] * in.z + matrix[ 1 ][ 3 ];
@@ -108,7 +108,7 @@ bool c_render::world_to_screen( const c_vec3& in, c_vec2& out ) {
 
     out /= w;
 
-    auto& io = ImGui::GetIO( );
+    const auto& io = ImGui::GetIO( );
     const auto screen_width = io.DisplaySize.x, screen_height = io.DisplaySize.y;
 
     out.x = screen_width / 2.f + out.x * screen_width / 2.f;

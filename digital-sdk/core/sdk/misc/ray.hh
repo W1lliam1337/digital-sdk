@@ -5,19 +5,19 @@
 #include "../../utils/math/matrix.hh"
 
 struct ray_t {
-    vector_aligned m_start{ };        // starting point, centered within the extents
-    vector_aligned m_delta{ };        // direction + length of the ray
-    vector_aligned m_start_offset{ }; // Add this to m_Start to Get the actual ray start
-    vector_aligned m_extents{ };      // Describes an axis aligned box extruded along a ray
+    vector_aligned_t m_start{ };        // starting point, centered within the extents
+    vector_aligned_t m_delta{ };        // direction + length of the ray
+    vector_aligned_t m_start_offset{ }; // Add this to m_Start to Get the actual ray start
+    vector_aligned_t m_extents{ };      // Describes an axis aligned box extruded along a ray
     const matrix3x4_t* m_world_axis_transform{ };
     bool m_is_ray{ };   // are the extents zero?
     bool m_is_swept{ }; // is delta != 0?
 
     ray_t( ) : m_world_axis_transform( nullptr ) {}
 
-    ray_t( const c_vec3& start, const c_vec3& end ) { init( start, end ); }
+    ray_t( const vec3_t& start, const vec3_t& end ) { init( start, end ); }
 
-    ray_t( const c_vec3& start, const c_vec3& end, const c_vec3& mins, const c_vec3& maxs ) :
+    ray_t( const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs ) :
         m_start{ start + ( mins + maxs ) * 0.5f },
         m_delta{ end - start },
         m_start_offset{ ( mins + maxs ) * -0.5f },
@@ -25,7 +25,7 @@ struct ray_t {
         m_is_ray{ m_extents.length_sqr( ) < 1e-6 },
         m_is_swept{ m_delta.length_sqr( ) != 0.f } {}
 
-    void init( const c_vec3& start, const c_vec3& end ) {
+    void init( const vec3_t& start, const vec3_t& end ) {
         m_delta = end - start;
 
         m_is_swept = ( m_delta.length_sqr( ) != 0 );
@@ -40,7 +40,7 @@ struct ray_t {
         m_start = start;
     }
 
-    void init( const c_vec3& start, const c_vec3& end, const c_vec3& mins, const c_vec3& maxs ) {
+    void init( const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs ) {
         m_delta = end - start;
 
         m_world_axis_transform = nullptr;
@@ -57,6 +57,5 @@ struct ray_t {
         m_start_offset *= -1.0f;
     }
 };
-
 
 #endif

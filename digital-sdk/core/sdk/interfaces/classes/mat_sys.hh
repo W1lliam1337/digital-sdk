@@ -102,8 +102,8 @@ public:
     VFUNC( void( __thiscall* )( void*, float, int ), set_vector_component( const float val, const int comp ), 26, val,
            comp );
 
-    void set_vector( const c_vec2& vector ) { return set_vector_internal( vector.x, vector.y ); }
-    void set_vector( const c_vec3& vector ) { return set_vector_internal( vector.x, vector.y, vector.z ); }
+    void set_vector( const vec2_t& vector ) { return set_vector_internal( vector.x, vector.y ); }
+    void set_vector( const vec3_t& vector ) { return set_vector_internal( vector.x, vector.y, vector.z ); }
 };
 
 class i_material {
@@ -141,7 +141,7 @@ public:
     virtual void color_modulate( float r, float g, float b ) = 0;
     virtual void set_material_var_flag( e_material_var_flags flag, bool on ) = 0;
     virtual bool get_material_var_flag( e_material_var_flags flag ) const = 0;
-    virtual void get_reflectivity( c_vec3& reflect ) = 0;
+    virtual void get_reflectivity( vec3_t& reflect ) = 0;
     virtual bool get_property_flag( int type ) = 0;
     virtual bool is_two_sided( ) = 0;
     virtual void set_shader( const char* p_shader_name ) = 0;

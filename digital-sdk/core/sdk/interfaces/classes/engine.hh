@@ -49,8 +49,8 @@ public:
            8, ent_num, info );
     VFUNC( bool( __thiscall* )( void* ), con_is_visible( ), 11 );
     VFUNC( int( __thiscall* )( void* ), get_local_player( ), 12 );
-    VFUNC( void( __thiscall* )( void*, c_vec3& ), get_view_angles( c_vec3& angle ), 18, angle );
-    VFUNC( void( __thiscall* )( void*, c_vec3& ), set_view_angles( c_vec3& angle ), 19, angle );
+    VFUNC( void( __thiscall* )( void*, vec3_t& ), get_view_angles( vec3_t& angle ), 18, angle );
+    VFUNC( void( __thiscall* )( void*, vec3_t& ), set_view_angles( vec3_t& angle ), 19, angle );
     VFUNC( bool( __thiscall* )( void* ), is_in_game( ), 26 );
     VFUNC( bool( __thiscall* )( void* ), is_connected( ), 27 );
     VFUNC( matrix4x4_t( __thiscall* )( void* ), world_to_screen_matrix( ), 37 );

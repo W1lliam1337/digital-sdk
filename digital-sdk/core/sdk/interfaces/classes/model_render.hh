@@ -5,12 +5,11 @@
 #include "../../misc/studio.hh"
 
 class i_material;
-class i_client_renderable;
 
 class c_model_render_info {
 public:
-    c_vec3 m_origin{ };
-    c_vec3 m_angles{ };
+    vec3_t m_origin{ };
+    vec3_t m_angles{ };
 private:
    [[maybe_unused]] std::byte pad[ 0x4 ]{ };
 public:
@@ -18,7 +17,7 @@ public:
     const model_t* m_model{ };
     const matrix3x4_t* m_model_to_world{ };
     const matrix3x4_t* m_lighting_offset{ };
-    const c_vec3* m_lighting_origin{ };
+    const vec3_t* m_lighting_origin{ };
     int m_flags{ };
     int m_entity_index{ };
     int m_skin{ };
@@ -36,7 +35,7 @@ public:
 struct draw_model_state_t {
     studio_hdr_t* m_studio_hdr{ };
     void* m_studio_hwdara{ };
-    i_client_renderable* m_entity{ };
+    c_client_renderable* m_entity{ };
     const matrix3x4_t* m_model_to_world{ };
     void* m_decals{ };
     int m_draw_flags{ };
@@ -46,7 +45,7 @@ struct draw_model_state_t {
 class i_model_render {
 public:
     virtual int draw_model( int flags, void* renderable, unsigned short instance, int entity_index, void* model,
-                            c_vec3 const& origin, c_vec3 const& angles, int skin, int body, int hitboxset,
+                            vec3_t const& origin, vec3_t const& angles, int skin, int body, int hitboxset,
                             const matrix3x4_t* model_to_world = nullptr,
                             const matrix3x4_t* p_lighting_offset = nullptr ) = 0;
     virtual void force_material( i_material* mat, int n_override_type = 0, int n_overrides = 0 ) = 0;

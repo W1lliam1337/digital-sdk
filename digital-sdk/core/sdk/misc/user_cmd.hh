@@ -37,8 +37,8 @@ class c_user_cmd {
 public:
     int m_command_number{ };
     int m_tick_count{ };
-    c_vec3 m_view_angles;
-    c_vec3 m_aim_direction;
+    vec3_t m_view_angles;
+    vec3_t m_aim_direction;
     float m_forward_move{ };
     float m_side_move{ };
     float m_up_move{ };
@@ -50,8 +50,8 @@ public:
     short m_moused_x{ };
     short m_moused_y{ };
     bool m_has_been_predicted{ };
-    c_vec3 m_head_angles;
-    c_vec3 m_head_offset;
+    vec3_t m_head_angles;
+    vec3_t m_head_offset;
     [[nodiscard]] std::uint32_t get_checksum( ) const;
 };
 

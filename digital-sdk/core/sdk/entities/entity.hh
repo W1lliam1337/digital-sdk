@@ -86,7 +86,7 @@ enum e_invalidate_physics_bits {
 class c_entity : public c_client_entity {
 public:
     NETVAR( int, team, _( "DT_BaseEntity->m_iTeamNum" ) );
-    NETVAR( c_vec3, origin, _( "DT_BaseEntity->m_vecOrigin" ) );
+    NETVAR( vec3_t, origin, _( "DT_BaseEntity->m_vecOrigin" ) );
     NETVAR_OFFSET( e_move_type, move_type, _( "DT_BaseEntity->m_nRenderMode" ), 0x1 );
 
     OFFSET( int, take_damage, 0x280 );

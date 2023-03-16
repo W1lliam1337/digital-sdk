@@ -87,12 +87,12 @@ public:
         g_interfaces->m_model_cache->unlock( );
     }
 
-    c_vec3 get_shoot_pos( ) {
+    vec3_t get_shoot_pos( ) {
         // @ref: https://www.unknowncheats.me/forum/counterstrike-global-offensive/338731-weapon_shootpos-rebuilt-server-code.html
         // @ref: https://www.unknowncheats.me/forum/counterstrike-global-offensive/277792-getting-eye-position-m_vecviewoffset.html
         static const auto sig = g_modules->m_client_dll.get_address( _( "C_BasePlayer::GetWeaponShootPos" ) ).as< 
-            void*( __thiscall* ) ( void*, c_vec3* ) >( );
-        c_vec3 eye_pos;
+            void*( __thiscall* ) ( void*, vec3_t* ) >( );
+        vec3_t eye_pos;
         sig( this, &eye_pos );
         return eye_pos;
     }

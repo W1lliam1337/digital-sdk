@@ -29,6 +29,7 @@ public:
     bool init( );
     bool get( );
 
+	// TODO: create a struct for this or something like that - g_modules->client( )
     c_loaded_module m_client_dll{ }, m_gameoverlayrenderer_dll{ }, m_engine_dll{ }, m_steam_api_dll{ }, m_vstd_dll{ },
         m_vphysics_dll{ }, m_data_cahe_dll{ }, m_vguimatsurface_dll{ }, m_materialsystem_dll{ }, m_shaderapidx9_dll{ },
         m_serverbrowser_dll{ };

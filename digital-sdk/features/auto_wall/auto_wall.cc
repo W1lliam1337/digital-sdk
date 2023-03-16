@@ -61,14 +61,14 @@ void c_auto_wall::scale_damage( const c_game_trace& enter_trace, const c_weapon_
     dmg = damage_to_health;
 }
 
-bool c_auto_wall::trace_to_exit( const c_game_trace& enter_trace, c_game_trace& exit_trace, c_vec3 start,
-                                 c_vec3 direction ) const {
+bool c_auto_wall::trace_to_exit( const c_game_trace& enter_trace, c_game_trace& exit_trace, vec3_t start,
+                                 vec3_t direction ) const {
     // @ida: https://imgur.com/x3Qe12r
     // module: server.dll; sig: F3 0F 5C CE F3 0F 11 5D ?
 
     auto distance = 0.0f;
     int v13{ };
-    c_vec3 end{ };
+    vec3_t end{ };
 
     while ( distance <= 90.0f ) {
         distance += 4.0f;
@@ -78,15 +78,15 @@ bool c_auto_wall::trace_to_exit( const c_game_trace& enter_trace, c_game_trace& 
         if ( !v13 )
             v13 = g_interfaces->m_trace->get_point_contents( end, 0x4600400B, nullptr );
 
-        c_vec3 cl_end = end - direction * 4.0f;
+        vec3_t cl_end = end - direction * 4.0f;
 
         const auto contents = g_interfaces->m_trace->get_point_contents( end, 0x4600400B, nullptr );
         if ( contents & 0x600400B && ( contents & 0x40000000 || v13 == contents ) )
             continue;
 
-        static const auto trace_filter = g_modules->m_client_dll.get_address( _( "TraceFilter" ) ).offset( 0x3D ).as<std::uint32_t*>( );
+        static const auto trace_filter = g_modules->m_client_dll.get_address( _( "TraceFilter" ) ).offset( 0x3D ).as< std::uint32_t* >( );
 
-        const std::uint32_t filter[ 4 ] = { *trace_filter, reinterpret_cast<std::uint32_t>( exit_trace.m_entity ), 0,
+        const std::uint32_t filter[ 4 ] = { *trace_filter, reinterpret_cast< std::uint32_t >( exit_trace.m_entity ), 0,
                                             0 };
 
         g_interfaces->m_trace->trace_ray( ray_t( end, cl_end ), 0x4600400B, nullptr, &exit_trace );
@@ -135,17 +135,17 @@ bool c_auto_wall::trace_to_exit( const c_game_trace& enter_trace, c_game_trace& 
     return false;
 }
 
-void c_auto_wall::clip_trace_to_players( const c_vec3& abs_start, const c_vec3& abs_end, c_trace_filter* filter,
+void c_auto_wall::clip_trace_to_players( const vec3_t& abs_start, const vec3_t& abs_end, c_trace_filter* filter,
                                          c_game_trace* trace, const float min_range ) const {
     static const auto clip_trace_to_players_fn = g_modules->m_client_dll.get_address( _( "ClipTraceToPlayers" ) ).as<
-        void( __thiscall* )( c_handle_entity*, c_vec3, c_vec3, unsigned int, i_trace_filter*, c_game_trace*, float )>( );
+        void( __thiscall* )( c_handle_entity*, vec3_t, vec3_t, unsigned int, i_trace_filter*, c_game_trace*, float )>( );
 
     return clip_trace_to_players_fn( c_player::get_local( ), abs_start, abs_end, mask_shot_hull | contents_hitbox,
                                      filter, trace, min_range );
 }
 
 bool c_auto_wall::handle_bullet_penetration( const c_weapon_info* weapon_data, const c_game_trace& enter_trace,
-                                             const c_vec3& direction, c_vec3& eye_pos, int& hits, float& current_dmg,
+                                             const vec3_t& direction, vec3_t& eye_pos, int& hits, float& current_dmg,
                                              const float pen_power ) const {
     // @ida:
     // module: server.dll; sig: 39 07 75 1C;
@@ -171,7 +171,7 @@ bool c_auto_wall::handle_bullet_penetration( const c_weapon_info* weapon_data, c
          && !( g_interfaces->m_trace->get_point_contents( enter_trace.m_end, 0x600400B, nullptr ) & 0x600400B ) )
         return false;
 
-    static const auto var = g_interfaces->m_cvar->find_var( _( "sv_penetration_type" ) );
+    static auto var = g_interfaces->m_cvar->find_var( _( "sv_penetration_type" ) );
     const int possible_hits = var->get_int( );
 
     const auto exit_surface_data =
@@ -277,8 +277,8 @@ bool c_auto_wall::handle_bullet_penetration( const c_weapon_info* weapon_data, c
     return true;
 }
 
-bool c_auto_wall::fire_bullet( c_player* const player, const c_vec3& direction, float& current_dmg, const c_vec3& point,
-                               c_vec3& eye_pos, int& hits ) const {
+bool c_auto_wall::fire_bullet( c_player* const player, const vec3_t& direction, float& current_dmg, const vec3_t& point,
+                               vec3_t& eye_pos, int& hits ) const {
     const auto weapon = c_player::get_local( )->active_weapon( );
     if ( !weapon )
         return false;
@@ -297,7 +297,7 @@ bool c_auto_wall::fire_bullet( c_player* const player, const c_vec3& direction, 
     auto penetration_power = 35.0f;
     hits = 4;
 
-    static const auto var = g_interfaces->m_cvar->find_var( _( "sv_penetration_type" ) );
+    static auto var = g_interfaces->m_cvar->find_var( _( "sv_penetration_type" ) );
     if ( const int possible_hits = var->get_int( ); possible_hits == 1 ) {
         penetration_power = weapon_data->m_penetration;
     }

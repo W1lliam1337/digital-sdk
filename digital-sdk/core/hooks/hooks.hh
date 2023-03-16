@@ -56,7 +56,7 @@ public:
     static void unhook( );
 
     void set_wnd_proc( ) {
-        m_direct_device.m_wnd_proc = SetWindowLongA( g_ctx->m_hwnd, 
+        m_direct_device.m_wnd_proc = SetWindowLongA( g_ctx->hwnd( ), 
                             GWLP_WNDPROC, 
                             reinterpret_cast< LONG_PTR >( m_direct_device.wnd_proc ) );
     }

@@ -6,7 +6,7 @@
 class c_player;
 
 struct cplane_t {
-    c_vec3 m_normal{ };
+    vec3_t m_normal{ };
     float m_dist{ };
     std::uint8_t m_type{ };
     std::uint8_t m_signbits{ };
@@ -23,8 +23,8 @@ public:
     [[nodiscard]] bool did_hit( ) const { return m_fraction < 1.0f || m_all_solid || m_start_solid; }
     [[nodiscard]] bool is_visible( ) const { return m_fraction > 0.97f; }
 
-    c_vec3 m_start{ };
-    c_vec3 m_end{ };
+    vec3_t m_start{ };
+    vec3_t m_end{ };
     cplane_t m_plane{ };
     float m_fraction{ };
     int m_contents{ };

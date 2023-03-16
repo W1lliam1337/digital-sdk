@@ -5,8 +5,8 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReser
         return FALSE;
 
     DisableThreadLibraryCalls( hModule );
-    g_ctx->m_dllmain.create_thread( 
-        g_ctx->m_dllmain.load, 
+    g_ctx->dllmain( ).create_thread( 
+        g_ctx->dllmain( ).load, 
         hModule 
     );
 

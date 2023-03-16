@@ -25,8 +25,8 @@ public:
 class c_client_renderable {
 public:
     virtual c_client_unknown* get_client_unknown( ) = 0;
-    virtual c_vec3& get_render_origin( ) = 0;
-    virtual const c_vec3& get_render_angles( ) = 0;
+    virtual vec3_t& get_render_origin( ) = 0;
+    virtual const vec3_t& get_render_angles( ) = 0;
     virtual bool should_draw( ) = 0;
     virtual int get_render_flags( ) = 0;
     virtual void unknown0( ) const = 0;
@@ -42,12 +42,12 @@ public:
                                 float* delayed_weights ) = 0;
     virtual void do_animation_events( ) = 0;
     virtual void* get_pvs_notify_interface( ) = 0;
-    virtual void get_render_bounds( c_vec3& mins, c_vec3& maxs ) = 0;
-    virtual void get_render_bounds_worldspace( c_vec3& mins, c_vec3& maxs ) = 0;
-    virtual void get_shadow_render_bounds( c_vec3& mins, c_vec3& maxs, int type ) = 0;
+    virtual void get_render_bounds( vec3_t& mins, vec3_t& maxs ) = 0;
+    virtual void get_render_bounds_worldspace( vec3_t& mins, vec3_t& maxs ) = 0;
+    virtual void get_shadow_render_bounds( vec3_t& mins, vec3_t& maxs, int type ) = 0;
     virtual bool should_receive_projected_textures( int flags ) = 0;
     virtual bool get_shadow_cast_distance( float* dist, int type ) const = 0;
-    virtual bool get_shadow_cast_direction( c_vec3* direction, int type ) const = 0;
+    virtual bool get_shadow_cast_direction( vec3_t* direction, int type ) const = 0;
     virtual bool is_shadow_dirty( ) = 0;
     virtual void mark_shadow_dirty( bool dirty ) = 0;
     virtual c_client_renderable* get_shadow_parent( ) = 0;
@@ -58,7 +58,7 @@ public:
     virtual std::uint16_t get_model_instance( ) = 0;
     virtual const matrix3x4_t& renderable_to_world_transform( ) = 0;
     virtual int lookup_attachment( const char* name ) = 0;
-    virtual bool get_attachment( int index, c_vec3& origin, c_vec3& angles ) = 0;
+    virtual bool get_attachment( int index, vec3_t& origin, vec3_t& angles ) = 0;
     virtual bool get_attachment( int index, matrix3x4_t& matrix ) = 0;
     virtual float* get_render_clip_plane( ) = 0;
     virtual int get_skin( ) = 0;
@@ -103,8 +103,8 @@ class c_client_entity
     : public c_client_unknown, public c_client_renderable, public c_client_networkable, public c_client_thinkable {
 public:
     void release( void ) override = 0;
-    virtual const c_vec3& get_abs_origin( void ) const = 0;
-    virtual const c_vec3& get_abs_angles( void ) const = 0;
+    virtual const vec3_t& get_abs_origin( void ) const = 0;
+    virtual const vec3_t& get_abs_angles( void ) const = 0;
 };
 
 

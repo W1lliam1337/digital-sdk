@@ -8,7 +8,7 @@ class c_weapon;
 
 struct camera_third_data_t {
     float m_pitch{ }, m_yaw{ }, m_dist{ }, m_lag{ };
-    c_vec3 m_hull_min{ }, m_hull_max{ };
+    vec3_t m_hull_min{ }, m_hull_max{ };
 };
 
 class i_input {
@@ -21,13 +21,13 @@ public:
 private:
     char unknown[ 1 ]{ };
 public:
-    c_vec3 m_cam_offset{ };
+    vec3_t m_cam_offset{ };
     bool m_cam_distance_move{ };
 private:
     char unknown2[ 3 ]{ };
 public:
-    c_vec2 m_old_cam{ };
-    c_vec2 m_cur_cam{ };
+    vec2_t m_old_cam{ };
+    vec2_t m_cur_cam{ };
 private:
     [[maybe_unused]] std::byte gapCC[ 36 ]{ };
 public:

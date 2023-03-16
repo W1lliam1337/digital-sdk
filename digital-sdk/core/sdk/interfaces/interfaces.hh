@@ -36,6 +36,7 @@ class c_interfaces final {
 public:
 	void init( );
 
+    // TODO: create a struct for this or something like that - g_interfaces->client( )
     i_base_client_dll* m_client{ };
     i_client_entity_list* m_entity_list{ };
     i_move_helper* m_move_helper{ };

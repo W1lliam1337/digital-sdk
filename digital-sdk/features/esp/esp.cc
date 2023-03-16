@@ -1,21 +1,21 @@
 #include "esp.hh"
 
 bool c_esp::get_bounding_box( const c_player* player, box_t& box ) {
-    const auto adjust = c_vec3( 0, 0, -18 ) * player->duck_amount( );
+    const auto adjust = vec3_t( 0, 0, -18 ) * player->duck_amount( );
     const auto air = !( player->flags( ) & fl_on_ground ) && ( player->move_type( ) != move_type_ladder )
-        ? c_vec3( 0, 0, 10 )
-        : c_vec3( 0, 0, 0 );
+        ? vec3_t( 0, 0, 10 )
+        : vec3_t( 0, 0, 0 );
 
     const auto down = player->origin( ) + air;
-    const auto top = down + c_vec3( 0, 0, 72 ) + adjust;
+    const auto top = down + vec3_t( 0, 0, 72 ) + adjust;
 
-    if ( c_vec2 s[ 2 ]; g_render->world_to_screen( top, s[ 1 ] ) && g_render->world_to_screen( down, s[ 0 ] ) ) {
-        const c_vec2 delta = s[ 1 ] - s[ 0 ];
+    if ( vec2_t s[ 2 ]; g_render->world_to_screen( top, s[ 1 ] ) && g_render->world_to_screen( down, s[ 0 ] ) ) {
+        const vec2_t delta = s[ 1 ] - s[ 0 ];
 
         box.h = fabsf( delta.y );
         box.w = box.h / 2.0f;
 
-        box.x = s[ 1 ].x - ( box.w / 2 );
+        box.x = s[ 1 ].x - box.w / 2;
         box.y = s[ 1 ].y;
 
         return true;
@@ -45,7 +45,7 @@ void c_esp::init( ) {
             return;
 
         m_type = get_type( player );
-        if ( m_type != player_type )
+        if ( m_type != e_esp_type::player_type )
             return;
 
         box_t box{ };

@@ -45,7 +45,7 @@ public:
            update( const int server_tick, const bool is_valid, const int acknow_ledged, const int outgoing_cmd ), 3,
            server_tick, is_valid, acknow_ledged, outgoing_cmd );
 
-    VFUNC( void( __thiscall* )( void*, c_vec3& ), set_local_view_angles( c_vec3& angles ), 13, angles );
+    VFUNC( void( __thiscall* )( void*, vec3_t& ), set_local_view_angles( vec3_t& angles ), 13, angles );
 
     VFUNC( void( __thiscall* )( void*, c_player*, double ),
            check_moving_ground( c_player* player, const double frame_time ), 18, player, frame_time );

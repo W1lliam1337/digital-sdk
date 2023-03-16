@@ -3,7 +3,7 @@
 
 std::wstring c_utils::get_fonts_folder_path( ) {
 	PWSTR path{ };
-	if ( HRESULT hr = SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path ); FAILED( hr ) )
+	if ( const HRESULT hr = SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path ); FAILED( hr ) )
 		return { };
 
 	std::wstring fonts_path = path;

@@ -32,8 +32,8 @@ void c_chams::override_material( const c_color& clr, const bool ignorez ) const 
     material->color_modulate( clr.r( ) / 255.f, clr.g( ) / 255.f, clr.b( ) / 255.f );
     material->increment_reference_count( );
 
-    if ( const auto $envmaptint = material->find_var( _( "$envmaptint" ), nullptr, false ) ) {
-        $envmaptint->set_vector( c_vec3( clr.r( ) / 255.f, clr.g( ) / 255.f, clr.b( ) / 255.f ) );
+    if ( const auto envmaptint = material->find_var( _( "$envmaptint" ), nullptr, false ) ) {
+        envmaptint->set_vector( vec3_t( clr.r( ) / 255.f, clr.g( ) / 255.f, clr.b( ) / 255.f ) );
     }
 
     g_interfaces->m_model_render->force_material( material );
@@ -59,14 +59,13 @@ bool c_chams::draw_model( i_model_render* const model_render, void* edx, void* c
     // works only for the enemy, remake it for yourself
     if ( is_player && player->is_player( ) && player != c_player::get_local( )
          && player->team( ) != c_player::get_local( )->team( ) ) {
-
         override_material( c_color( 154, 205, 50 ), true );
         og( model_render, edx, context, state, info, bones );
         override_material( c_color( 255, 215, 0 ), false );
 
-        return true;
+        return false;
     }
 
-    // @note: call the original so as not to break the game (models)
-    return true;
+	// @note: call the original so as not to break the game (models)
+	return true;  
 }

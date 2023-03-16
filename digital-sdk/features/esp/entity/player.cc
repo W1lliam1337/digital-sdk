@@ -16,6 +16,6 @@ void c_esp::player_t::draw_name( c_player* const player, box_t& box ) {
     if ( !g_interfaces->m_engine->get_player_info( player->get_index( ), &info ) )
         return;
 
-    g_render->text( box.x + box.w / 2.0f, box.y - 17.0f, c_color::white, outline, g_render->m_fonts.m_esp,
+    g_render->text( box.x + box.w / 2.0f, box.y - 17.0f, c_color::white, outline, g_render->fonts( ).m_esp,
                     info.m_name );
 }

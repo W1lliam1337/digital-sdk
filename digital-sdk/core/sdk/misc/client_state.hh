@@ -138,7 +138,7 @@ public:
 private:
     [[maybe_unused]] std::byte pad9[ 0x4B ]{ };
 public:
-    c_vec3 m_view_angles{ };
+    vec3_t m_view_angles{ };
 private:
     [[maybe_unused]] std::byte pad10[ 0xCC ]{ };
 public:

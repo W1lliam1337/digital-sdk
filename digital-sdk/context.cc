@@ -29,7 +29,7 @@ DWORD c_ctx::dllmain_t::load( void* param ) {
 }
 
 bool c_ctx::dllmain_t::create_thread( DWORD WINAPI function( void* ), void* parameter ) {
-    HANDLE handle = CreateThread( nullptr, 0, function, parameter, 0, nullptr );
+    const auto handle = CreateThread( nullptr, 0, function, parameter, 0, nullptr );
 
     if ( !handle )
         return false;
